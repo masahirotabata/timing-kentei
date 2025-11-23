@@ -1,0 +1,1980 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>睡眠検定 | 10問で今の“睡眠リテラシー”を判定</title>
+  <style>
+    :root{--pink:#e91e63;--bg:#f7f8fc;--card:#fff;--muted:#6b7280;--ink:#0f172a}
+    *{box-sizing:border-box}
+    html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+    a{color:var(--pink);text-decoration:none}
+    header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid #eee}
+    .nav{max-width:1100px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+    .brand{display:flex;gap:10px;align-items:center}
+    .brand b{color:var(--pink);font-size:18px}
+    .badge{background:#fde7ef;color:var(--pink);border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700}
+    .btn{appearance:none;border:none;border-radius:999px;background:var(--pink);color:#fff;padding:12px 16px;font-weight:700;cursor:pointer}
+    .btn.ghost{background:#fff;color:var(--pink);border:2px solid var(--pink)}
+    .btn[disabled]{opacity:.55;cursor:not-allowed}
+    main{max-width:1100px;margin:0 auto;padding:24px 18px}
+    .hero{display:grid;grid-template-columns:1.2fr 1fr;gap:22px;align-items:center}
+    @media (max-width:880px){.hero{grid-template-columns:1fr}}
+    .card{background:var(--card);border-radius:18px;box-shadow:0 8px 30px rgba(0,0,0,.06);padding:18px}
+    .hero h1{font-size:clamp(26px,3.8vw,38px);margin:6px 0 10px}
+    .hero p{color:var(--muted);margin:0 0 16px}
+    .kpi{display:flex;gap:14px;flex-wrap:wrap}
+    .kpi .pill{background:#eef2ff;color:#3730a3;border-radius:999px;padding:6px 10px;font-size:12px}
+    .h2{margin:0 0 10px;font-size:18px}
+    .muted{color:var(--muted);font-size:13px}
+    .center{text-align:center}
+    .sep{height:1px;background:#eee;margin:12px 0}
+    .ad{height:90px;border:1px dashed #ddd;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#9ca3af;font-size:13px;background:#fff}
+    .right{text-align:right}
+
+    /* Modals */
+    .overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;z-index:100}
+    .overlay.show{display:flex}
+    .modal{background:#fff;width:min(720px,92vw);border-radius:16px;padding:18px;box-shadow:0 20px 50px rgba(0,0,0,.35);max-height:90vh;overflow:auto}
+    .q-title{font-weight:800;margin:0 0 8px}
+    .q-progress{color:var(--muted);font-size:13px;margin:0 0 12px}
+
+    /* Quiz */
+    .q-option{display:block;width:100%;text-align:left;border:1px solid #e5e7eb;background:#fff;border-radius:12px;padding:12px 14px;margin:8px 0;cursor:pointer}
+    .q-option.correct{border-color:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.15)}
+    .q-option.wrong{border-color:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.15)}
+    .q-exp{background:#f9fafb;border:1px solid #eef;border-radius:10px;padding:10px 12px;margin-top:10px;color:#334155;font-size:14px}
+    .result-rank{font-size:28px;font-weight:800;color:var(--pink);margin:6px 0}
+    .small{font-size:12px;color:var(--muted)}
+
+    /* Category vertical */
+    .stack{display:flex;flex-direction:column;gap:10px}
+    .btn-block{width:100%;padding:14px 16px;font-size:16px;border-radius:14px}
+    .btn-pink{background:var(--pink);color:#fff}
+    .btn-gray{background:#f3f4f6;color:#111;border:1px solid #e5e7eb}
+    .btn:focus-visible, .q-option:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(233,30,99,.25);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto; animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="nav">
+    <div class="brand"><b>睡眠検定</b><span class="badge">MVP v3</span></div>
+    <div>
+      <button class="btn" id="btnStartTop">検定をはじめる</button>
+      <button class="btn ghost" id="btnResults">受検結果を確認</button>
+      <button class="btn ghost" id="btnAbout">概要</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="card">
+      <h1>10問で今の“睡眠リテラシー”を判定</h1>
+      <p>カテゴリを選んで受検。各バンクから<strong>ランダムに10問</strong>出題します。結果は端末に保存され、直近3回の平均で段位の目安が決まります。</p>
+      <div class="kpi">
+        <span class="pill">所要 2〜3分</span>
+        <span class="pill">広告で無料</span>
+        <span class="pill">オフラインOK</span>
+      </div>
+      <div style="height:12px"></div>
+      <button class="btn" id="btnStartHero">今すぐ開始</button>
+      <button class="btn ghost" id="btnRankTable">段位表</button>
+      <div class="muted" id="bankWarn" style="margin-top:8px;display:none"></div>
+    </div>
+    <div class="card">
+      <div class="h2">広告枠（将来差し替え）</div>
+      <div class="ad">[ バナー/動画広告を実装予定 ]</div>
+      <div class="sep"></div>
+      <div class="h2">直近3回のスコア</div>
+      <div class="muted" id="scoreHistory">なし</div>
+    </div>
+  </section>
+</main>
+
+<!-- ===== Category Select (縦ボタン) ===== -->
+<div class="overlay" id="overlayCat">
+  <div class="modal" style="width:min(520px,92vw)">
+    <h3 class="q-title">カテゴリを選んでください</h3>
+    <div class="stack" id="catButtons"></div>
+    <div class="sep"></div>
+    <div class="center"><button class="btn ghost" id="catClose">閉じる</button></div>
+  </div>
+</div>
+
+<!-- ===== Ad Gate ===== -->
+<div class="overlay" id="overlayAd">
+  <div class="modal" style="width:min(640px,92vw)">
+    <h3 class="q-title">広告視聴</h3>
+    <p class="muted">広告視聴後、検定を受検できます。</p>
+    <div class="ad" id="fakeAd">[ 動画広告（擬似） 5 秒 ]</div>
+    <div class="sep"></div>
+    <div class="center">
+      <button class="btn" id="btnAdStart" disabled>受検を開始する</button>
+      <button class="btn ghost" id="btnAdClose">閉じる</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Quiz ===== -->
+<div class="overlay" id="overlayQuiz">
+  <div class="modal">
+    <h3 class="q-title" id="qTitle">検定（10問）</h3>
+    <div class="q-progress" id="qProg">1 / 10</div>
+    <div id="qBody"></div>
+    <div class="center" style="margin-top:12px">
+      <button class="btn" id="qNext" disabled>次へ</button>
+      <button class="btn ghost" id="qClose">中断</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Result ===== -->
+<div class="overlay" id="overlayResult">
+  <div class="modal" style="width:min(560px,92vw)">
+    <h3 class="q-title">結果</h3>
+    <div id="resultBody"></div>
+    <div class="sep"></div>
+    <div class="center">
+      <button class="btn" id="resRetry">同じカテゴリでもう一度</button>
+      <button class="btn ghost" id="resClose">閉じる</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Rank Table ===== -->
+<div class="overlay" id="overlayRank">
+  <div class="modal" style="width:min(520px,92vw)">
+    <h3 class="q-title">段位表（目安）</h3>
+    <div class="muted" style="margin-bottom:8px">直近3回平均での目安</div>
+    <ul style="line-height:1.9;margin:0;padding-left:16px">
+      <li>98–100点 … <b>二段</b></li>
+      <li>95–97点 … <b>初段</b></li>
+      <li>90–94点 … 1級</li>
+      <li>85–89点 … 2級</li>
+      <li>80–84点 … 3級</li>
+      <li>75–79点 … 4級</li>
+      <li>70–74点 … 5級</li>
+      <li>65–69点 … 6級</li>
+      <li>60–64点 … 7級</li>
+      <li>55–59点 … 8級</li>
+      <li>50–54点 … 9級</li>
+      <li>0–49点 … 10級</li>
+    </ul>
+    <div class="sep"></div>
+    <div class="center"><button class="btn ghost" id="rankClose">閉じる</button></div>
+  </div>
+</div>
+
+<!-- ===== About ===== -->
+<div class="overlay" id="overlayAbout">
+  <div class="modal" style="width:min(560px,92vw)">
+    <h3 class="q-title">睡眠検定 概要</h3>
+    <p class="muted">各カテゴリの問題バンクからランダムに10問を出題。ローカル保存の直近3回平均で段位の目安を表示します。MVP段階のため内容は随時アップデートされます。</p>
+    <div class="sep"></div>
+    <div class="center"><button class="btn ghost" id="aboutClose">閉じる</button></div>
+  </div>
+</div>
+
+<script>
+/* ========== Utils ========== */
+const $ = s => document.querySelector(s);
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function rankFromScore(s){return s>=98?"二段":s>=95?"初段":s>=90?"1級":s>=85?"2級":s>=80?"3級":s>=75?"4級":s>=70?"5級":s>=65?"6級":s>=60?"7級":s>=55?"8級":s>=50?"9級":"10級"}
+const LS={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}}, set(k,v){localStorage.setItem(k,JSON.stringify(v))}};
+
+  /* ===== 問題バンク（提供データをマージ） ===== */
+  /* 枕：summer (1–60) */
+  const BANK_PILLOW_SUMMER = [
+    {"id":1,"season":"summer","cat":"pillow","question":"夏は通気性の高い枕カバーに替えると寝苦しさが軽減することが多い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"汗と湿気がこもりにくく、放湿性の高い生地は体感を楽にします。"},
+    {"id":2,"season":"summer","cat":"pillow","question":"夏は枕の高さを必ず冬より低くするべきだ。","options":["正しい","間違い"],"answerIndex":1,"explanation":"適正高さは体格・寝姿勢で決まります。季節で必ず変える必要はありません。"},
+    {"id":3,"season":"summer","cat":"pillow","question":"接触冷感のカバーは入眠初期の不快感を和らげる助けになることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"触れた瞬間のひんやり感で熱感を抑え、寝つきを助ける場合があります。"},
+    {"id":4,"season":"summer","cat":"pillow","question":"保冷剤を長時間後頭部に当て続けるのは安全で推奨される。","options":["正しい","間違い"],"answerIndex":1,"explanation":"冷やし過ぎや結露で不快・湿り・皮膚トラブルの恐れ。短時間・適切な緩衝が前提です。"},
+    {"id":5,"season":"summer","cat":"pillow","question":"夏の高湿度環境では、枕の吸湿発散性が重要になる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"汗や湿気を素早く拡散・放出できる素材がムレ感を抑えます。"},
+    {"id":6,"season":"summer","cat":"pillow","question":"夏は枕本体を毎日洗濯すると長持ちする。","options":["正しい","間違い"],"answerIndex":1,"explanation":"本体は素材によって洗える頻度が異なります。過度な洗濯は劣化の原因。まずはカバーを高頻度で交換。"},
+    {"id":7,"season":"summer","cat":"pillow","question":"枕カバーをこまめに交換することは皮脂・汗対策に有効である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"汗・皮脂・雑菌を抑え、臭いとベタつきを減らせます。"},
+    {"id":8,"season":"summer","cat":"pillow","question":"ガーゼやパイルなど肌離れの良い生地はムレ感の軽減に役立つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"汗を吸って離しやすく、接触面の不快感を減らします。"},
+    {"id":9,"season":"summer","cat":"pillow","question":"竹や麻のシートを巻けば必ず首の当たりが改善する。","options":["正しい","間違い"],"answerIndex":1,"explanation":"素材感は涼しいが厚みで高さや形が変わり、かえって合わなくなることも。"},
+    {"id":10,"season":"summer","cat":"pillow","question":"夏は通気路（エアチャンネル）を持つ枕コアが熱をこもりにくい傾向にある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"内部の空気が動く構造は放熱・放湿に有利です。"},
+    {"id":11,"season":"summer","cat":"pillow","question":"低反発は必ず夏に不向きである。","options":["正しい","間違い"],"answerIndex":1,"explanation":"密度や通気構造・カバー次第。低反発でも通気性工夫で快適に使える製品もあります。"},
+    {"id":12,"season":"summer","cat":"pillow","question":"夏は“冷感＝冷たさが続く”と解釈してよい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"接触冷感は“触れた直後の熱移動”。持続冷却とは別概念です。"},
+    {"id":13,"season":"summer","cat":"pillow","question":"枕が湿ったままだとダニ・カビのリスクが高まる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"高湿は微生物やダニに好条件。しっかり乾燥させる習慣が大切。"},
+    {"id":14,"season":"summer","cat":"pillow","question":"起床後すぐに枕を日陰で風に当てるのは有効なケアである。","options":["正しい","間違い"],"answerIndex":0,"explanation":"湿気を飛ばしてニオイとベタつきを軽減できます。"},
+    {"id":15,"season":"summer","cat":"pillow","question":"夏は仰向け寝の人は例外なく枕を高くした方が涼しい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"涼しさと高さは別問題。頸椎中立を保つ高さが優先です。"},
+    {"id":16,"season":"summer","cat":"pillow","question":"枕にタオルを重ねて汗取りする場合、高さが変わりすぎないよう注意が必要。","options":["正しい","間違い"],"answerIndex":0,"explanation":"重ね過ぎると当たりが変わり、首肩に負担が出ます。"},
+    {"id":17,"season":"summer","cat":"pillow","question":"麻やリネンのカバーは汗ばむ季節に向くことが多い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"放湿・速乾・さらっとした質感で夏向きです。"},
+    {"id":18,"season":"summer","cat":"pillow","question":"枕のニオイが気になるとき、香りの強い柔軟剤を多用すれば根本解決できる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"香りで覆うだけでは根本原因の汗・皮脂・菌は解決しません。洗浄と乾燥が基本。"},
+    {"id":19,"season":"summer","cat":"pillow","question":"メッシュ構造のピロープロテクターは放湿を助ける。","options":["正しい","間違い"],"answerIndex":0,"explanation":"空気が抜けやすく、汗だまりを抑制します。"},
+    {"id":20,"season":"summer","cat":"pillow","question":"夏は横向き寝の人でも高さ調整は不要である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"肩幅に応じて高さ調整が必要。季節に関わらずフィットが重要です。"},
+    {"id":21,"season":"summer","cat":"pillow","question":"背面の熱を逃がすため、枕の後頭部付近に通気路がある設計は有利。","options":["正しい","間違い"],"answerIndex":0,"explanation":"局所の熱・湿気が抜けやすく、ムレを抑えます。"},
+    {"id":22,"season":"summer","cat":"pillow","question":"枕カバーを1週間以上替えないほうが繊維が落ち着き涼しくなる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"汗・皮脂が蓄積し、衛生面・体感ともに悪化します。"},
+    {"id":23,"season":"summer","cat":"pillow","question":"ジェル入りのピローは一部で放熱に寄与する場合がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"熱を吸収・拡散する層が初期の熱感を和らげることがあります。"},
+    {"id":24,"season":"summer","cat":"pillow","question":"就寝前に枕をエアコンの吹き出しで強く冷却すると結露の原因になり得る。","options":["正しい","間違い"],"answerIndex":0,"explanation":"急冷・温度差で湿りが出ると不快や劣化に繋がることがあります。"},
+    {"id":25,"season":"summer","cat":"pillow","question":"汗をかく夏は、枕の形状が崩れてもそのまま使えば慣れて改善する。","options":["正しい","間違い"],"answerIndex":1,"explanation":"崩れた形状は頸椎支持が不安定。調整や買い替えを検討。"},
+    {"id":26,"season":"summer","cat":"pillow","question":"ビーズやパイプ素材は比較的通気性に優れる傾向がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"空隙が多く空気が動きやすい構造です。"},
+    {"id":27,"season":"summer","cat":"pillow","question":"羽根・羽毛の枕は必ず夏に不向きで使えない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"通気・かさの調整で夏も使えます。感じ方は個人差があります。"},
+    {"id":28,"season":"summer","cat":"pillow","question":"夏の寝室で扇風機を首元に直風で当て続けるのはコリや乾燥を招くことがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"強い直風は体の冷やしすぎや乾燥を生むことがあります。"},
+    {"id":29,"season":"summer","cat":"pillow","question":"冷感生地は汗をかくほど必ず涼しくなる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"濡れすぎるとべたつき・熱伝導の感じ方が悪化することも。"},
+    {"id":30,"season":"summer","cat":"pillow","question":"夏はうつ伏せ寝で顔と枕の接触面積が増えるとムレやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"接触面積が増えるほど放熱・放湿が阻害されます。"},
+    {"id":31,"season":"summer","cat":"pillow","question":"枕の高さが合っていれば、素材の通気性は夏でも関係ない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"高さと通気は別軸。どちらも快適性に影響します。"},
+    {"id":32,"season":"summer","cat":"pillow","question":"夏は首汗がたまりやすいので、頸部の当たりが密な形状はムレに注意。","options":["正しい","間違い"],"answerIndex":0,"explanation":"密着面の通気・吸湿性が重要です。"},
+    {"id":33,"season":"summer","cat":"pillow","question":"枕プロテクターの防水層は汗染み対策になるが、通気が悪いものは暑く感じることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"蒸れにくいラミネートや通気タイプを選ぶとよいです。"},
+    {"id":34,"season":"summer","cat":"pillow","question":"夏は寝返りが増えやすいが、枕が大きめだと接触が分散し楽に感じる場合がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"広い面で体圧分散・姿勢遷移を助けることがあります。"},
+    {"id":35,"season":"summer","cat":"pillow","question":"ニオイ対策で日中に直射日光へ長時間放置すれば、どの素材でも安全である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"紫外線・高温で劣化する素材も。陰干しや短時間の日光にとどめる。"},
+    {"id":36,"season":"summer","cat":"pillow","question":"枕に冷却スプレーを多量に使うと肌刺激や生地の痛みの原因になることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"用量・素材適合を守ることが大切です。"},
+    {"id":37,"season":"summer","cat":"pillow","question":"夏は高さ調整シートを抜いて通気を確保する方法もあるが、首が落ちるなら元に戻すべき。","options":["正しい","間違い"],"answerIndex":0,"explanation":"通気と支持のバランスを優先しましょう。"},
+    {"id":38,"season":"summer","cat":"pillow","question":"枕の中材を定期的にほぐすと、風の通りと形状回復に役立つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"ダマを解くことで空気の通り道が戻ります。"},
+    {"id":39,"season":"summer","cat":"pillow","question":"冷感カバーはエアコン温度を極端に下げる代替になる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"カバーは局所の体感調整。室温調整の代わりにはなりません。"},
+    {"id":40,"season":"summer","cat":"pillow","question":"夏の汗対策で枕に薄手のタオルを1枚巻くのは管理しやすい方法の一つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"交換・洗濯が容易で清潔を保ちやすいです。"},
+    {"id":41,"season":"summer","cat":"pillow","question":"氷枕を直接首に当てて寝続けるのは、こりの根本改善に常に有効である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"冷やし過ぎや血行悪化の懸念。短時間・適度が基本です。"},
+    {"id":42,"season":"summer","cat":"pillow","question":"メッシュ側とパイル側でリバーシブルのカバーは、夏はメッシュ側を使う選択肢になる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"通気・肌離れの良い面を選べます。"},
+    {"id":43,"season":"summer","cat":"pillow","question":"汗かき体質なら、抗菌防臭加工のカバーを選ぶ価値がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"臭いの元となる菌の増殖を抑える働きが期待できます。"},
+    {"id":44,"season":"summer","cat":"pillow","question":"夏は枕をビニールで包めば湿気を遮断できて快適になる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"通気を遮断して逆にムレ・汗だまりが悪化します。"},
+    {"id":45,"season":"summer","cat":"pillow","question":"子どもの枕も汗量が多い季節はカバー交換頻度を上げると良い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"衛生・肌トラブル予防の観点から有効です。"},
+    {"id":46,"season":"summer","cat":"pillow","question":"硬い板状の保冷材を枕の上に置けば、形状支持の点でも常にプラスである。","options":["正しい","間違い"],"answerIndex":1,"explanation":"局所圧や段差が首肩の負担になることがあります。"},
+    {"id":47,"season":"summer","cat":"pillow","question":"枕の高さが合わないと、暑さとは別にいびきや肩こりを悪化させることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"頸部の角度不良は気道や筋緊張に影響します。"},
+    {"id":48,"season":"summer","cat":"pillow","question":"夏は汗を吸っても乾きやすい化繊カバーだけが正解で、綿は避けるべき。","options":["正しい","間違い"],"answerIndex":1,"explanation":"綿でもガーゼや高通気織りは有効。組成より設計と使い方が重要です。"},
+    {"id":49,"season":"summer","cat":"pillow","question":"枕にファンを内蔵した製品は、熱や湿気の排出を積極的に助けることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"送風で内部の熱・湿度を逃がせます。静音性などは要確認。"},
+    {"id":50,"season":"summer","cat":"pillow","question":"汗ジミ防止のため、就寝直前に髪を完全に乾かすのは有効な対策の一つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"濡れた髪はカバーを湿らせムレや臭いの原因になります。"},
+    {"id":51,"season":"summer","cat":"pillow","question":"冷感カバーはエアコンを使えない環境での唯一の熱対策である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"通風・除湿・寝具全体の見直しなど他の対策も有効です。"},
+    {"id":52,"season":"summer","cat":"pillow","question":"洗える中材の枕は、表示を守って本体を洗うと臭い対策に役立つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"取扱表示に従えば清潔を保ちやすいです。"},
+    {"id":53,"season":"summer","cat":"pillow","question":"夏は首の汗疹（あせも）対策に、肌への当たりがザラザラの粗い生地が常に適している。","options":["正しい","間違い"],"answerIndex":1,"explanation":"刺激が強いと擦れの原因。さらっとしつつも肌当たりの良い生地が無難。"},
+    {"id":54,"season":"summer","cat":"pillow","question":"高さ可変のパイプ枕は、夏場の通気と微調整の両方を狙える。","options":["正しい","間違い"],"answerIndex":0,"explanation":"中材の抜き差しで高さ調整・通気の両立がしやすい設計です。"},
+    {"id":55,"season":"summer","cat":"pillow","question":"寝室の湿度管理ができていれば、枕の通気性は不要になる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"室内環境が良くても接触面の通気は依然として快適性に影響します。"},
+    {"id":56,"season":"summer","cat":"pillow","question":"枕の側面や底面にメッシュを用いた構造は放湿に貢献する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"上下だけでなく側面からも湿気が抜けやすくなります。"},
+    {"id":57,"season":"summer","cat":"pillow","question":"夏は高反発＝必ず暑いので避けるべきである。","options":["正しい","間違い"],"answerIndex":1,"explanation":"反発性と熱感は直結しません。通気・カバー・室環境で体感は変わります。"},
+    {"id":58,"season":"summer","cat":"pillow","question":"寝汗が多い人は、吸水速乾のピローカバーを選ぶ価値が高い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"乾きが早いとべたつきと冷え戻りを抑えられます。"},
+    {"id":59,"season":"summer","cat":"pillow","question":"冷感ジェルを直接皮膚に貼って寝れば、枕の調整は不要になる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"局所的な冷却は高さ・支持の問題を解決しません。"},
+    {"id":60,"season":"summer","cat":"pillow","question":"夏用の工夫をしても合わないと感じるなら、まずは高さと当たりの再調整を行うべきだ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"季節対策よりも“合う高さ・形”が基本。そこが整ってから素材調整を。"}
+  ];
+
+  /* 枕：winter (61–120) */
+  const BANK_PILLOW_WINTER = [
+    {"id":61,"category":"pillow-winter","question":"冬は首や肩を温める枕カバーを使うと入眠しやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"温かさは副交感神経を優位にし、眠気を促進します。"},
+    {"id":62,"category":"pillow-winter","question":"冬は羽毛やフリース素材の枕カバーが好まれる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"保温性の高い素材は冬の睡眠を快適にします。"},
+    {"id":63,"category":"pillow-winter","question":"冬は冷感素材の枕カバーを使うのが良い。","options":["正しい","間違い"],"answerIndex":1,"explanation":"冷感素材は夏向けであり、冬は体を冷やしすぎます。"},
+    {"id":64,"category":"pillow-winter","question":"冬に低めの枕を使うと首元が冷えやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"高さが低いと布団との隙間が大きくなり、冷気が入りやすいです。"},
+    {"id":65,"category":"pillow-winter","question":"冬は枕の高さより素材の保温性が重要である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"冬場は素材による断熱性が快眠に直結します。"},
+    {"id":66,"category":"pillow-winter","question":"冬は湯たんぽを枕の下に入れると快適である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"枕下に湯たんぽを入れると熱がこもりすぎて不快になりやすいです。"},
+    {"id":67,"category":"pillow-winter","question":"冬用枕は通気性よりも保温性を優先して選ぶべき。","options":["正しい","間違い"],"answerIndex":0,"explanation":"冬場は断熱・保温が快眠のカギです。"},
+    {"id":68,"category":"pillow-winter","question":"冬は枕のカバーを毎日交換しなくても良い。","options":["正しい","間違い"],"answerIndex":1,"explanation":"清潔さを保つため、冬でも週1回以上の交換が望ましいです。"},
+    {"id":69,"category":"pillow-winter","question":"冬用枕には吸湿発熱素材が利用されることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"吸湿発熱繊維は体からの水分を熱に変え、保温性を高めます。"},
+    {"id":70,"category":"pillow-winter","question":"冬でも枕の高さ調整は姿勢に影響する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"高さは首の負担軽減に重要であり、季節に関わらず調整が必要です。"},
+    {"id":71,"category":"pillow-winter","question":"冬は高反発素材の枕が体を温めやすい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"高反発は保温性には直結せず、低反発や繊維系の方が温かいことがあります。"},
+    {"id":72,"category":"pillow-winter","question":"冬はそば殻枕が冷たいと感じる人が多い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"そば殻は通気性が良すぎて冬は冷たく感じられやすいです。"},
+    {"id":73,"category":"pillow-winter","question":"冬は羽毛枕が人気である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"羽毛は軽くて暖かく、冬の需要が高いです。"},
+    {"id":74,"category":"pillow-winter","question":"冬にマイクロファイバーの枕カバーは保温性が高い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"マイクロファイバーは密度が高く暖かさを保ちやすい素材です。"},
+    {"id":75,"category":"pillow-winter","question":"冬は電気毛布を枕にかけるのが正しい使い方である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"電気毛布は布団での使用が前提であり、枕に巻くのは不適切です。"},
+    {"id":76,"category":"pillow-winter","question":"冬は低温火傷を避けるために温めすぎないことが大切。","options":["正しい","間違い"],"answerIndex":0,"explanation":"長時間の熱は低温やけどのリスクになるため注意が必要です。"},
+    {"id":77,"category":"pillow-winter","question":"冬の枕は湿気がこもりやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"窓を閉め切る冬は湿度が高くなりがちで、枕内部に湿気が残りやすいです。"},
+    {"id":78,"category":"pillow-winter","question":"冬は枕を干さなくてもカビは生えない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"湿気がこもると冬でもカビが発生することがあります。"},
+    {"id":79,"category":"pillow-winter","question":"冬は吸湿性の高い素材の枕が望ましい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"湿度コントロールできる枕素材は快適さにつながります。"},
+    {"id":80,"category":"pillow-winter","question":"冬の寝室は乾燥するため、枕に加湿機能があると便利。","options":["正しい","間違い"],"answerIndex":0,"explanation":"一部製品では加湿対応の枕カバーも販売されています。"},
+    {"id":81,"category":"pillow-winter","question":"冬の枕選びでは冷感ジェルタイプが最適である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"冷感ジェルは夏用であり、冬は避けるべきです。"},
+    {"id":82,"category":"pillow-winter","question":"冬用の抱き枕は冷え対策に役立つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"体の側面を温めるため冷えやすい人に効果的です。"},
+    {"id":83,"category":"pillow-winter","question":"冬は羊毛素材の枕も暖かい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"羊毛は保温性と吸湿性に優れているため冬向きです。"},
+    {"id":84,"category":"pillow-winter","question":"冬に枕を電子レンジで温めてもよい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"多くの枕はレンジ加熱非対応であり危険です。"},
+    {"id":85,"category":"pillow-winter","question":"冬は高めの枕で肩口を布団に密着させると冷気が入りにくい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"肩と布団の隙間を減らすことで冷気侵入を防げます。"},
+    {"id":86,"category":"pillow-winter","question":"冬は布団との隙間を埋める形状の枕がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"肩口フィット型の枕が販売されています。"},
+    {"id":87,"category":"pillow-winter","question":"冬は羽毛布団があれば枕は不要である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"首のサポートのため枕は必要です。"},
+    {"id":88,"category":"pillow-winter","question":"冬は寝返りを減らすために柔らかすぎる枕を使うべき。","options":["正しい","間違い"],"answerIndex":1,"explanation":"柔らかすぎると首を支えられず、かえって不快になります。"},
+    {"id":89,"category":"pillow-winter","question":"冬は低反発素材が頭を温めやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"低反発は体圧分散と同時に保温性があるため冬に向きます。"},
+    {"id":90,"category":"pillow-winter","question":"冬の枕カバーにシルクは適さない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"シルクは保温性があり冬にも適しています。"},
+    {"id":91,"category":"pillow-winter","question":"冬は発熱繊維を使った枕カバーが市販されている。","options":["正しい","間違い"],"answerIndex":0,"explanation":"ユニクロのヒートテックのような発熱繊維が枕にも応用されています。"},
+    {"id":92,"category":"pillow-winter","question":"冬の寝室が寒い場合、枕元に暖房を直接当ててもよい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"直接暖房は乾燥や火災のリスクがあるため不適切です。"},
+    {"id":93,"category":"pillow-winter","question":"冬の枕にアロマを取り入れるとリラックスしやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"ラベンダーやカモミールはリラックス効果を高めます。"},
+    {"id":94,"category":"pillow-winter","question":"冬の枕は洗濯不要である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"衛生のため定期的な洗濯やカバー交換が必要です。"},
+    {"id":95,"category":"pillow-winter","question":"冬は頭寒足熱が推奨される。","options":["正しい","間違い"],"answerIndex":0,"explanation":"頭を涼しく、足を暖かくすることで快眠を得やすいです。"},
+    {"id":96,"category":"pillow-winter","question":"冬は枕にカイロを直接入れてよい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"直接使用は低温やけどや火災の原因になります。"},
+    {"id":97,"category":"pillow-winter","question":"冬の枕において温かさと通気性のバランスが重要。","options":["正しい","間違い"],"answerIndex":0,"explanation":"こもりすぎると蒸れ、冷えや不快の原因になるためです。"},
+    {"id":98,"category":"pillow-winter","question":"冬は冷たい空気を避けるために枕を窓側から離すと良い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"外気の影響を避けることで冷気を減らせます。"},
+    {"id":99,"category":"pillow-winter","question":"冬は湿度管理が不要である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"乾燥や加湿の調整は冬の睡眠に大切です。"},
+    {"id":100,"category":"pillow-winter","question":"冬の枕選びで保温性が快眠に直結する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"暖かさが不足すると眠りが浅くなるため重要です。"},
+    {"id":101,"category":"pillow-winter","question":"冬の枕には抗菌防臭加工も役立つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"冬場も汗をかくため抗菌加工が快適さに寄与します。"},
+    {"id":102,"category":"pillow-winter","question":"冬の枕には通気性だけを重視すれば良い。","options":["正しい","間違い"],"answerIndex":1,"explanation":"通気性だけでは寒く、保温性とのバランスが必要です。"},
+    {"id":103,"category":"pillow-winter","question":"冬は頭部の冷えが全身に影響する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"頭部の冷えは血流低下や肩こりにつながります。"},
+    {"id":104,"category":"pillow-winter","question":"冬用枕は体温調整機能を持つものがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"PCM素材などで温度を調整する商品があります。"},
+    {"id":105,"category":"pillow-winter","question":"冬は長時間枕を温めると睡眠の質が上がる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"温めすぎは逆に眠りを妨げます。"},
+    {"id":106,"category":"pillow-winter","question":"冬はリネン素材の枕カバーが最適である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"リネンは通気性が良すぎて夏向きです。"},
+    {"id":107,"category":"pillow-winter","question":"冬は適度な硬さの枕が快適。","options":["正しい","間違い"],"answerIndex":0,"explanation":"硬さは首を支える役割があり、体のリラックスを助けます。"},
+    {"id":108,"category":"pillow-winter","question":"冬に重い枕を使うと血流が良くなる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"重すぎる枕は血流を妨げます。"},
+    {"id":109,"category":"pillow-winter","question":"冬用枕の選び方では布団との相性も大切。","options":["正しい","間違い"],"answerIndex":0,"explanation":"布団と枕の隙間がなく一体感があると暖かさを保てます。"},
+    {"id":110,"category":"pillow-winter","question":"冬は高さ調整可能な枕が便利。","options":["正しい","間違い"],"answerIndex":0,"explanation":"服装や体型によって冬場は高さの調整が必要です。"},
+    {"id":111,"category":"pillow-winter","question":"冬は体調管理のため枕の清潔さも重要。","options":["正しい","間違い"],"answerIndex":0,"explanation":"風邪予防のため清潔な枕は必須です。"},
+    {"id":112,"category":"pillow-winter","question":"冬は頭が冷えても睡眠には影響しない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"頭の冷えは眠りの質に影響します。"},
+    {"id":113,"category":"pillow-winter","question":"冬の枕選びで体圧分散も考慮すべき。","options":["正しい","間違い"],"answerIndex":0,"explanation":"体圧分散は首や肩の疲れを防ぎます。"},
+    {"id":114,"category":"pillow-winter","question":"冬は低反発素材の枕は冷たい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"低反発素材は温まりやすく冬向きです。"},
+    {"id":115,"category":"pillow-winter","question":"冬は頭皮の汗が少ないため枕カバー洗濯は不要。","options":["正しい","間違い"],"answerIndex":1,"explanation":"冬でも汗や皮脂は分泌されるので洗濯は必要です。"},
+    {"id":116,"category":"pillow-winter","question":"冬は温感機能付き枕カバーが存在する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"市販でヒーター内蔵タイプの製品もあります。"},
+    {"id":117,"category":"pillow-winter","question":"冬は寝返りをしない方が体温保持に有効である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"寝返りは血流や快眠に必要で、適度に動く方が良いです。"},
+    {"id":118,"category":"pillow-winter","question":"冬は首回りを覆う形状の枕が冷えにくい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"首を覆うタイプは冷気の侵入を防ぎます。"},
+    {"id":119,"category":"pillow-winter","question":"冬の枕は日中に干すと逆に冷たくなる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"日光に当てて乾燥させることで暖かさも維持されます。"},
+    {"id":120,"category":"pillow-winter","question":"冬は枕に保温効果のある素材を使うと睡眠の質が向上する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"保温性のある枕は深い睡眠を助けます。"}
+  ];
+
+  /* 敷布団・しきマット：後であなたの完全版を流し込む想定（10問以上に達したら自動で開始可能） */
+  const BANK_FUTON = [
+  {"id":121,"category":"mattress-summer","question":"夏は通気性の高いマットレスが快適である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"熱や湿気を逃がしやすい構造が夏向きです。"},
+  {"id":122,"category":"mattress-summer","question":"夏は低反発マットレスの方が涼しい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"低反発は熱をこもらせやすく、夏は高反発や通気性重視が良いです。"},
+  {"id":123,"category":"mattress-summer","question":"夏は竹シーツをマットレスに敷くと涼しく眠れる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"竹やい草は熱を逃がす効果があります。"},
+  {"id":124,"category":"mattress-summer","question":"夏はマットレスに除湿シートを併用すると快適である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"湿気対策はダニやカビ防止にも効果的です。"},
+  {"id":125,"category":"mattress-summer","question":"夏は硬めのマットレスが体を涼しく保つ傾向がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"柔らかい素材は熱がこもりやすいため、硬めが快適です。"},
+  {"id":126,"category":"mattress-summer","question":"夏は冷感ジェルマットを敷くと快適である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"接触冷感素材は熱を逃がす効果があります。"},
+  {"id":127,"category":"mattress-summer","question":"夏は換気をしなくてもマットレスにカビは生えない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"湿度が高いとカビは発生しやすいです。"},
+  {"id":128,"category":"mattress-summer","question":"夏は寝具の通気性と吸湿性が快眠の鍵となる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"湿気をうまく逃がすことが快眠につながります。"},
+  {"id":129,"category":"mattress-summer","question":"夏のマットレスはこまめに立てかけて乾燥させるのが望ましい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"湿気を逃がしカビ防止になります。"},
+  {"id":130,"category":"mattress-summer","question":"夏は低通気性のマットレスが好ましい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"通気性が低いと蒸れやすくなります。"},
+  {"id":131,"category":"mattress-summer","question":"夏はベッドフレームにすのこを使うと快適である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"通気性を高め、熱と湿気を逃がします。"},
+  {"id":132,"category":"mattress-summer","question":"夏は布団を直接床に敷いた方が涼しい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"床は湿気がたまりやすく、カビのリスクが高いです。"},
+  {"id":133,"category":"mattress-summer","question":"夏は抗菌防臭加工のマットレスが役立つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"汗をかきやすい夏に衛生的です。"},
+  {"id":134,"category":"mattress-summer","question":"夏はエアマットレスも涼しく眠れる選択肢である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"空気層により通気性が高い場合があります。"},
+  {"id":135,"category":"mattress-summer","question":"夏は通気性より厚みを優先すべきである。","options":["正しい","間違い"],"answerIndex":1,"explanation":"厚みだけでなく通気性が快眠に重要です。"},
+  {"id":136,"category":"mattress-summer","question":"夏は吸湿性の高い天然素材のマットレスが良い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"天然素材は湿度を調整しやすいです。"},
+  {"id":137,"category":"mattress-summer","question":"夏はベッドパッドを使わない方が快適である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"冷感や吸湿素材のベッドパッドを併用すると快適です。"},
+  {"id":138,"category":"mattress-summer","question":"夏はマットレスを直射日光に当てるとダメージになる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"日光消毒は効果的で、ダメージより衛生面の利点が大きいです。"},
+  {"id":139,"category":"mattress-summer","question":"夏はダニやカビが発生しやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"高温多湿の夏は特に注意が必要です。"},
+  {"id":140,"category":"mattress-summer","question":"夏は扇風機をマットレス下に当てると乾燥に効果的である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"風を通すことで湿気を逃がせます。"},
+  {"id":141,"category":"mattress-summer","question":"夏は麻素材のシーツがマットレスに適している。","options":["正しい","間違い"],"answerIndex":0,"explanation":"麻は通気性と吸湿性が高く涼しい素材です。"},
+  {"id":142,"category":"mattress-summer","question":"夏はマットレスカバーを洗濯せずに使い続けても問題ない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"汗や皮脂で雑菌が繁殖するため定期的に洗濯が必要です。"},
+  {"id":143,"category":"mattress-summer","question":"夏は冷却マットを組み合わせるとさらに快適に眠れる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"冷却素材は体温上昇を抑えます。"},
+  {"id":144,"category":"mattress-summer","question":"夏は床からの湿気は無視できる程度である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"湿気はマットレスに影響を与え、カビの原因になります。"},
+  {"id":145,"category":"mattress-summer","question":"夏は除湿機を寝室で使用するとマットレスに良い影響を与える。","options":["正しい","間違い"],"answerIndex":0,"explanation":"湿度を下げてカビ防止になります。"},
+  {"id":146,"category":"mattress-summer","question":"夏は寝汗による湿気がマットレスの劣化を早めることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"湿気は内部の素材を傷める要因となります。"},
+  {"id":147,"category":"mattress-summer","question":"夏はラテックス素材のマットレスは通気性が高い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"通気孔が多いため熱を逃がしやすいです。"},
+  {"id":148,"category":"mattress-summer","question":"夏はウレタンマットレスは涼しさに優れている。","options":["正しい","間違い"],"answerIndex":1,"explanation":"ウレタンは熱をこもらせやすいです。"},
+  {"id":149,"category":"mattress-summer","question":"夏は寝返りを打ちやすいマットレスが涼しさに寄与する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"寝返りで体温を逃しやすくなります。"},
+  {"id":150,"category":"mattress-summer","question":"夏は直射日光を避けて陰干しした方が良い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"素材によっては日光が劣化要因となる場合もあるため陰干しが適切です。"},
+  {"id":151,"category":"mattress-summer","question":"夏は布団乾燥機を使わない方が良い。","options":["正しい","間違い"],"answerIndex":1,"explanation":"布団乾燥機は湿気除去に有効です。"},
+  {"id":152,"category":"mattress-summer","question":"夏はハイブリッドマットレスが温度調整に優れる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"スプリング＋フォーム構造で熱を逃がしやすいです。"},
+  {"id":153,"category":"mattress-summer","question":"夏は寝具をこまめに洗濯することが重要である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"衛生と快適性を保つため大切です。"},
+  {"id":154,"category":"mattress-summer","question":"夏は防ダニ加工のシーツやカバーが役立つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"高温多湿はダニの繁殖期なので有効です。"},
+  {"id":155,"category":"mattress-summer","question":"夏は厚手のマットレスほど涼しい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"厚みがあると熱がこもりやすいです。"},
+  {"id":156,"category":"mattress-summer","question":"夏はマットレスのローテーションが必要である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"偏りや湿気を防ぐため有効です。"},
+  {"id":157,"category":"mattress-summer","question":"夏は寝室の湿度を50〜60%に保つのが理想である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"快眠とカビ防止のバランスが良い湿度です。"},
+  {"id":158,"category":"mattress-summer","question":"夏はマットレスの上にバスタオルを敷くと快適である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"バスタオルは吸湿性が低く蒸れやすいです。"},
+  {"id":159,"category":"mattress-summer","question":"夏は冷房と除湿を併用するとマットレスの劣化を防げる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"湿度と温度の両面で快適性を保てます。"},
+  {"id":160,"category":"mattress-summer","question":"夏は寝具の色を明るくすると涼しさを感じやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"心理的効果で快適さが増します。"},
+  {"id":161,"category":"mattress-summer","question":"夏はベッド下に新聞紙を敷くと湿気対策になる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"新聞紙は湿気を吸収する効果があります。"},
+  {"id":162,"category":"mattress-summer","question":"夏は布団よりマットレスの方が涼しい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"布団は床に直敷きだと湿気を吸いやすいです。"},
+  {"id":163,"category":"mattress-summer","question":"夏は冷却スプレーをマットレスに直接使っても安全である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"変色や劣化の恐れがあるため推奨されません。"},
+  {"id":164,"category":"mattress-summer","question":"夏はマットレスの寿命が短くなる傾向にある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"汗や湿気が原因で劣化しやすいです。"},
+  {"id":165,"category":"mattress-summer","question":"夏は寝具に冷感素材を追加することで寝苦しさを和らげられる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"冷感素材は体温上昇を抑える効果があります。"},
+  {"id":166,"category":"mattress-summer","question":"夏は防水シーツが通気性を高める。","options":["正しい","間違い"],"answerIndex":1,"explanation":"防水加工は通気性を下げやすいです。"},
+  {"id":167,"category":"mattress-summer","question":"夏はダニ防止シートがマットレスに有効である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"夏場はダニが繁殖しやすいので有効です。"},
+  {"id":168,"category":"mattress-summer","question":"夏は氷枕をマットレスに置いて寝ると快適である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"結露によって湿気がこもりやすく不快になる場合があります。"},
+  {"id":169,"category":"mattress-summer","question":"夏は寝る前にマットレスに扇風機を当てて冷やすと良い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"熱がこもりにくくなります。"},
+  {"id":170,"category":"mattress-summer","question":"夏は床からの熱の影響は少ない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"床の温度や湿気は寝具に影響を与えます。"},
+  {"id":171,"category":"mattress-summer","question":"夏は畳にマットレスを敷く方が涼しい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"畳は吸湿性があり湿気を逃がしやすいです。"},
+  {"id":172,"category":"mattress-summer","question":"夏は枕とマットレスの高さのバランスも涼しさに影響する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"首回りの通気性を確保すると快適です。"},
+  {"id":173,"category":"mattress-summer","question":"夏は睡眠時の体温調整にマットレスが大きく関与する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"体温放散のしやすさが快眠に影響します。"},
+  {"id":174,"category":"mattress-summer","question":"夏は寝具を重ねるほど涼しい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"重ねるほど熱がこもりやすいです。"},
+  {"id":175,"category":"mattress-summer","question":"夏はベッドパッドに吸湿性素材を選ぶと効果的。","options":["正しい","間違い"],"answerIndex":0,"explanation":"湿気対策と快適性に寄与します。"},
+  {"id":176,"category":"mattress-summer","question":"夏はマットレスに直射日光を当てても劣化は全くない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"素材によっては劣化が進む可能性があります。"},
+  {"id":177,"category":"mattress-summer","question":"夏は除湿シートをマットレス下に敷くと安心である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"湿気対策に効果的です。"},
+  {"id":178,"category":"mattress-summer","question":"夏は厚手のシーツが快適である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"厚手は熱がこもりやすいため夏には不向きです。"},
+  {"id":179,"category":"mattress-summer","question":"夏はエアコンの冷気とマットレスの組み合わせが快眠を左右する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"冷気の流れと寝具の性質が睡眠環境を左右します。"},
+  {"id":180,"category":"mattress-summer","question":"夏は快適なマットレス選びが睡眠の質を大きく左右する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"体温調整がスムーズにできることが快眠の鍵です。"}
+];     // ← ここに 121〜240（夏+冬）を連結して入れてください
+  const BANK_MATTRESS = [
+  {"id":121,"category":"mattress-summer","question":"夏は通気性の高いマットレスが快適である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"熱と湿気を逃がしやすい構造が夏向きです。"},
+  {"id":122,"category":"mattress-summer","question":"夏は低反発マットレスの方が涼しい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"低反発は熱がこもりやすい傾向があります。"},
+  {"id":123,"category":"mattress-summer","question":"竹やい草のシーツは夏の寝床の熱を逃がしやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"接触熱の拡散と通気に優れます。"},
+  {"id":124,"category":"mattress-summer","question":"除湿シートの併用は夏のカビ対策に有効。","options":["正しい","間違い"],"answerIndex":0,"explanation":"湿度を下げてカビ繁殖を抑えます。"},
+  {"id":125,"category":"mattress-summer","question":"柔らかいほど夏は涼しい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"沈み込みが大きいと熱がこもりやすくなります。"},
+  {"id":126,"category":"mattress-summer","question":"接触冷感のベッドパッドは寝苦しさ軽減に役立つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"皮膚表面の熱を拡散して初期の涼感を与えます。"},
+  {"id":127,"category":"mattress-summer","question":"換気しなくても夏はマットレスにカビは生えない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"高温多湿はカビの好条件です。"},
+  {"id":128,"category":"mattress-summer","question":"吸湿・放湿性は夏の快眠に重要な要素である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"寝床内の湿度コントロールが鍵です。"},
+  {"id":129,"category":"mattress-summer","question":"マットレスを立てかけて乾燥させるのは夏に有効。","options":["正しい","間違い"],"answerIndex":0,"explanation":"底面の湿気を逃がせます。"},
+  {"id":130,"category":"mattress-summer","question":"夏は低通気の密閉構造が快適。","options":["正しい","間違い"],"answerIndex":1,"explanation":"蒸れやすく不快になりやすいです。"},
+  {"id":131,"category":"mattress-summer","question":"すのこベッドは夏の通気性向上に役立つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"下面の風抜けが良くなります。"},
+  {"id":132,"category":"mattress-summer","question":"床へ直敷きは夏に最も涼しい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"床の湿気を吸いやすくカビの要因になります。"},
+  {"id":133,"category":"mattress-summer","question":"抗菌防臭加工は夏の汗対策に有用。","options":["正しい","間違い"],"answerIndex":0,"explanation":"臭いと衛生面でメリットがあります。"},
+  {"id":134,"category":"mattress-summer","question":"エアマットレスは夏に涼しく感じることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"空気層で熱が拡散しやすい構造です。"},
+  {"id":135,"category":"mattress-summer","question":"厚みだけを優先すれば夏は快適になる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"通気・放湿もあわせて重要です。"},
+  {"id":136,"category":"mattress-summer","question":"綿や麻など天然素材は夏に相性が良い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"吸湿・通気に優れます。"},
+  {"id":137,"category":"mattress-summer","question":"夏はベッドパッドを使わない方が良い。","options":["正しい","間違い"],"answerIndex":1,"explanation":"冷感・吸湿系のパッドは有効です。"},
+  {"id":138,"category":"mattress-summer","question":"素材によっては直射日光で劣化するため陰干しが無難。","options":["正しい","間違い"],"answerIndex":0,"explanation":"ウレタン等は高温直射で劣化しやすいです。"},
+  {"id":139,"category":"mattress-summer","question":"夏はダニ・カビが繁殖しやすい季節である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"高温多湿が繁殖を促します。"},
+  {"id":140,"category":"mattress-summer","question":"扇風機でマットレス下に風を通すと乾燥が進む。","options":["正しい","間違い"],"answerIndex":0,"explanation":"通風は湿気抜きに有効です。"},
+  {"id":141,"category":"mattress-summer","question":"麻のシーツは夏の敷寝具に適している。","options":["正しい","間違い"],"answerIndex":0,"explanation":"強い通気と放湿で涼感が得られます。"},
+  {"id":142,"category":"mattress-summer","question":"カバーは夏でも洗濯不要。","options":["正しい","間違い"],"answerIndex":1,"explanation":"汗・皮脂が増えるため洗濯頻度を上げたいです。"},
+  {"id":143,"category":"mattress-summer","question":"冷却マットの併用で入眠時の暑さが和らぐ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"初期の熱負荷を下げられます。"},
+  {"id":144,"category":"mattress-summer","question":"床からの湿気は夏でも影響が小さい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"床面の湿気は寝床内湿度を上げます。"},
+  {"id":145,"category":"mattress-summer","question":"除湿機は夏の寝具ケアに有効。","options":["正しい","間違い"],"answerIndex":0,"explanation":"部屋の相対湿度を下げられます。"},
+  {"id":146,"category":"mattress-summer","question":"寝汗はマットレス劣化の一因になる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"水分は素材のへたりやカビの原因になります。"},
+  {"id":147,"category":"mattress-summer","question":"穴開きラテックスは通気が良い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"通風路が多数あり放熱しやすいです。"},
+  {"id":148,"category":"mattress-summer","question":"高密度ウレタンは夏に最も涼しい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"密度が高いほど放熱しにくい傾向です。"},
+  {"id":149,"category":"mattress-summer","question":"寝返りが打ちやすいと熱こもりを軽減できる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"接触面を替えて放熱できます。"},
+  {"id":150,"category":"mattress-summer","question":"素材によっては日なた干しより陰干しが安全。","options":["正しい","間違い"],"answerIndex":0,"explanation":"高温直射で硬化・変形の懸念がある素材もあります。"},
+  {"id":151,"category":"mattress-summer","question":"布団乾燥機は夏に使うべきではない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"乾燥とダニ対策に有効です。"},
+  {"id":152,"category":"mattress-summer","question":"ハイブリッド（スプリング＋フォーム）は熱が抜けやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"空間が多く放熱しやすい構造です。"},
+  {"id":153,"category":"mattress-summer","question":"夏はシーツ・カバーの洗濯頻度を上げると快適。","options":["正しい","間違い"],"answerIndex":0,"explanation":"においと肌触りが改善します。"},
+  {"id":154,"category":"mattress-summer","question":"防ダニカバーは夏の衛生対策に役立つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"繁殖ピーク時の予防に有効です。"},
+  {"id":155,"category":"mattress-summer","question":"厚手ほど夏は必ず涼しい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"厚いほど放熱が阻害される場合があります。"},
+  {"id":156,"category":"mattress-summer","question":"ローテーションは夏のムレ偏り対策にも有効。","options":["正しい","間違い"],"answerIndex":0,"explanation":"接触部位を分散できます。"},
+  {"id":157,"category":"mattress-summer","question":"寝室湿度50〜60%は夏の目安として適切。","options":["正しい","間違い"],"answerIndex":0,"explanation":"カビ抑制と快適性のバランスが良い範囲です。"},
+  {"id":158,"category":"mattress-summer","question":"バスタオル直敷きは放湿性に優れる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"乾きにくく蒸れやすいです。"},
+  {"id":159,"category":"mattress-summer","question":"冷房と除湿の併用は寝床内の不快感を減らす。","options":["正しい","間違い"],"answerIndex":0,"explanation":"温度と湿度の双方を調整できます。"},
+  {"id":160,"category":"mattress-summer","question":"明るい色の寝具は心理的な涼感に寄与する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"色彩の心理効果で快適度が上がります。"},
+  {"id":161,"category":"mattress-summer","question":"新聞紙は吸湿材としてベッド下で機能する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"簡易的に湿気を吸わせられます。"},
+  {"id":162,"category":"mattress-summer","question":"布団直敷きよりマットレスの方が夏に快適なことが多い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"床湿気の影響を受けにくいです。"},
+  {"id":163,"category":"mattress-summer","question":"冷却スプレーをマットレス本体に直接噴霧しても安全。","options":["正しい","間違い"],"answerIndex":1,"explanation":"変色・劣化の恐れがあるため避けます。"},
+  {"id":164,"category":"mattress-summer","question":"夏はマットレスの寿命が短くなる傾向がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"汗・湿気負荷が増えるためです。"},
+  {"id":165,"category":"mattress-summer","question":"冷感素材の追加は寝苦しさ対策に有効。","options":["正しい","間違い"],"answerIndex":0,"explanation":"接触面温度の低減に役立ちます。"},
+  {"id":166,"category":"mattress-summer","question":"防水シーツは通気性を高める。","options":["正しい","間違い"],"answerIndex":1,"explanation":"一般に通気は低下します。"},
+  {"id":167,"category":"mattress-summer","question":"ダニ防止シートの併用は夏に合理的。","options":["正しい","間違い"],"answerIndex":0,"explanation":"繁殖期の抑制に役立ちます。"},
+  {"id":168,"category":"mattress-summer","question":"氷枕をマットレス上に長時間置くと結露で不快になる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"湿りで蒸れや劣化を招きます。"},
+  {"id":169,"category":"mattress-summer","question":"就寝前に扇風機で寝床を冷やすのは有効。","options":["正しい","間違い"],"answerIndex":0,"explanation":"蓄熱を減らせます。"},
+  {"id":170,"category":"mattress-summer","question":"床からの熱・湿気の影響は小さい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"夏は影響が大きくなります。"},
+  {"id":171,"category":"mattress-summer","question":"畳の上はフローリング直より夏の湿気に強い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"畳は吸放湿に優れます。"},
+  {"id":172,"category":"mattress-summer","question":"枕高と敷きのバランスは首元の通気に影響する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"気道や発汗の快適さに関わります。"},
+  {"id":173,"category":"mattress-summer","question":"敷きの温度応答は睡眠の質に影響する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"体温放散しやすい床面が望ましいです。"},
+  {"id":174,"category":"mattress-summer","question":"重ね敷きは夏の涼しさを高める。","options":["正しい","間違い"],"answerIndex":1,"explanation":"層が増えるほど放熱が阻害されます。"},
+  {"id":175,"category":"mattress-summer","question":"吸湿性の高いベッドパッドは夏に効果的。","options":["正しい","間違い"],"answerIndex":0,"explanation":"汗を素早く分散します。"},
+  {"id":176,"category":"mattress-summer","question":"直射日光で全素材が必ず長持ちする。","options":["正しい","間違い"],"answerIndex":1,"explanation":"素材により日光劣化の懸念があります。"},
+  {"id":177,"category":"mattress-summer","question":"マットレス下の除湿シートは安心感を高める。","options":["正しい","間違い"],"answerIndex":0,"explanation":"結露や床湿気の対策になります。"},
+  {"id":178,"category":"mattress-summer","question":"厚手の起毛シーツは夏に適している。","options":["正しい","間違い"],"answerIndex":1,"explanation":"保温的で暑く感じやすいです。"},
+  {"id":179,"category":"mattress-summer","question":"エアコンの風向と敷きの通気は体感温度に影響する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"気流と放熱経路が関与します。"},
+  {"id":180,"category":"mattress-summer","question":"夏は敷き選びが睡眠の質を左右する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"温湿度調整に直結します。"},
+
+  {"id":181,"category":"mattress-winter","question":"冬は保温性の高いマットレスが快適である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"断熱性で底冷えを防ぎます。"},
+  {"id":182,"category":"mattress-winter","question":"冬は低反発が暖かさを保持しやすいことがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"密着で熱が逃げにくくなります。"},
+  {"id":183,"category":"mattress-winter","question":"冬は通気性が高すぎると冷えやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"放熱が過剰になる場合があります。"},
+  {"id":184,"category":"mattress-winter","question":"ウール混のパッドは冬に適している。","options":["正しい","間違い"],"answerIndex":0,"explanation":"吸放湿と保温を両立します。"},
+  {"id":185,"category":"mattress-winter","question":"布団と敷きの間に隙間を作ると暖かい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"冷気が入りやすくなります。"},
+  {"id":186,"category":"mattress-winter","question":"電気毛布の適切利用は冬の入眠を助ける。","options":["正しい","間違い"],"answerIndex":0,"explanation":"就寝前の予熱が有効です。"},
+  {"id":187,"category":"mattress-winter","question":"高反発は冬に冷たく感じる場合がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"空気層が多く放熱しやすい構造です。"},
+  {"id":188,"category":"mattress-winter","question":"羊毛入りベッドパッドは冬の体温保持に貢献する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"繊維内の空気層が断熱します。"},
+  {"id":189,"category":"mattress-winter","question":"フローリング直敷きは冬に最適。","options":["正しい","間違い"],"answerIndex":1,"explanation":"底冷え・結露の原因になります。"},
+  {"id":190,"category":"mattress-winter","question":"断熱シートを敷き下に入れると冷気を遮れる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"床からの放熱を抑えます。"},
+  {"id":191,"category":"mattress-winter","question":"羽毛入りパッドは体温を逃がしやすい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"羽毛は軽量で高い保温力を持ちます。"},
+  {"id":192,"category":"mattress-winter","question":"加湿は保温の代替になる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"保湿は快適性向上ですが保温の代わりにはなりません。"},
+  {"id":193,"category":"mattress-winter","question":"厚手カバーは冬の体感温度を上げる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"放熱を抑えて暖かく感じます。"},
+  {"id":194,"category":"mattress-winter","question":"床下からの冷気は敷寝具にほぼ影響しない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"冬は大きく影響します。"},
+  {"id":195,"category":"mattress-winter","question":"アルミシートは体熱の反射で保温に寄与する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"輻射熱を戻す働きがあります。"},
+  {"id":196,"category":"mattress-winter","question":"断熱カーペット上に置くと底冷えが緩和する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"床面からの熱損失を抑えます。"},
+  {"id":197,"category":"mattress-winter","question":"床へ直接マットレスを敷くのが一番暖かい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"冷えや湿気の影響を受けます。"},
+  {"id":198,"category":"mattress-winter","question":"エアマットレスは冬に冷えやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"空気は熱を奪いやすいです。"},
+  {"id":199,"category":"mattress-winter","question":"ベッドパッドを重ねると断熱効果が増すことがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"空気層が増えます。"},
+  {"id":200,"category":"mattress-winter","question":"フリースや起毛系は冬のカバーに向く。","options":["正しい","間違い"],"answerIndex":0,"explanation":"肌触りと保温の両面で有利です。"},
+  {"id":201,"category":"mattress-winter","question":"日中の日光は冬の敷寝具を温めやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"乾燥と予熱に役立ちます。"},
+  {"id":202,"category":"mattress-winter","question":"冬は除湿対策が不要である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"冬でも寝汗由来の湿気は発生します。"},
+  {"id":203,"category":"mattress-winter","question":"保温カーテンの使用は敷の冷え対策に間接的に効く。","options":["正しい","間違い"],"answerIndex":0,"explanation":"部屋全体の放熱を減らします。"},
+  {"id":204,"category":"mattress-winter","question":"厚みのある敷は冬の断熱に有利。","options":["正しい","間違い"],"answerIndex":0,"explanation":"熱橋を減らします。"},
+  {"id":205,"category":"mattress-winter","question":"床に直接寝た方が冬は暖かい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"底冷えが強くなります。"},
+  {"id":206,"category":"mattress-winter","question":"湯たんぽは足元の冷え対策として有効。","options":["正しい","間違い"],"answerIndex":0,"explanation":"末梢を温めると入眠が促進されます。"},
+  {"id":207,"category":"mattress-winter","question":"電気敷き毛布は説明書に従えば安全に使える。","options":["正しい","間違い"],"answerIndex":0,"explanation":"低温やけどに注意し適切運用します。"},
+  {"id":208,"category":"mattress-winter","question":"冬は干す必要がない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"乾燥・衛生維持のため冬でも干すと良いです。"},
+  {"id":209,"category":"mattress-winter","question":"加湿と断熱のバランスが冬の快眠に重要。","options":["正しい","間違い"],"answerIndex":0,"explanation":"乾燥し過ぎや冷えを防ぎます。"},
+  {"id":210,"category":"mattress-winter","question":"寝返りが減ると体熱が保持されやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"接触面の入れ替えが少なくなります。"},
+  {"id":211,"category":"mattress-winter","question":"毛足の長いシーツは冬に向く。","options":["正しい","間違い"],"answerIndex":0,"explanation":"断熱層ができやすいです。"},
+  {"id":212,"category":"mattress-winter","question":"ラテックスは冬に必ず暖かい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"通気が良く寒く感じる場合もあります。"},
+  {"id":213,"category":"mattress-winter","question":"床冷え防止マットの併用は有効。","options":["正しい","間違い"],"answerIndex":0,"explanation":"床からの熱損失を抑えます。"},
+  {"id":214,"category":"mattress-winter","question":"厚手ラグの上にマットレスを置くのは理にかなう。","options":["正しい","間違い"],"answerIndex":0,"explanation":"断熱層が追加されます。"},
+  {"id":215,"category":"mattress-winter","question":"暖色の寝具は心理的に暖かく感じやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"色彩心理の効果です。"},
+  {"id":216,"category":"mattress-winter","question":"冬は寝汗をほぼかかない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"季節に関わらず発汗はあります。"},
+  {"id":217,"category":"mattress-winter","question":"保温マットは就床時のひんやり感を軽減する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"接触面の断熱を強化します。"},
+  {"id":218,"category":"mattress-winter","question":"シルクは冬に不向きの素材である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"吸放湿と保温に優れ冬も適します。"},
+  {"id":219,"category":"mattress-winter","question":"寝室温度18〜20℃は冬の目安として妥当。","options":["正しい","間違い"],"answerIndex":0,"explanation":"一般的な快眠範囲です。"},
+  {"id":220,"category":"mattress-winter","question":"床下断熱の強化は敷寝具の冷えを和らげる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"伝導による熱損失を抑えます。"},
+  {"id":221,"category":"mattress-winter","question":"畳の上はフローリング直より冬に暖かいことが多い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"畳は断熱・吸放湿に優れます。"},
+  {"id":222,"category":"mattress-winter","question":"羽毛布団と断熱性のある敷の組み合わせは有効。","options":["正しい","間違い"],"answerIndex":0,"explanation":"上下面からの保温が得られます。"},
+  {"id":223,"category":"mattress-winter","question":"アルミブランケットは熱を逃しやすい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"熱反射で保持に寄与します。"},
+  {"id":224,"category":"mattress-winter","question":"冷感素材パッドは冬に適している。","options":["正しい","間違い"],"answerIndex":1,"explanation":"冬は保温系が適します。"},
+  {"id":225,"category":"mattress-winter","question":"電気カーペットの上に敷を置くと下から暖かい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"底冷えを抑制できます。"},
+  {"id":226,"category":"mattress-winter","question":"重ね敷きは冬の断熱性向上に寄与する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"空気層が増えます。"},
+  {"id":227,"category":"mattress-winter","question":"オイルヒーターは乾燥しにくく寝具に優しい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"緩やかな対流で乾燥が抑えられます。"},
+  {"id":228,"category":"mattress-winter","question":"湯たんぽをマットレス下に入れると安全かつ効果的。","options":["正しい","間違い"],"answerIndex":1,"explanation":"局所過熱や結露の恐れがあり推奨されません。"},
+  {"id":229,"category":"mattress-winter","question":"フレーム素材は体感の冷えに影響することがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"金属より木製は冷感が弱い傾向。"},
+  {"id":230,"category":"mattress-winter","question":"毛布を上にだけでなく下にも活用すると暖かい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"下面の断熱で冷えを軽減します。"},
+  {"id":231,"category":"mattress-winter","question":"冬の湿度30〜50%は目安として適切。","options":["正しい","間違い"],"answerIndex":0,"explanation":"乾燥と結露のバランスが良い範囲です。"},
+  {"id":232,"category":"mattress-winter","question":"冬は夏よりマットレスが劣化しにくい傾向がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"汗・湿気負荷が相対的に小さいため。"},
+  {"id":233,"category":"mattress-winter","question":"床暖房は敷の快適性を高めるが温度管理が重要。","options":["正しい","間違い"],"answerIndex":0,"explanation":"過加熱は乾燥や劣化の要因になります。"},
+  {"id":234,"category":"mattress-winter","question":"窓際の冷気は寝床内温度に影響する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"コールドドラフトが体感温度を下げます。"},
+  {"id":235,"category":"mattress-winter","question":"布団乾燥機は冬でも有効なメンテ手段である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"乾燥・ダニ対策の双方に効きます。"},
+  {"id":236,"category":"mattress-winter","question":"吸湿発熱系のシーツは冬の寝床に向く。","options":["正しい","間違い"],"answerIndex":0,"explanation":"湿気を熱に変えて保温します。"},
+  {"id":237,"category":"mattress-winter","question":"厚手の敷パッドを重ねると必ず蒸れる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"素材選びと室内環境次第で快適に使えます。"},
+  {"id":238,"category":"mattress-winter","question":"敷を温めてから寝る予熱は入眠を助ける。","options":["正しい","間違い"],"answerIndex":0,"explanation":"末梢血管の収縮を抑え寝つきを良くします。"},
+  {"id":239,"category":"mattress-winter","question":"窓の断熱対策は敷寝具の快適性に関係ない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"室温低下を防ぎ床付近の冷気も減らせます。"},
+  {"id":240,"category":"mattress-winter","question":"冬でも定期的なローテーションと陰干しは有効である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"偏りと湿気を抑え、衛生と耐久性を保ちます。"}
+];  // ← ここに 121〜240（夏+冬）を連結して入れてください
+
+
+// 表示順とラベル定義（ここに追加すれば自動でボタンが増えます）
+const CATEGORY_LIST = [
+  { key: 'pillow',    label: '枕' },
+  { key: 'mattress',  label: 'しきパッド' },
+  { key: 'futon',     label: '敷布団' },
+  { key: 'kakebuton', label: '掛け布団' },
+  { key: 'food',      label: '食べ物' },
+  { key: 'exercise',  label: '運動' },
+  { key: 'habit',     label: '生活習慣' },
+  { key: 'light',     label: '光' }
+];
+
+/* 掛け布団：summer (301–330) */
+const BANK_KAKEBUTON_SUMMER = [
+  {"id":301,"season":"summer","cat":"kakebuton","question":"夏は薄手の肌掛け（ダウンケットやガーゼケットなど）に替えると寝苦しさが軽減することが多い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"保温より放熱・放湿重視にすることで寝床内の熱を逃がしやすくなります。"},
+  {"id":302,"season":"summer","cat":"kakebuton","question":"羽毛掛け布団は夏に必ず不向きで使えない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"薄手の“ダウンケット”など軽量タイプは夏でも快適に使えます。"},
+  {"id":303,"season":"summer","cat":"kakebuton","question":"夏は通気性のよいカバー生地（ガーゼ、リネン、サラッとした綿織り）に替えるとムレ感が減る。","options":["正しい","間違い"],"answerIndex":0,"explanation":"カバーの吸放湿・通気で接触面の不快を抑えられます。"},
+  {"id":304,"season":"summer","cat":"kakebuton","question":"冷感寝具は“ずっと冷たい”ことを意味する。","options":["正しい","間違い"],"answerIndex":1,"explanation":"接触冷感は触れた直後の熱移動を指し、持続冷却とは別概念です。"},
+  {"id":305,"season":"summer","cat":"kakebuton","question":"夏の高湿度環境では、掛け布団よりもカバーの吸湿発散性の影響が大きい場合がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"体に直接触れるカバーの素材特性が体感を左右します。"},
+  {"id":306,"season":"summer","cat":"kakebuton","question":"羽毛量が多いほど夏は涼しい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"羽毛量が多いほど保温が強まり、夏は暑く感じやすいです。"},
+  {"id":307,"season":"summer","cat":"kakebuton","question":"テンセル（再生繊維）や竹由来レーヨンは放湿性が高く、夏の掛け物に用いられることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"吸放湿と肌離れの良さが夏向きです。"},
+  {"id":308,"season":"summer","cat":"kakebuton","question":"薄手の綿ケットは汗を吸っても乾きにくい傾向がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"綿は吸水性に優れる一方、乾きは化繊より遅いことがあります。"},
+  {"id":309,"season":"summer","cat":"kakebuton","question":"夏は掛け布団を全く使わず冷房のみの方が睡眠の質は必ず高い。","options":["正しい","間違い"],"answerIndex":1,"explanation":"軽い“掛け”がある方が体感の安定・寝返り時の快適さが保たれることがあります。"},
+  {"id":310,"season":"summer","cat":"kakebuton","question":"キルト（縫製）パターンは通気や熱のこもり方に影響することがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"シングルキルト（縫い留めが多い）ほど保温は控えめ、空気層の作り方で体感が変わります。"},
+  {"id":311,"season":"summer","cat":"kakebuton","question":"寝汗が多い場合、防水系カバーは夏のムレを減らすのに最適である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"防水層は通気を落としムレやすくなります。汗対策は吸放湿の高いカバーが基本。"},
+  {"id":312,"season":"summer","cat":"kakebuton","question":"接触冷感のケットは入眠初期の不快感を和らげる助けになる場合がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"初期の熱感をさっと逃がして寝つきを助けることがあります。"},
+  {"id":313,"season":"summer","cat":"kakebuton","question":"羽毛のフィルパワー（かさ高）は数値が高いほど通年で暖かく、夏向きには必ず不利である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"高FPでも“羽毛量”を抑えたダウンケットなら軽く涼しく使えます。"},
+  {"id":314,"season":"summer","cat":"kakebuton","question":"夏は掛け布団を日陰で風に当てる・干すなどの水分管理がニオイ対策に有効。","options":["正しい","間違い"],"answerIndex":0,"explanation":"湿気がこもると雑菌・ニオイの原因に。乾燥習慣が有効です。"},
+  {"id":315,"season":"summer","cat":"kakebuton","question":"絹（シルク）は夏には不向きで必ず暑く感じる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"シルクは吸放湿に優れ、薄手なら夏も快適です。"},
+  {"id":316,"season":"summer","cat":"kakebuton","question":"通気の良い“リネンの掛けカバー”は肌離れがよく、汗ばむ季節に向くことが多い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"繊維の特性で放湿が早く、ベタつきを抑えます。"},
+  {"id":317,"season":"summer","cat":"kakebuton","question":"薄いタオルケットを2枚重ねると、単純に1枚の厚手より涼しくなる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"重ねるほど層が増え放熱が阻害される場合があります。"},
+  {"id":318,"season":"summer","cat":"kakebuton","question":"夏は部分的に冷却ジェルパッドを上に置くと結露・湿りの原因になり得る。","options":["正しい","間違い"],"answerIndex":0,"explanation":"温度差・湿気で表面がしっとりして不快になることがあります。"},
+  {"id":319,"season":"summer","cat":"kakebuton","question":"寝返りが多い夏は、軽く大きすぎないサイズの掛け物が楽に感じる場合がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"動きの阻害が少なく、放熱も妨げにくくなります。"},
+  {"id":320,"season":"summer","cat":"kakebuton","question":"羽毛掛け布団を直射日光に長時間干しても素材に全く影響はない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"紫外線・高温で側生地や羽毛が劣化する懸念。陰干しや短時間が無難。"},
+  {"id":321,"season":"summer","cat":"kakebuton","question":"ポリエステル中綿の肌掛けは速乾性が高く、洗濯頻度を上げやすい点が夏に向く。","options":["正しい","間違い"],"answerIndex":0,"explanation":"乾きやすさと軽さで取り回しが良いです。"},
+  {"id":322,"season":"summer","cat":"kakebuton","question":"“SEWN-THROUGH（縫い留め）”のキルトはエアポケットが小さく、保温力が抑えめになりやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"夏は熱がこもりにくい構造が相性よいことがあります。"},
+  {"id":323,"season":"summer","cat":"kakebuton","question":"PCM（相変化）素材入りのカバーは夏の体感安定に寄与することがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"吸放熱で表面温度の変動をなだらかにします。"},
+  {"id":324,"season":"summer","cat":"kakebuton","question":"夏は埃が出やすい掛け布団ほど涼しい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"涼しさとは無関係。埃っぽさは衛生・アレルゲンの観点でマイナスです。"},
+  {"id":325,"season":"summer","cat":"kakebuton","question":"ダニ対策として“高密度生地のカバー”は侵入を抑える助けになる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"目が詰んだ側生地はダニバリアになりやすいです。"},
+  {"id":326,"season":"summer","cat":"kakebuton","question":"汗対策として就寝直前にシャワーで体表の熱を下げると、薄手の掛けでも快適に感じやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"入眠前の体温調整がスムーズに。寝具の厚みを抑えやすくなります。"},
+  {"id":327,"season":"summer","cat":"kakebuton","question":"夏の寝室で扇風機を体に直風で長時間当て続けると、乾燥やだるさの原因になることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"強風の当てっぱなしは冷やし過ぎにつながる場合があります。"},
+  {"id":328,"season":"summer","cat":"kakebuton","question":"羽毛の“におい”が気になる時は強い柔軟剤で香り付けすれば根本解決する。","options":["正しい","間違い"],"answerIndex":1,"explanation":"香りで覆うだけ。陰干し・通気・適切なクリーニングが基本です。"},
+  {"id":329,"season":"summer","cat":"kakebuton","question":"軽いケットで肩口をきちんと覆うと、弱い冷房下でも快適さが増すことがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"肩口の冷えを防ぎ体感の安定に寄与します。"},
+  {"id":330,"season":"summer","cat":"kakebuton","question":"夏は“羽毛量が少ない＝品質が低い”と考えてよい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"夏向けは意図的に中身を減らし、軽さと放熱を優先します。"}
+];
+
+/* 掛け布団：winter (331–360) */
+const BANK_KAKEBUTON_WINTER = [
+  {"id":331,"season":"winter","cat":"kakebuton","question":"冬はフィルパワー（かさ高）が高い羽毛ほど、同じ羽毛量なら暖かく感じやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"伸びの良いダウンは多くの空気を含み断熱性が高まります。"},
+  {"id":332,"season":"winter","cat":"kakebuton","question":"“バッフルボックス”構造はマチで空気層を確保し、保温性を高める。","options":["正しい","間違い"],"answerIndex":0,"explanation":"縫い目からの冷気ブリッジを抑え、ふくらみを保ちます。"},
+  {"id":333,"season":"winter","cat":"kakebuton","question":"冬は羽毛よりポリエステル中綿の方が必ず暖かい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"素材や設計次第。一般に高品質の羽毛は軽さと保温のバランスに優れます。"},
+  {"id":334,"season":"winter","cat":"kakebuton","question":"肩口のフィットは保温に影響し、カバーや布団サイズの選び方が重要である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"隙間からの冷気侵入を抑えます。"},
+  {"id":335,"season":"winter","cat":"kakebuton","question":"羽毛布団は湿気を吸うと一時的にふくらみが落ち、暖かさが下がることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"適度な乾燥・陰干しでふくらみが戻りやすくなります。"},
+  {"id":336,"season":"winter","cat":"kakebuton","question":"冬は掛けカバーの起毛やマイクロファイバーは体感温度を上げやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"接触面の断熱層が増し、ひんやり感を抑えます。"},
+  {"id":337,"season":"winter","cat":"kakebuton","question":"羽毛の“ダウンプルーフ（羽毛抜け防止）”生地は目が細かく、通気性が全く無くなる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"通気は低めでも“全く無い”わけではありません。適切なバランス設計です。"},
+  {"id":338,"season":"winter","cat":"kakebuton","question":"冬でも寝汗は発生するため、掛け布団の湿気管理は重要である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"結露・冷え戻り・カビ防止のためにも乾燥が大切です。"},
+  {"id":339,"season":"winter","cat":"kakebuton","question":"羽毛布団は電子レンジで温めてもよい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"危険です。取扱表示に従いましょう。"},
+  {"id":340,"season":"winter","cat":"kakebuton","question":"“二枚合わせ（合掛け＋肌掛け）”は季節で分離でき、冬〜春秋まで運用幅を広げられる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"着脱で保温力を調整できる実用的な構成です。"},
+  {"id":341,"season":"winter","cat":"kakebuton","question":"羽毛量が多いほど常に快眠になる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"過保温で寝苦しくなる場合があります。体質・室温に応じた量が大切。"},
+  {"id":342,"season":"winter","cat":"kakebuton","question":"冬の窓際からのコールドドラフトは、掛け布団の体感温度に影響する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"断熱カーテン・窓対策もあわせて検討すると効果的です。"},
+  {"id":343,"season":"winter","cat":"kakebuton","question":"電気毛布は掛け布団の上から強く当てるのが正しい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"基本は布団内を予熱。低温やけど・過乾燥に注意し適切に使用します。"},
+  {"id":344,"season":"winter","cat":"kakebuton","question":"ウール混の毛布を“掛け布団の内側”に入れる使い方は、暖かさを高めることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"空気層を増やし冷えを抑えます。"},
+  {"id":345,"season":"winter","cat":"kakebuton","question":"ダウンの産地表記だけで保温性が必ず決まる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"実力はフィルパワー・羽毛量・設計で総合的に決まります。"},
+  {"id":346,"season":"winter","cat":"kakebuton","question":"バサバサと強く叩く手入れは羽毛を傷める可能性がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"軽く空気を含ませる“はたき方”や陰干しが推奨。"},
+  {"id":347,"season":"winter","cat":"kakebuton","question":"羽毛布団はクリーニング不可で絶対に洗えない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"水洗い対応品や専用クリーニングがあります。取扱表示を確認。"},
+  {"id":348,"season":"winter","cat":"kakebuton","question":"暖色系の寝具は心理的に暖かく感じやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"色彩心理の効果で体感が変わることがあります。"},
+  {"id":349,"season":"winter","cat":"kakebuton","question":"羽毛の片寄り（マス内の偏り）は保温ムラの原因になり得る。","options":["正しい","間違い"],"answerIndex":0,"explanation":"均一に空気を含めるための軽い均しが有効。"},
+  {"id":350,"season":"winter","cat":"kakebuton","question":"“羽毛の比率”はダウンよりフェザーが多いほど軽く暖かい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"一般にダウン比率が高いほど軽くふくらみ、保温性に優れます。"},
+  {"id":351,"season":"winter","cat":"kakebuton","question":"高密度の側生地は羽毛の吹き出しを抑えるが、ガサついた肌触りになるとは限らない。","options":["正しい","間違い"],"answerIndex":0,"explanation":"柔らかくしなやかな高密度生地も存在します。"},
+  {"id":352,"season":"winter","cat":"kakebuton","question":"室温が低くても湿度が高ければ掛け布団の保温力は不要になる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"湿度は体感に影響しますが、断熱（保温）機能は依然必要です。"},
+  {"id":353,"season":"winter","cat":"kakebuton","question":"羽毛布団の“立体キルト”は縫い目の熱橋を減らし、寒冷地で有利になることが多い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"外気の進入を抑え、空気層を厚く保ちます。"},
+  {"id":354,"season":"winter","cat":"kakebuton","question":"二枚合わせ布団は連結スナップが外れやすく、冬に使う利点はない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"組み合わせで幅広く調整でき、冬は特に有効です。"},
+  {"id":355,"season":"winter","cat":"kakebuton","question":"羽毛布団の収納は“しっかり圧縮し続ける”方がふくらみ維持に有利。","options":["正しい","間違い"],"answerIndex":1,"explanation":"長期強圧縮は復元を損ねる恐れ。通気袋で軽く圧を抑えて保管を。"},
+  {"id":356,"season":"winter","cat":"kakebuton","question":"上に毛布、下に羽毛布団の順にすると暖かいことが多い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"上毛布で対流・放射の熱損失を抑え、羽毛の空気層を守れます。"},
+  {"id":357,"season":"winter","cat":"kakebuton","question":"冬はカバーの洗濯は不要である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"冬でも汗や皮脂は付くため定期的な洗濯が必要です。"},
+  {"id":358,"season":"winter","cat":"kakebuton","question":"羽毛の“におい”は湿気と温度の影響を受けやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"しっかり乾燥させると感じにくくなることがあります。"},
+  {"id":359,"season":"winter","cat":"kakebuton","question":"換気が不十分でも冬はカビが生えない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"寝汗や室内の結露でカビは発生し得ます。"},
+  {"id":360,"season":"winter","cat":"kakebuton","question":"羽毛の補充リフォームは、側生地・キルト設計も見直すと保温・軽さの最適化に繋がる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"中身だけでなく設計全体の再構成が効果的です。"}
+];
+
+/* 食べ物：summer (361–390) */
+const BANK_FOOD_SUMMER = [
+  {"id":361,"season":"summer","cat":"food","question":"夏の就寝前は“常温の水”で軽い水分補給をすると夜間脱水の予防に役立つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"冷たすぎる飲料は胃腸を刺激しやすいので常温が無難です。"},
+  {"id":362,"season":"summer","cat":"food","question":"カフェインは摂取直後のみ覚醒作用があり、1時間以降は睡眠に影響しない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"作用は3〜5時間以上持続することが多く、夕方以降は控えるのが安全です。"},
+  {"id":363,"season":"summer","cat":"food","question":"辛い料理は入眠直前に食べると体温上昇や胃刺激で寝つきが悪くなることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"交感神経が高まりやすく、深部体温の下降を妨げます。"},
+  {"id":364,"season":"summer","cat":"food","question":"就寝直前の大量の水分摂取は夜間頻尿を招き、睡眠を分断しやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"寝る1〜2時間前までにこまめに補給するのがコツです。"},
+  {"id":365,"season":"summer","cat":"food","question":"アルコールは入眠を助けるので睡眠の質を総合的に改善する。","options":["正しい","間違い"],"answerIndex":1,"explanation":"深睡眠やREMを浅くし、中途覚醒や脱水を招きやすいです。"},
+  {"id":366,"season":"summer","cat":"food","question":"スポーツドリンクは日中の大量発汗後の補給に役立つが、就寝直前に多量摂取すると眠りを妨げる可能性がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"糖分・量ともに控えめにし、必要に応じて薄めるのが無難です。"},
+  {"id":367,"season":"summer","cat":"food","question":"カフェインは緑茶・ウーロン茶・エナジードリンクだけでなく、チョコレートにも含まれる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"カカオ・ココア由来にもカフェインやテオブロミンがあります。"},
+  {"id":368,"season":"summer","cat":"food","question":"アイスクリームを就寝直前に食べると血糖変動と胃腸冷えで睡眠の質が下がることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"急な冷えと糖負荷で覚醒しやすくなります。"},
+  {"id":369,"season":"summer","cat":"food","question":"マグネシウムやカリウムを含む食材（バナナ、ナッツ等）は筋弛緩やこむら返り予防に役立つ可能性がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"電解質バランスは夏の睡眠快適度にも関与します。"},
+  {"id":370,"season":"summer","cat":"food","question":"就寝3時間前までに夕食を終えると、消化が落ち着き寝つきが良くなる傾向がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"胃内滞留を避け深部体温を下げやすくします。"},
+  {"id":371,"season":"summer","cat":"food","question":"カモミールやルイボスなどノンカフェインの温かい飲み物は、入眠儀式として有効なことがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"心理的リラックスと体温のなだらかな下降に役立ちます。"},
+  {"id":372,"season":"summer","cat":"food","question":"夏は塩分を全く摂らない方が夜のむくみが減って眠りやすい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"発汗が多い季節は適量の電解質補給が必要です。"},
+  {"id":373,"season":"summer","cat":"food","question":"カフェイン入り栄養ドリンクを“昼過ぎ”に飲むと、夜の睡眠に影響が残る場合がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"半減期が長く、夕夜間の覚醒度を上げることがあります。"},
+  {"id":374,"season":"summer","cat":"food","question":"メラトニン前駆体のトリプトファンは、乳製品や大豆製品にも含まれる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"日中〜夕方のバランスの良い食事が睡眠ホルモン合成を支えます。"},
+  {"id":375,"season":"summer","cat":"food","question":"アイスコーヒーはホットよりカフェインが必ず少ない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"抽出方法と量次第で含有量は変わります。"},
+  {"id":376,"season":"summer","cat":"food","question":"就寝前の大量タンパク質摂取は消化負担がかかり、寝つきに悪影響の可能性がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"量は控えめにし、タイミングを早めると楽です。"},
+  {"id":377,"season":"summer","cat":"food","question":"水出し緑茶はカフェインゼロなので夜でも安心して飲める。","options":["正しい","間違い"],"answerIndex":1,"explanation":"抽出が穏やかでもカフェインはゼロではありません。"},
+  {"id":378,"season":"summer","cat":"food","question":"発酵食品（ヨーグルト、納豆等）は腸内環境の改善を通じて睡眠の質に好影響を与える可能性がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"腸―脳相関が示唆されています。取りすぎは不要です。"},
+  {"id":379,"season":"summer","cat":"food","question":"夜の強い空腹は寝つきを悪くすることがあるため、少量の軽食は役立つ場合がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"消化に軽い炭水化物＋少量たんぱく質が無難です。"},
+  {"id":380,"season":"summer","cat":"food","question":"グレープフルーツジュースは一部薬剤と相互作用し得るため、就寝前の常用は注意が必要。","options":["正しい","間違い"],"answerIndex":0,"explanation":"代謝酵素阻害による影響が知られています。"},
+  {"id":381,"season":"summer","cat":"food","question":"夕食が極端に少ない日は、夜間低血糖気味になって早朝覚醒を起こすことがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"適度なエネルギー摂取は睡眠の安定に寄与します。"},
+  {"id":382,"season":"summer","cat":"food","question":"清涼飲料の大量摂取は糖分で喉が渇きやすくなり、結果として睡眠中の中途覚醒を増やすことがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"血糖変動と利尿作用が影響します。"},
+  {"id":383,"season":"summer","cat":"food","question":"夕方以降は“高脂肪・大盛り”を避けると、胃食道逆流のリスクが下がり眠りやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"横になると逆流が起きやすくなるためです。"},
+  {"id":384,"season":"summer","cat":"food","question":"栄養補助サプリは睡眠の問題を必ず解決する。","options":["正しい","間違い"],"answerIndex":1,"explanation":"生活習慣・環境調整と併用して初めて効果が期待できます。"},
+  {"id":385,"season":"summer","cat":"food","question":"ビタミンB群を含む食事はエネルギー代謝を支え、日中のだるさ軽減に寄与し得る。","options":["正しい","間違い"],"answerIndex":0,"explanation":"昼の活動が整うと夜の眠気も自然に高まりやすいです。"},
+  {"id":386,"season":"summer","cat":"food","question":"カフェインはデカフェなら完全にゼロであり、夜に大量に飲んでも睡眠への影響はない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"デカフェでも微量を含むことが多く、量には注意が必要です。"},
+  {"id":387,"season":"summer","cat":"food","question":"夏の就寝前に炭酸飲料を多く飲むとゲップや逆流で寝つきが乱れることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"胃内圧が上がりやすくなります。"},
+  {"id":388,"season":"summer","cat":"food","question":"日中の十分な食物繊維摂取は腸内環境の安定に寄与し、睡眠リズムにも良い影響が期待できる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"整腸は間接的に睡眠に効きます。"},
+  {"id":389,"season":"summer","cat":"food","question":"寝る直前の大量フルーツは果糖負荷で胃腸に負担となり、睡眠を妨げることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"量とタイミングを調整しましょう。"},
+  {"id":390,"season":"summer","cat":"food","question":"水分補給は“のどが渇いた時だけ”で十分で、夏の就寝前のルーティンは不要である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"軽い計画補給の方が夜間脱水とこむら返り予防に有利です。"}
+];
+
+/* 食べ物：winter (391–420) */
+const BANK_FOOD_WINTER = [
+  {"id":391,"season":"winter","cat":"food","question":"冬は温かい飲み物で体表の冷え感を和らげ、入眠儀式として活用できることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"末梢血管が開き、リラックスに寄与します。"},
+  {"id":392,"season":"winter","cat":"food","question":"就寝直前の熱いスープを大量に飲むと、夜間の排尿や逆流で睡眠が分断されることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"量と塩分を控えめに。タイミングも前倒しが無難です。"},
+  {"id":393,"season":"winter","cat":"food","question":"カフェインは寒い季節でも作用は同じで、夕方以降は避けるのが基本である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"季節に関わらず半減期が長いためです。"},
+  {"id":394,"season":"winter","cat":"food","question":"ショウガやシナモンなどの温感スパイスは、取りすぎても副作用が全くない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"過剰摂取は胃腸刺激や血圧への影響があり得ます。"},
+  {"id":395,"season":"winter","cat":"food","question":"就寝前のホットミルクは、糖分を入れ過ぎると逆に寝つきを悪くすることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"血糖変動・利尿を招くため控えめが○。"},
+  {"id":396,"season":"winter","cat":"food","question":"冬は乾燥するのでアルコールで“水分補給”しても問題ない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"アルコールは利尿を促し脱水を悪化させます。"},
+  {"id":397,"season":"winter","cat":"food","question":"夕食で根菜や全粒穀物など低GIの炭水化物を適量摂ると、夜間の満腹感が安定しやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"緩やかな血糖推移が睡眠を助けます。"},
+  {"id":398,"season":"winter","cat":"food","question":"ビタミンD摂取（魚・きのこ類等）は、日照不足の季節の体調管理に役立つ可能性がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"日照が少ない冬は食事からの補給が相対的に重要です。"},
+  {"id":399,"season":"winter","cat":"food","question":"夕食の塩分が極端に多いと、夜間の口渇や中途覚醒が増えることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"就寝前は薄味を心がけましょう。"},
+  {"id":400,"season":"winter","cat":"food","question":"就寝直前の大量チーズや揚げ物は消化に時間がかかり、寝つきを妨げやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"高脂肪は胃内滞留時間が長くなります。"},
+  {"id":401,"season":"winter","cat":"food","question":"蜂蜜を少量お湯に溶かすドリンクは咳が気になるときの就寝前に役立つことがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"のどの保湿で咳反射が落ち着きやすくなります。"},
+  {"id":402,"season":"winter","cat":"food","question":"寝酒は深睡眠を増やし、翌朝の目覚めを改善する。","options":["正しい","間違い"],"answerIndex":1,"explanation":"前半は眠くても後半に浅眠化・中途覚醒が増えます。"},
+  {"id":403,"season":"winter","cat":"food","question":"冬でも就寝前の水分は“全く不要”である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"加湿でも体内は乾きます。少量の常温水が有効です。"},
+  {"id":404,"season":"winter","cat":"food","question":"夜の甘いココアは砂糖量に注意すればリラックスドリンクになり得る。","options":["正しい","間違い"],"answerIndex":0,"explanation":"カフェイン微量・糖過多に注意しつつ温かさを活用。"},
+  {"id":405,"season":"winter","cat":"food","question":"夜に柑橘を大量に食べると胃酸刺激で逆流症状が出る人がいる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"酸味の強さが影響します。量とタイミングを調整。"},
+  {"id":406,"season":"winter","cat":"food","question":"高齢者は冬でもたんぱく質を十分に摂ることが、睡眠中の筋分解抑制や体温維持に役立つ可能性がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"サルコペニア予防は睡眠の質にも影響します。"},
+  {"id":407,"season":"winter","cat":"food","question":"夕食後すぐのカフェラテ（カフェイン入り）は冬なら覚醒作用が弱まるため問題ない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"季節で作用は変わらず、就寝数時間前は避けましょう。"},
+  {"id":408,"season":"winter","cat":"food","question":"ナッツの食べ過ぎは脂質過多で胃もたれし、眠りを阻害することがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"量のコントロールが大切です。"},
+  {"id":409,"season":"winter","cat":"food","question":"寝る直前の大量みそ汁は塩分・水分の両面で夜間覚醒を増やす可能性がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"就寝1〜2時間前までに済ませると安心。"},
+  {"id":410,"season":"winter","cat":"food","question":"夕食が極端に遅い日は、温かい消化の良い軽食に置き換えると寝つきに有利。","options":["正しい","間違い"],"answerIndex":0,"explanation":"雑炊・スープなどにすると負担が軽くなります。"},
+  {"id":411,"season":"winter","cat":"food","question":"就寝前のビタミンCサプリは覚醒を必ず強めるため禁忌である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"必ず覚醒するわけではありませんが、量と胃腸刺激に注意。"},
+  {"id":412,"season":"winter","cat":"food","question":"冬の夜は温かい麦茶やほうじ茶（ノンカフェイン）を選ぶと安心しやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"カフェインレスで就寝前に適します。"},
+  {"id":413,"season":"winter","cat":"food","question":"亜鉛・鉄不足は眠りの質やレストレスレッグス症状に関与する可能性がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"不足が疑われる場合は食事改善や医療相談を。"},
+  {"id":414,"season":"winter","cat":"food","question":"夜のチョコの食べ過ぎはカフェイン・糖・脂質の面から睡眠を乱しやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"量と時間を調整しましょう。"},
+  {"id":415,"season":"winter","cat":"food","question":"温かい蜂蜜レモンを大量に飲めば風邪予防になり、睡眠の質も必ず上がる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"過量は糖分過多。効果は限定的で総合ケアが大切です。"},
+  {"id":416,"season":"winter","cat":"food","question":"夕食で食べる量を一定に保つことは、体内時計の安定に役立つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"規則性が概日リズムの同調に寄与します。"},
+  {"id":417,"season":"winter","cat":"food","question":"就寝前のプロテインドリンクは誰にとっても最適であり、量は多いほど良い。","options":["正しい","間違い"],"answerIndex":1,"explanation":"個人差が大きく、取り過ぎは胃もたれ・夜間覚醒の原因に。"},
+  {"id":418,"season":"winter","cat":"food","question":"寝る前に温かい白湯を少量飲む習慣は、冷え対策とリラックスに役立つことがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"身体感覚の安心が入眠儀式になります。"},
+  {"id":419,"season":"winter","cat":"food","question":"冬は日中の野菜摂取が不足しがちだが、食物繊維とカリウムは睡眠中の体内環境安定に寄与する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"塩分排出や腸内環境の面でプラスです。"},
+  {"id":420,"season":"winter","cat":"food","question":"夜食にインスタント麺を頻繁に食べると、睡眠の質・体重管理の両面で不利になりやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"高脂質・高Na・就寝直前の血糖変動がデメリットです。"}
+];
+
+/* 運動：summer (421–450) */
+const BANK_EXERCISE_SUMMER = [
+  {"id":421,"season":"summer","cat":"exercise","question":"夏の就寝直前の激しい運動は体温を上げすぎて寝つきを悪くする。","options":["正しい","間違い"],"answerIndex":0,"explanation":"深部体温の下降が遅れ、入眠が妨げられます。"},
+  {"id":422,"season":"summer","cat":"exercise","question":"日中の有酸素運動は夜の深睡眠を増やす可能性がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"適度な運動は睡眠の質改善に寄与します。"},
+  {"id":423,"season":"summer","cat":"exercise","question":"夏は発汗による脱水に注意し、水分補給を怠ると夜間のこむら返りが増える。","options":["正しい","間違い"],"answerIndex":0,"explanation":"電解質不足も関与します。"},
+  {"id":424,"season":"summer","cat":"exercise","question":"寝る直前のストレッチは自律神経を乱し、入眠を妨げる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"軽度のストレッチは副交感神経を高め、リラックスに寄与します。"},
+  {"id":425,"season":"summer","cat":"exercise","question":"冷房の効いた室内で軽い筋トレを行うのは、睡眠に悪影響しかない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"適度なら血流促進でリラックス効果が期待できます。"},
+  {"id":426,"season":"summer","cat":"exercise","question":"日中の屋外運動は光暴露による体内時計の調整にも役立つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"太陽光で概日リズムが整いやすいです。"},
+  {"id":427,"season":"summer","cat":"exercise","question":"夏の夕方以降は激しい運動を控えると体温下降と入眠がスムーズになる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"体温調整に時間を確保できます。"},
+  {"id":428,"season":"summer","cat":"exercise","question":"ウォーキングは季節を問わず睡眠改善に有効である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"軽度の有酸素運動は全年通じて有効です。"},
+  {"id":429,"season":"summer","cat":"exercise","question":"夏のプールでの運動は体温を下げ、夜の寝つきを助ける場合がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"水中運動は体温調整に有利です。"},
+  {"id":430,"season":"summer","cat":"exercise","question":"日中の適度な筋力トレーニングは睡眠ホルモン分泌のリズムを整える。","options":["正しい","間違い"],"answerIndex":0,"explanation":"規則的な運動はメラトニン分泌にも関与します。"},
+  {"id":431,"season":"summer","cat":"exercise","question":"昼寝前の軽運動は夜の睡眠を必ず悪化させる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"強度次第で覚醒が高まるが、適度なら問題ありません。"},
+  {"id":432,"season":"summer","cat":"exercise","question":"夏は熱中症予防のため、運動は必ず早朝か夜間に限定すべきである。","options":["正しい","間違い"],"answerIndex":1,"explanation":"日中も工夫次第で安全に可能です。"},
+  {"id":433,"season":"summer","cat":"exercise","question":"軽いヨガや呼吸法は副交感神経を優位にし、寝つきを助ける。","options":["正しい","間違い"],"answerIndex":0,"explanation":"リラクゼーションとして有効です。"},
+  {"id":434,"season":"summer","cat":"exercise","question":"夏は水分補給を全く気にしなくても運動できる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"発汗が多く脱水リスクが高いため注意が必要です。"},
+  {"id":435,"season":"summer","cat":"exercise","question":"運動後の軽い入浴やシャワーは深部体温のコントロールを助ける。","options":["正しい","間違い"],"answerIndex":0,"explanation":"入浴後の放熱で入眠がスムーズになります。"},
+  {"id":436,"season":"summer","cat":"exercise","question":"室内エアロバイクのような有酸素運動は季節を問わず有効。","options":["正しい","間違い"],"answerIndex":0,"explanation":"温度管理された環境なら快適に行えます。"},
+  {"id":437,"season":"summer","cat":"exercise","question":"昼間の身体活動量が少ないと夜の睡眠は浅くなりやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"活動量と睡眠深度は関連します。"},
+  {"id":438,"season":"summer","cat":"exercise","question":"筋肉痛があるときに軽いストレッチを行うと睡眠が改善することがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"血流促進で回復が進み、眠りやすくなる場合があります。"},
+  {"id":439,"season":"summer","cat":"exercise","question":"夏は軽い昼寝前に軽運動をすると眠気が取れてしまい、夜眠れなくなる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"強度が軽ければ逆に眠気を調整できます。"},
+  {"id":440,"season":"summer","cat":"exercise","question":"就寝前の深呼吸運動は心拍数を下げ、入眠を助ける。","options":["正しい","間違い"],"answerIndex":0,"explanation":"副交感神経が優位になります。"},
+  {"id":441,"season":"summer","cat":"exercise","question":"夏は一切運動しない方が睡眠に良い。","options":["正しい","間違い"],"answerIndex":1,"explanation":"適度な運動は質改善に必須です。"},
+  {"id":442,"season":"summer","cat":"exercise","question":"汗をかく習慣があると体温調節がスムーズになり睡眠にも良い影響が出る。","options":["正しい","間違い"],"answerIndex":0,"explanation":"自律神経の適応力が高まります。"},
+  {"id":443,"season":"summer","cat":"exercise","question":"日中の運動不足は夜の中途覚醒を増やすことがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"睡眠圧の不足に繋がります。"},
+  {"id":444,"season":"summer","cat":"exercise","question":"就寝前の軽い散歩は心理的リラックスに寄与する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"気分転換と血流改善が効果的です。"},
+  {"id":445,"season":"summer","cat":"exercise","question":"筋トレは必ず夜に行う方が睡眠に有利。","options":["正しい","間違い"],"answerIndex":1,"explanation":"朝昼の方が体温リズムと相性が良い場合もあります。"},
+  {"id":446,"season":"summer","cat":"exercise","question":"水泳は全身運動で、夏の疲労回復と睡眠改善に役立つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"体温調整と筋弛緩効果があります。"},
+  {"id":447,"season":"summer","cat":"exercise","question":"就寝直前の軽いヨガは深い呼吸で眠気を促す。","options":["正しい","間違い"],"answerIndex":0,"explanation":"リラクゼーションの一環です。"},
+  {"id":448,"season":"summer","cat":"exercise","question":"夏の夕方の有酸素運動は体温を下げるので入眠を助ける。","options":["正しい","間違い"],"answerIndex":0,"explanation":"運動後の放熱が寝つきを促します。"},
+  {"id":449,"season":"summer","cat":"exercise","question":"日中の軽い運動は夜のいびき改善に役立つことがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"体重管理・呼吸筋強化で改善する場合があります。"},
+  {"id":450,"season":"summer","cat":"exercise","question":"夏は睡眠中の熱放散が重要なので、運動習慣は不要である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"運動は睡眠の深さと体温調整力を高めます。"}
+];
+
+/* 運動：winter (451–480) */
+const BANK_EXERCISE_WINTER = [
+  {"id":451,"season":"winter","cat":"exercise","question":"冬の就寝直前の激しい運動は交感神経を高め、寝つきを妨げる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"体温上昇と覚醒度が高まり入眠しにくくなります。"},
+  {"id":452,"season":"winter","cat":"exercise","question":"日中の屋外運動は冬の光暴露不足を補い、体内時計を整える。","options":["正しい","間違い"],"answerIndex":0,"explanation":"日照が短い冬ほど有効です。"},
+  {"id":453,"season":"winter","cat":"exercise","question":"冬は寒いから運動を控える方が睡眠の質に良い。","options":["正しい","間違い"],"answerIndex":1,"explanation":"適度な運動は季節を問わず有効です。"},
+  {"id":454,"season":"winter","cat":"exercise","question":"寝る前の軽いストレッチは冷えた筋肉をほぐし、リラックスに役立つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"副交感神経を高めます。"},
+  {"id":455,"season":"winter","cat":"exercise","question":"冬は筋肉を使わない方が体温が下がりやすく入眠に有利である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"筋肉活動は体温調整と代謝維持に重要です。"},
+  {"id":456,"season":"winter","cat":"exercise","question":"寒い冬でもウォーキングは睡眠改善効果がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"軽度の有酸素運動は通年有効です。"},
+  {"id":457,"season":"winter","cat":"exercise","question":"冬は冷えを避けるため、運動は全く行わない方が良い。","options":["正しい","間違い"],"answerIndex":1,"explanation":"軽運動で血流改善・冷え対策になります。"},
+  {"id":458,"season":"winter","cat":"exercise","question":"就寝前の呼吸法やヨガは冬でも睡眠導入に役立つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"リラクゼーションに寄与します。"},
+  {"id":459,"season":"winter","cat":"exercise","question":"冬は筋力トレーニングが睡眠改善に全く寄与しない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"筋力維持と代謝向上で睡眠の質が向上することがあります。"},
+  {"id":460,"season":"winter","cat":"exercise","question":"日中の活動不足は冬の睡眠を浅くする。","options":["正しい","間違い"],"answerIndex":0,"explanation":"睡眠圧の不足につながります。"},
+  {"id":461,"season":"winter","cat":"exercise","question":"冬の軽い運動習慣は血流改善で体温保持に役立つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"冷え性対策にもなります。"},
+  {"id":462,"season":"winter","cat":"exercise","question":"寒冷環境での激しい運動は呼吸器への負担や不眠を引き起こすことがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"冷気刺激で影響します。"},
+  {"id":463,"season":"winter","cat":"exercise","question":"運動後の入浴は冬も深部体温調整に有効である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"放熱がスムーズになり入眠が促されます。"},
+  {"id":464,"season":"winter","cat":"exercise","question":"冬は日照不足のため屋外運動が意味を持たない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"短い日照でも光暴露は体内時計調整に有効です。"},
+  {"id":465,"season":"winter","cat":"exercise","question":"軽い筋肉運動は冬の冷えや肩こりを改善し、睡眠を助けることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"血流と代謝改善が寄与します。"},
+  {"id":466,"season":"winter","cat":"exercise","question":"冬の室内運動は睡眠の質に全く影響しない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"室温管理下でも運動は睡眠改善に効果的です。"},
+  {"id":467,"season":"winter","cat":"exercise","question":"日中の軽運動は夜の深睡眠を増やす。","options":["正しい","間違い"],"answerIndex":0,"explanation":"睡眠構造の改善に寄与します。"},
+  {"id":468,"season":"winter","cat":"exercise","question":"冬は呼吸法を行っても自律神経は変わらない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"深呼吸は副交感神経を優位にします。"},
+  {"id":469,"season":"winter","cat":"exercise","question":"運動不足は冬季うつや不眠を助長することがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"身体活動が少ないとリズムが乱れやすいです。"},
+  {"id":470,"season":"winter","cat":"exercise","question":"寝る前の激しい筋トレは睡眠導入に必ず有利である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"過度な刺激は逆効果です。"},
+  {"id":471,"season":"winter","cat":"exercise","question":"冬の散歩は冷気で眠りを悪化させるだけである。","options":["正しい","間違い"],"answerIndex":1,"explanation":"軽く動けば血流改善・リラックス効果が得られます。"},
+  {"id":472,"season":"winter","cat":"exercise","question":"日中の活動量が多いと夜の寝つきが良い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"睡眠圧が高まります。"},
+  {"id":473,"season":"winter","cat":"exercise","question":"寒い冬は運動後のストレッチで筋肉の緊張を和らげることが重要。","options":["正しい","間違い"],"answerIndex":0,"explanation":"柔軟性とリラックスが向上します。"},
+  {"id":474,"season":"winter","cat":"exercise","question":"冬の夜は全く動かない方が冷えに強くなる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"筋肉活動が熱産生を担っています。"},
+  {"id":475,"season":"winter","cat":"exercise","question":"厚着で運動して大量に汗をかき、そのまま就寝すると寝つきが良くなる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"汗冷え・脱水で不快感が増し、睡眠を妨げます。"},
+  {"id":476,"season":"winter","cat":"exercise","question":"運動できない日でも、筋弛緩法やゆっくりした呼吸法は睡眠改善に有効である。","options":["正しい","間違い"],"answerIndex":0,"explanation":"自律神経を整え、入眠前の覚醒度を下げられます。"},
+  {"id":477,"season":"winter","cat":"exercise","question":"冬の就寝前に運動した場合は、1〜2時間ほど間隔を空けると寝つきやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"深部体温が下がる過程を作るためのクールダウン時間が必要です。"},
+  {"id":478,"season":"winter","cat":"exercise","question":"屋内トレーニングでは換気の有無は睡眠の質に関係しない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"二酸化炭素上昇や乾燥・におい残りは不快の原因。適切な換気が望ましいです。"},
+  {"id":479,"season":"winter","cat":"exercise","question":"冬は汗をかきにくいので運動時の水分・電解質補給は気にしなくてよい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"発汗量は減っても体液は失われます。脱水は睡眠にも悪影響。"},
+  {"id":480,"season":"winter","cat":"exercise","question":"運動直後に60分以上の長い昼寝をすると、夜の睡眠には影響しない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"長い昼寝は睡眠圧を下げ、入眠を遅らせることがあります。20〜30分程度が無難です。"}
+];
+
+/* 生活習慣：summer (481–510) */
+/* 生活習慣：summer (481–510) */
+const BANK_HABIT_SUMMER = [
+  {"id":481,"season":"summer","cat":"habit","question":"夏は寝る直前の大量の水分摂取は、夜間頻尿を招き睡眠を妨げやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"胃腸の負担や夜間覚醒を増やす原因になります。"},
+  {"id":482,"season":"summer","cat":"habit","question":"夏の冷房は28℃以上なら必ず快眠に適している。","options":["正しい","間違い"],"answerIndex":1,"explanation":"快適温度は個人差があり、26〜28℃が一般的目安です。"},
+  {"id":483,"season":"summer","cat":"habit","question":"夏はシャワー浴だけよりぬるめの湯船入浴の方が睡眠に有効なことがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"深部体温を下げやすく、入眠を助けます。"},
+  {"id":484,"season":"summer","cat":"habit","question":"昼寝は夏の暑い時期ほど30分以内に抑えると夜の睡眠に悪影響を与えにくい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"短時間仮眠は夜の睡眠圧に影響しにくいです。"},
+  {"id":485,"season":"summer","cat":"habit","question":"夏は寝酒（アルコール摂取）が睡眠を安定させる最良の方法である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"入眠は早まっても中途覚醒・睡眠の質低下を招きます。"},
+  {"id":486,"season":"summer","cat":"habit","question":"夏は寝る前に強い光を浴びると眠気が促される。","options":["正しい","間違い"],"answerIndex":1,"explanation":"ブルーライトは覚醒を強め、眠気を抑えます。"},
+  {"id":487,"season":"summer","cat":"habit","question":"夏の就寝前のストレッチはリラックスに有効。","options":["正しい","間違い"],"answerIndex":0,"explanation":"副交感神経を高め入眠を助けます。"},
+  {"id":488,"season":"summer","cat":"habit","question":"夏は冷たい飲み物の取りすぎが胃腸を冷やし睡眠に悪影響を与えることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"消化器の負担で眠りが浅くなります。"},
+  {"id":489,"season":"summer","cat":"habit","question":"夏でもカフェインは就寝直前なら影響が少ない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"覚醒作用があり数時間残ります。"},
+  {"id":490,"season":"summer","cat":"habit","question":"夏は扇風機の強風を直接浴び続けると睡眠を妨げやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"体の冷え・乾燥・筋肉疲労の原因になります。"},
+  {"id":491,"season":"summer","cat":"habit","question":"夏の朝の散歩や日光浴は体内時計のリセットに有効。","options":["正しい","間違い"],"answerIndex":0,"explanation":"朝光は概日リズムを整えます。"},
+  {"id":492,"season":"summer","cat":"habit","question":"夏は食べ過ぎてもすぐ眠れるので問題ない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"消化負担で眠りが浅くなります。"},
+  {"id":493,"season":"summer","cat":"habit","question":"夏は夕方以降の激しい運動は入眠を遅らせやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"交感神経優位と体温上昇が原因です。"},
+  {"id":494,"season":"summer","cat":"habit","question":"夏は休日の朝寝坊を続けると体内時計が乱れやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"平日との差が“社会的時差ボケ”を招きます。"},
+  {"id":495,"season":"summer","cat":"habit","question":"夏は冷房をつけっぱなしにすると必ず風邪をひく。","options":["正しい","間違い"],"answerIndex":1,"explanation":"設定温度や風向きで快適に使用できます。"},
+  {"id":496,"season":"summer","cat":"habit","question":"夏は就寝直前のスマホ使用は眠気を遅らせやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"ブルーライトと精神刺激が原因です。"},
+  {"id":497,"season":"summer","cat":"habit","question":"夏は寝る前に軽く読書するのはリラックスに役立つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"過度な刺激でなければ入眠儀式になります。"},
+  {"id":498,"season":"summer","cat":"habit","question":"夏の寝室の騒音は睡眠に全く影響しない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"ノイズは中途覚醒や浅睡眠の原因です。"},
+  {"id":499,"season":"summer","cat":"habit","question":"夏は軽い昼寝が眠気対策に有効。","options":["正しい","間違い"],"answerIndex":0,"explanation":"短時間で睡眠負債を補えます。"},
+  {"id":500,"season":"summer","cat":"habit","question":"夏の夕食後の喫煙は睡眠に影響しない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"ニコチンは覚醒作用が強く、入眠を妨げます。"},
+  {"id":501,"season":"summer","cat":"habit","question":"夏は寝る直前に熱い風呂に入ると眠りやすい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"体温が上がりすぎ、入眠を遅らせます。"},
+  {"id":502,"season":"summer","cat":"habit","question":"夏は冷感寝具と合わせてエアコン除湿を利用すると快適に眠りやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"湿気を抑えることで熱放散がスムーズになります。"},
+  {"id":503,"season":"summer","cat":"habit","question":"夏の寝室に植物を置くと酸素供給で必ず快眠につながる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"空気環境改善は期待できますが“必ず”ではありません。"},
+  {"id":504,"season":"summer","cat":"habit","question":"夏は夕食を寝る直前にとると消化不良で眠りが浅くなることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"胃腸に負担をかけます。"},
+  {"id":505,"season":"summer","cat":"habit","question":"夏の睡眠前のカフェインレス飲料はリラックスに有効。","options":["正しい","間違い"],"answerIndex":0,"explanation":"カフェインの刺激なしに安心感を得られます。"},
+  {"id":506,"season":"summer","cat":"habit","question":"夏は光目覚まし時計を使うと体内時計調整に有効。","options":["正しい","間違い"],"answerIndex":0,"explanation":"朝の光刺激を人工的に与えます。"},
+  {"id":507,"season":"summer","cat":"habit","question":"夏は寝る前に冷たいシャワーを浴びると必ず眠りやすい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"一時的な覚醒を招く場合があります。ぬるめが推奨。"},
+  {"id":508,"season":"summer","cat":"habit","question":"夏のエアコンの風向きは直接体に当てない方が快適睡眠につながる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"直接風は冷え・乾燥の原因です。"},
+  {"id":509,"season":"summer","cat":"habit","question":"夏は寝る前にSNSを長時間見ると睡眠に良い影響がある。","options":["正しい","間違い"],"answerIndex":1,"explanation":"精神刺激と光で眠気を遅らせます。"},
+  {"id":510,"season":"summer","cat":"habit","question":"夏は規則正しい就寝・起床が睡眠の質を高める。","options":["正しい","間違い"],"answerIndex":0,"explanation":"生活リズムの安定が質を左右します。"}
+];
+
+/* 生活習慣：winter (511–540) */
+/* 生活習慣：winter (511–540 完全版) */
+const BANK_HABIT_WINTER = [
+  {"id":511,"season":"winter","cat":"habit","question":"冬は寝室の過乾燥が睡眠の質を下げやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"粘膜の乾燥で覚醒しやすくなります。"},
+  {"id":512,"season":"winter","cat":"habit","question":"冬は厚着で寝るほど必ず快眠になる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"蒸れや血流阻害で逆効果になることも。"},
+  {"id":513,"season":"winter","cat":"habit","question":"冬は就寝前にホットドリンクをとると入眠を助けることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"体を温めリラックスを促します。"},
+  {"id":514,"season":"winter","cat":"habit","question":"冬でも日中の軽い運動は夜の睡眠改善に役立つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"活動と光曝露がリズムを整えます。"},
+  {"id":515,"season":"winter","cat":"habit","question":"冬は夜遅くまで明るい光に当たっても睡眠に影響しない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"体内時計が遅れ入眠困難を招きます。"},
+  {"id":516,"season":"winter","cat":"habit","question":"冬は夕食後すぐの就寝は消化不良で眠りを妨げやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"消化中の内臓活動で眠りが浅くなります。"},
+  {"id":517,"season":"winter","cat":"habit","question":"冬は寝室の騒音が減るので睡眠の質は必ず高まる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"騒音は季節に関係なく影響します。"},
+  {"id":518,"season":"winter","cat":"habit","question":"冬は寝る前のストレッチや軽運動は入眠に役立つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"緊張をほぐし副交感神経を高めます。"},
+  {"id":519,"season":"winter","cat":"habit","question":"冬は寝る直前の熱い風呂が快眠を保証する。","options":["正しい","間違い"],"answerIndex":1,"explanation":"深部体温が上がりすぎ入眠を遅らせます。"},
+  {"id":520,"season":"winter","cat":"habit","question":"冬は朝起きて日光を浴びることが体内時計調整に重要。","options":["正しい","間違い"],"answerIndex":0,"explanation":"朝光で概日リズムが前進します。"},
+  {"id":521,"season":"winter","cat":"habit","question":"冬は夕食の高脂肪食が睡眠に良い影響を与える。","options":["正しい","間違い"],"answerIndex":1,"explanation":"消化負担と逆流リスクを高めます。"},
+  {"id":522,"season":"winter","cat":"habit","question":"冬は寝る前の強いカフェイン摂取は睡眠を妨げやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"覚醒作用が持続します。"},
+  {"id":523,"season":"winter","cat":"habit","question":"冬は寝室が寒いほど深く眠れる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"寒すぎは中途覚醒を招きます。"},
+  {"id":524,"season":"winter","cat":"habit","question":"冬は昼寝を長時間とると夜の睡眠に悪影響がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"睡眠圧が下がり夜眠りにくくなります。"},
+  {"id":525,"season":"winter","cat":"habit","question":"冬は寝室の湿度40〜60%が快眠の目安。","options":["正しい","間違い"],"answerIndex":0,"explanation":"乾燥と結露のバランスが良いです。"},
+  {"id":526,"season":"winter","cat":"habit","question":"冬の寝酒は深い睡眠を保証する。","options":["正しい","間違い"],"answerIndex":1,"explanation":"中途覚醒・睡眠の質低下を招きます。"},
+  {"id":527,"season":"winter","cat":"habit","question":"冬は寝室の静けさが快眠に有効。","options":["正しい","間違い"],"answerIndex":0,"explanation":"ノイズは覚醒を誘発します。"},
+  {"id":528,"season":"winter","cat":"habit","question":"冬は寝る直前にSNSを長時間見ると入眠が促される。","options":["正しい","間違い"],"answerIndex":1,"explanation":"光と精神刺激で眠気を遅らせます。"},
+  {"id":529,"season":"winter","cat":"habit","question":"冬は寝室を暗くすることが睡眠の質を高める。","options":["正しい","間違い"],"answerIndex":0,"explanation":"メラトニン分泌が促進されます。"},
+  {"id":530,"season":"winter","cat":"habit","question":"冬は寝室の温度が高いほど必ず快眠になる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"暑すぎは寝苦しさを招きます。"},
+  {"id":531,"season":"winter","cat":"habit","question":"冬は寝る前にハーブティーを飲むとリラックス効果が期待できる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"カモミールなどが有効です。"},
+  {"id":532,"season":"winter","cat":"habit","question":"冬は夜の強い照明下での活動は体内時計に影響しない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"明るい光は体内時計を遅らせます。"},
+  {"id":533,"season":"winter","cat":"habit","question":"冬は就寝前に深呼吸すると入眠が促される。","options":["正しい","間違い"],"answerIndex":0,"explanation":"副交感神経を高めます。"},
+  {"id":534,"season":"winter","cat":"habit","question":"冬は夕食の過食が眠気を強めるので問題ない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"消化不良・逆流で睡眠を妨げます。"},
+  {"id":535,"season":"winter","cat":"habit","question":"冬は就寝前の読書がリラックスに役立つことがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"過度な刺激でなければ入眠儀式になります。"},
+  {"id":536,"season":"winter","cat":"habit","question":"冬は寝室の換気が不要である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"冬でも空気の入れ替えで酸素供給・湿度調整が大切です。"},
+  {"id":537,"season":"winter","cat":"habit","question":"冬は寝る前の軽い瞑想がリラックスに役立つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"心拍数を下げ副交感神経を促します。"},
+  {"id":538,"season":"winter","cat":"habit","question":"冬は夕食後に高糖分の菓子を多く食べると入眠が促される。","options":["正しい","間違い"],"answerIndex":1,"explanation":"血糖値の乱高下で覚醒が増えます。"},
+  {"id":539,"season":"winter","cat":"habit","question":"冬は就寝前に加湿器を使用するのは睡眠改善に有効。","options":["正しい","間違い"],"answerIndex":0,"explanation":"乾燥を防ぎ喉や鼻の負担を減らします。"},
+  {"id":540,"season":"winter","cat":"habit","question":"冬は就寝前のテレビ視聴が長時間でも必ず快眠を促す。","options":["正しい","間違い"],"answerIndex":1,"explanation":"強い光や刺激で覚醒を促し、入眠を妨げます。"}
+];
+
+/* 光：summer (541–570) */
+const BANK_LIGHT_SUMMER = [
+  {"id":541,"season":"summer","cat":"light","question":"夏は夜の強い照明が入眠を妨げることが多い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"メラトニン分泌が抑制されます。"},
+  {"id":542,"season":"summer","cat":"light","question":"夏は夜のスマホ使用が睡眠に影響しない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"ブルーライトで体内時計が遅れます。"},
+  {"id":543,"season":"summer","cat":"light","question":"夏は朝の日光を浴びると体内時計が前進する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"光刺激がリズム調整に有効です。"},
+  {"id":544,"season":"summer","cat":"light","question":"夏は夕方の強い光曝露が睡眠リズムを乱すことがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"概日リズムが遅れます。"},
+  {"id":545,"season":"summer","cat":"light","question":"夏は夜の街灯やネオンの光が睡眠に影響する場合がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"明るすぎる環境光で浅眠化します。"},
+  {"id":546,"season":"summer","cat":"light","question":"夏は遮光カーテンを用いると朝の目覚めが悪くなることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"光曝露が不足すると覚醒が遅れます。"},
+  {"id":547,"season":"summer","cat":"light","question":"夏は早朝の日光で自然に目覚めやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"明るさが強く覚醒しやすいです。"},
+  {"id":548,"season":"summer","cat":"light","question":"夏は夜の光刺激を完全に避ければ睡眠は必ず改善する。","options":["正しい","間違い"],"answerIndex":1,"explanation":"光以外の要因（温度・騒音など）も影響します。"},
+  {"id":549,"season":"summer","cat":"light","question":"夏は室内の照明を電球色に変えるとリラックスにつながる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"暖色系光は副交感神経を高めます。"},
+  {"id":550,"season":"summer","cat":"light","question":"夏は寝室の豆電球が睡眠に全く影響しない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"弱い光でも覚醒度に影響することがあります。"},
+  {"id":551,"season":"summer","cat":"light","question":"夏は夜に明るいデスクライトでの作業が入眠を遅らせる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"光曝露が体内時計に影響します。"},
+  {"id":552,"season":"summer","cat":"light","question":"夏は寝室の窓から入る月明かりは睡眠に影響することはない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"敏感な人は月明かりでも眠りが浅くなる場合があります。"},
+  {"id":553,"season":"summer","cat":"light","question":"夏は夕暮れの自然光が体内時計をリセットする。","options":["正しい","間違い"],"answerIndex":1,"explanation":"夕方光はリセットでなく遅延方向に働きます。"},
+  {"id":554,"season":"summer","cat":"light","question":"夏は寝室の光環境を整えると睡眠の質が高まりやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"暗さ・色温度の調整が効果的です。"},
+  {"id":555,"season":"summer","cat":"light","question":"夏は昼間に強い光を浴びることで夜の睡眠が改善する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"概日リズムが強化されます。"},
+  {"id":556,"season":"summer","cat":"light","question":"夏はブルーライトカット眼鏡が夜の入眠を助ける場合がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"光刺激を和らげます。"},
+  {"id":557,"season":"summer","cat":"light","question":"夏は夜のテレビやPC画面光が睡眠に全く影響しない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"ブルーライトが覚醒度を高めます。"},
+  {"id":558,"season":"summer","cat":"light","question":"夏は寝室にアロマライトを置くと光が刺激にならない場合もある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"柔らかい光と香りでリラックスに役立ちます。"},
+  {"id":559,"season":"summer","cat":"light","question":"夏は寝室を真っ暗にしない方が必ず快眠になる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"暗さは基本的に快眠に有効です。"},
+  {"id":560,"season":"summer","cat":"light","question":"夏は夜の読書灯を暖色系にすると眠りやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"刺激が少なく入眠を妨げにくいです。"},
+  {"id":561,"season":"summer","cat":"light","question":"夏は夜のLED白色照明は睡眠に影響しない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"青白い光は入眠を遅らせます。"},
+  {"id":562,"season":"summer","cat":"light","question":"夏は寝る前に間接照明に切り替えると入眠が促されやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"刺激を抑えリラックスに繋がります。"},
+  {"id":563,"season":"summer","cat":"light","question":"夏は寝る前にキャンドルを灯すと副交感神経が高まりやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"揺らぐ暖色光がリラックス効果を与えます。"},
+  {"id":564,"season":"summer","cat":"light","question":"夏は光目覚まし時計が起床リズムに有効な場合がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"徐々に明るくして自然覚醒を促します。"},
+  {"id":565,"season":"summer","cat":"light","question":"夏は寝室に強い照明をつけっぱなしにしても深く眠れる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"明るさが覚醒度を高めます。"},
+  {"id":566,"season":"summer","cat":"light","question":"夏は夕食後の強い光曝露が体内時計を遅らせる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"夜型化を助長します。"},
+  {"id":567,"season":"summer","cat":"light","question":"夏は夜のコンビニ照明が睡眠に影響することがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"明るさでメラトニン抑制が起こります。"},
+  {"id":568,"season":"summer","cat":"light","question":"夏は夜の星明かりが睡眠に必ず悪影響を与える。","options":["正しい","間違い"],"answerIndex":1,"explanation":"星明かりは弱く影響はほぼありません。"},
+  {"id":569,"season":"summer","cat":"light","question":"夏は夕暮れの光を長時間浴びると入眠が遅れる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"体内時計を後ろにずらします。"},
+  {"id":570,"season":"summer","cat":"light","question":"夏は夜間の光曝露を減らすと深い眠りが得られやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"光の抑制でメラトニン分泌が整います。"}
+];
+
+/* 光：winter (571–600) */
+const BANK_LIGHT_WINTER = [
+  {"id":571,"season":"winter","cat":"light","question":"冬は日照時間の短さが睡眠リズムに影響する。","options":["正しい","間違い"],"answerIndex":0,"explanation":"光曝露不足で体内時計が乱れやすくなります。"},
+  {"id":572,"season":"winter","cat":"light","question":"冬は朝の日光を浴びると体内時計が整いやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"起床後の光で前進方向に調整されます。"},
+  {"id":573,"season":"winter","cat":"light","question":"冬は夜の強い照明は入眠に影響しない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"夜間強光は入眠遅延の原因になります。"},
+  {"id":574,"season":"winter","cat":"light","question":"冬は朝の光を浴びることがうつ予防に役立つ場合がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"セロトニン活性化と体内時計の整調が期待されます。"},
+  {"id":575,"season":"winter","cat":"light","question":"冬は曇天続きでも日中の外光曝露は有効。","options":["正しい","間違い"],"answerIndex":0,"explanation":"屋外は室内より桁違いに明るいです。"},
+  {"id":576,"season":"winter","cat":"light","question":"冬は夜のスマホ使用が睡眠に全く影響しない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"短波長光でメラトニンが抑制されます。"},
+  {"id":577,"season":"winter","cat":"light","question":"冬は人工照明を朝に浴びると体内時計が整いやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"起床直後の光が有効です。"},
+  {"id":578,"season":"winter","cat":"light","question":"冬は夜の光環境を調整しても睡眠に効果はない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"夜の光制御は睡眠の質に直結します。"},
+  {"id":579,"season":"winter","cat":"light","question":"冬は就寝前に電球色照明へ切り替えると入眠しやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"低色温度・低照度への切替が有効です。"},
+  {"id":580,"season":"winter","cat":"light","question":"冬は日中の光不足が眠気や倦怠感につながることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"体内時計の振幅が弱まり日中覚醒度が落ちます。"},
+  {"id":581,"season":"winter","cat":"light","question":"冬は光目覚まし時計が起床に役立つことがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"自然覚醒を補助します。"},
+  {"id":582,"season":"winter","cat":"light","question":"冬は夜の街灯の光が睡眠に全く影響しない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"遮光不足だと覚醒度が上がります。"},
+  {"id":583,"season":"winter","cat":"light","question":"冬は夕食後の明るい光曝露で入眠が遅れる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"位相を遅らせます。"},
+  {"id":584,"season":"winter","cat":"light","question":"冬は夕方の光曝露が体内時計を早める。","options":["正しい","間違い"],"answerIndex":1,"explanation":"夕方光は遅延方向に働きます。"},
+  {"id":585,"season":"winter","cat":"light","question":"冬は夜のデスクライトを白色高照度にすると快眠になる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"強光は覚醒を促進しやすいです。"},
+  {"id":586,"season":"winter","cat":"light","question":"冬は日中の屋外活動で光を浴びることが睡眠改善に役立つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"概日リズムのメリハリが増します。"},
+  {"id":587,"season":"winter","cat":"light","question":"冬は寝室の豆電球が長時間でも全く影響しない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"弱光でも影響する場合があります。"},
+  {"id":588,"season":"winter","cat":"light","question":"冬は曇天や雪の日も屋外光は屋内より強い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"数千ルクスが得られることが多いです。"},
+  {"id":589,"season":"winter","cat":"light","question":"冬は寝室に暗幕カーテンを導入すると朝の覚醒が遅れることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"朝光の不足で起床困難が増えます。"},
+  {"id":590,"season":"winter","cat":"light","question":"冬は夕方の強い光は体内時計を遅らせる。","options":["正しい","間違い"],"answerIndex":0,"explanation":"夜型傾向を助長します。"},
+  {"id":591,"season":"winter","cat":"light","question":"冬は寝室にキャンドルを置くと強い光刺激になる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"キャンドルは弱く暖色で刺激が少ないです。"},
+  {"id":592,"season":"winter","cat":"light","question":"冬は夜間の強光曝露を避けると深い眠りが得られやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"メラトニン抑制を避けられます。"},
+  {"id":593,"season":"winter","cat":"light","question":"冬は人工照明を一日中浴びれば体内時計は正常化する。","options":["正しい","間違い"],"answerIndex":1,"explanation":"昼夜のコントラストが重要です。"},
+  {"id":594,"season":"winter","cat":"light","question":"冬は朝の光曝露不足で起床困難が増える。","options":["正しい","間違い"],"answerIndex":0,"explanation":"覚醒サインが弱くなります。"},
+  {"id":595,"season":"winter","cat":"light","question":"冬は夜の照明を間接照明にすると入眠しやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"まぶしさを抑えリラックスを促します。"},
+  {"id":596,"season":"winter","cat":"light","question":"冬は寝る直前の強光曝露が必ず快眠を促す。","options":["正しい","間違い"],"answerIndex":1,"explanation":"むしろ入眠を遅らせます。"},
+  {"id":597,"season":"winter","cat":"light","question":"冬は光療法ランプが概日リズム調整に使われることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"季節性うつ・概日睡眠障害などで用いられます。"},
+  {"id":598,"season":"winter","cat":"light","question":"冬は起床後すぐにカーテンを開け外光を浴びると二度寝の予防に役立つ。","options":["正しい","間違い"],"answerIndex":0,"explanation":"覚醒シグナルが強まり再入眠しにくくなります。"},
+  {"id":599,"season":"winter","cat":"light","question":"冬は端末の“ダークモード”にすれば光の影響は完全になくなる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"発光量は減りますが影響を“完全には”消せません。"},
+  {"id":600,"season":"winter","cat":"light","question":"冬は就寝2〜3時間前から照明をやや暗くするとメラトニン分泌が高まりやすい。","options":["正しい","間違い"],"answerIndex":0,"explanation":"段階的減光が入眠準備を促します。"}
+];
+
+/* 掛け布団：summer (301–320) ※321以降が未完だったため320までで採用 */
+const BANK_KAKEBUTON_SUMMER = [
+  {"id":301,"season":"summer","cat":"kakebuton","question":"夏は薄手の肌掛け（ダウンケットやガーゼケットなど）に替えると寝苦しさが軽減することが多い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"保温より放熱・放湿重視にすることで寝床内の熱を逃がしやすくなります。"},
+  {"id":302,"season":"summer","cat":"kakebuton","question":"羽毛掛け布団は夏に必ず不向きで使えない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"薄手の“ダウンケット”など軽量タイプは夏でも快適に使えます。"},
+  {"id":303,"season":"summer","cat":"kakebuton","question":"夏は通気性のよいカバー生地（ガーゼ、リネン、サラッとした綿織り）に替えるとムレ感が減る。","options":["正しい","間違い"],"answerIndex":0,"explanation":"カバーの吸放湿・通気で接触面の不快を抑えられます。"},
+  {"id":304,"season":"summer","cat":"kakebuton","question":"冷感寝具は“ずっと冷たい”ことを意味する。","options":["正しい","間違い"],"answerIndex":1,"explanation":"接触冷感は触れた直後の熱移動を指し、持続冷却とは別概念です。"},
+  {"id":305,"season":"summer","cat":"kakebuton","question":"夏の高湿度環境では、掛け布団よりもカバーの吸湿発散性の影響が大きい場合がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"体に直接触れるカバーの素材特性が体感を左右します。"},
+  {"id":306,"season":"summer","cat":"kakebuton","question":"羽毛量が多いほど夏は涼しい。","options":["正しい","間違い"],"answerIndex":1,"explanation":"羽毛量が多いほど保温が強まり、夏は暑く感じやすいです。"},
+  {"id":307,"season":"summer","cat":"kakebuton","question":"テンセル（再生繊維）や竹由来レーヨンは放湿性が高く、夏の掛け物に用いられることがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"吸放湿と肌離れの良さが夏向きです。"},
+  {"id":308,"season":"summer","cat":"kakebuton","question":"薄手の綿ケットは汗を吸っても乾きにくい傾向がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"綿は吸水性に優れる一方、乾きは化繊より遅いことがあります。"},
+  {"id":309,"season":"summer","cat":"kakebuton","question":"夏は掛け布団を全く使わず冷房のみの方が睡眠の質は必ず高い。","options":["正しい","間違い"],"answerIndex":1,"explanation":"軽い“掛け”がある方が体感の安定・寝返り時の快適さが保たれることがあります。"},
+  {"id":310,"season":"summer","cat":"kakebuton","question":"キルト（縫製）パターンは通気や熱のこもり方に影響することがある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"シングルキルトほど保温は控えめ、空気層の作り方で体感が変わります。"},
+  {"id":311,"season":"summer","cat":"kakebuton","question":"寝汗が多い場合、防水系カバーは夏のムレを減らすのに最適である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"防水層は通気を落としムレやすくなります。汗対策は吸放湿の高いカバーが基本。"},
+  {"id":312,"season":"summer","cat":"kakebuton","question":"接触冷感のケットは入眠初期の不快感を和らげる助けになる場合がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"初期の熱感をさっと逃がして寝つきを助けることがあります。"},
+  {"id":313,"season":"summer","cat":"kakebuton","question":"羽毛のフィルパワー（かさ高）は数値が高いほど通年で暖かく、夏向きには必ず不利である。","options":["正しい","間違い"],"answerIndex":1,"explanation":"高FPでも“羽毛量”を抑えたダウンケットなら軽く涼しく使えます。"},
+  {"id":314,"season":"summer","cat":"kakebuton","question":"夏は掛け布団を日陰で風に当てる・干すなどの水分管理がニオイ対策に有効。","options":["正しい","間違い"],"answerIndex":0,"explanation":"湿気がこもると雑菌・ニオイの原因に。乾燥習慣が有効です。"},
+  {"id":315,"season":"summer","cat":"kakebuton","question":"絹（シルク）は夏には不向きで必ず暑く感じる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"シルクは吸放湿に優れ、薄手なら夏も快適です。"},
+  {"id":316,"season":"summer","cat":"kakebuton","question":"通気の良い“リネンの掛けカバー”は肌離れがよく、汗ばむ季節に向くことが多い。","options":["正しい","間違い"],"answerIndex":0,"explanation":"繊維の特性で放湿が早く、ベタつきを抑えます。"},
+  {"id":317,"season":"summer","cat":"kakebuton","question":"薄いタオルケットを2枚重ねると、単純に1枚の厚手より涼しくなる。","options":["正しい","間違い"],"answerIndex":1,"explanation":"重ねるほど層が増え放熱が阻害される場合があります。"},
+  {"id":318,"season":"summer","cat":"kakebuton","question":"夏は部分的に冷却ジェルパッドを上に置くと結露・湿りの原因になり得る。","options":["正しい","間違い"],"answerIndex":0,"explanation":"温度差・湿気で表面がしっとりして不快になることがあります。"},
+  {"id":319,"season":"summer","cat":"kakebuton","question":"寝返りが多い夏は、軽く大きすぎないサイズの掛け物が楽に感じる場合がある。","options":["正しい","間違い"],"answerIndex":0,"explanation":"動きの阻害が少なく、放熱も妨げにくくなります。"},
+  {"id":320,"season":"summer","cat":"kakebuton","question":"羽毛掛け布団を直射日光に長時間干しても素材に全く影響はない。","options":["正しい","間違い"],"answerIndex":1,"explanation":"紫外線・高温で側生地や羽毛が劣化する懸念。陰干しや短時間が無難。"}
+];
+
+/* 表示順とラベル定義（ここに追加すれば自動でボタンが増えます） */
+const CATEGORY_LIST = [
+  { key: 'pillow',    label: '枕' },
+  { key: 'mattress',  label: 'しきパッド' },
+  { key: 'futon',     label: '敷布団' },
+  { key: 'kakebuton', label: '掛け布団' },
+  { key: 'food',      label: '食べ物' },
+  { key: 'exercise',  label: '運動' },
+  { key: 'habit',     label: '生活習慣' },
+  { key: 'light',     label: '光' }
+];
+
+/* カテゴリ→問題配列の解決（10問未満は選択不可にする） */
+function buildBanks(){
+  const pillow = [
+    ...BANK_PILLOW_SUMMER.map(q=>({ ...q, cat:'pillow' })),
+    ...BANK_PILLOW_WINTER.map(q=>({ ...q, cat:'pillow' }))
+  ];
+  const mattress = [...BANK_MATTRESS.map(q=>({ ...q, cat:'mattress' }))];
+  const kake = [...BANK_KAKEBUTON_SUMMER.map(q=>({ ...q, cat:'kakebuton' }))];
+  // 他カテゴリは空（準備中）
+  return {
+    pillow, mattress, kakebuton: kake,
+    futon: [], food: [], exercise: [], habit: [], light: []
+  };
+}
+const BANKS = buildBanks();
+
+/* ========== UI: カテゴリボタン描画 ========== */
+function renderCategories(){
+  const wrap = $('#catButtons');
+  wrap.innerHTML = '';
+  CATEGORY_LIST.forEach(({key,label})=>{
+    const size = (BANKS[key]||[]).length;
+    if(size===0){ return; } // 空は非表示
+    const disabled = size<10;
+    const btn = document.createElement('button');
+    btn.className = 'btn-block ' + (disabled?'btn-gray':'btn-pink');
+    btn.textContent = `${label}（全${size}問）`;
+    btn.title = disabled ? '10問未満のため準備中' : '';
+    btn.disabled = disabled;
+    btn.onclick = ()=>startAdGate(key,label);
+    wrap.appendChild(btn);
+  });
+  if(!wrap.children.length){
+    wrap.innerHTML = `<div class="muted">表示できるカテゴリがありません。問題を追加してください。</div>`;
+  }
+}
+
+/* ========== スコア履歴 ========== */
+function updateScoreHistory(){
+  const hist = LS.get('sleepquiz_history', []); // 各要素: {score, cat, at}
+  if(hist.length===0){ $('#scoreHistory').textContent='なし'; return; }
+  const last3 = hist.slice(-3);
+  const avg = Math.round(last3.reduce((s,v)=>s+v.score,0)/last3.length);
+  const rank = rankFromScore(avg);
+  const lines = last3.map(h=>`${new Date(h.at).toLocaleDateString()}：${h.cat} ${h.score}点`).join('<br>');
+  $('#scoreHistory').innerHTML = `${lines}<div class="sep"></div>直近3回平均：<b>${avg}点</b>（${rank}）`;
+}
+
+/* ========== モーダル制御 ========== */
+function open(id){ $(id).classList.add('show'); }
+function close(id){ $(id).classList.remove('show'); }
+
+/* ========== 序盤イベント ========== */
+$('#btnStartTop').onclick = $('#btnStartHero').onclick = ()=>{
+  renderCategories();
+  $('#bankWarn').style.display='none';
+  open('#overlayCat');
+};
+$('#catClose').onclick = ()=>close('#overlayCat');
+$('#btnAbout').onclick = ()=>open('#overlayAbout');
+$('#aboutClose').onclick = ()=>close('#overlayAbout');
+$('#btnRankTable').onclick = ()=>open('#overlayRank');
+$('#rankClose').onclick = ()=>close('#overlayRank');
+$('#btnResults').onclick = ()=>{
+  const hist = LS.get('sleepquiz_history', []);
+  if(hist.length===0){ alert('まだ結果がありません。'); return; }
+  const last = hist[hist.length-1];
+  showResult(last.score,last.cat,true);
+};
+
+/* ========== 広告ゲート ========== */
+let pendingCategory = null;
+let pendingLabel = '';
+function startAdGate(key,label){
+  pendingCategory = key; pendingLabel = label;
+  close('#overlayCat');
+  $('#btnAdStart').disabled = true;
+  open('#overlayAd');
+  // 疑似動画 5秒
+  const fake = $('#fakeAd');
+  let t=5; fake.textContent = `[ 動画広告（擬似） ${t} 秒 ]`;
+  const iv = setInterval(()=>{
+    t--; fake.textContent = `[ 動画広告（擬似） ${t} 秒 ]`;
+    if(t<=0){ clearInterval(iv); $('#btnAdStart').disabled=false; fake.textContent='[ 視聴完了 ]'; }
+  },1000);
+}
+$('#btnAdStart').onclick = ()=>{
+  close('#overlayAd');
+  beginQuiz(pendingCategory,pendingLabel);
+};
+$('#btnAdClose').onclick = ()=>{ close('#overlayAd'); pendingCategory=null; };
+
+/* ========== クイズ本体 ========== */
+let quiz = { list:[], idx:0, correct:0, catKey:null, catLabel:'' };
+
+function beginQuiz(catKey, catLabel){
+  quiz.catKey = catKey; quiz.catLabel = catLabel;
+  const pool = BANKS[catKey]||[];
+  if(pool.length<10){
+    $('#bankWarn').textContent = `${catLabel}は現在 ${pool.length} 問のため開始できません。`;
+    $('#bankWarn').style.display='block';
+    return;
+  }
+  quiz.list = shuffle(pool.slice()).slice(0,10);
+  quiz.idx = 0; quiz.correct = 0;
+  $('#qTitle').textContent = `検定（${catLabel}）`;
+  $('#qNext').disabled = true;
+  renderQuestion();
+  open('#overlayQuiz');
+}
+
+function renderQuestion(){
+  const q = quiz.list[quiz.idx];
+  $('#qProg').textContent = `${quiz.idx+1} / 10`;
+  const body = $('#qBody');
+  const opts = q.options.map((op,i)=>`<button class="q-option" data-i="${i}">${op}</button>`).join('');
+  body.innerHTML = `<div style="font-weight:700;margin:0 0 6px">${q.question}</div>${opts}<div id="qExp" class="q-exp" style="display:none"></div>`;
+  [...body.querySelectorAll('.q-option')].forEach(btn=>{
+    btn.onclick = ()=>handleAnswer(btn, q);
+  });
+  $('#qNext').disabled = true;
+}
+
+function handleAnswer(btn,q){
+  if($('#qNext').disabled===false) return; // 二度押し防止（採点後は無効）
+  const chosen = +btn.dataset.i;
+  const correctIndex = q.answerIndex;
+  const buttons = [...$('#qBody').querySelectorAll('.q-option')];
+  buttons.forEach(b=>b.disabled=true);
+  if(chosen===correctIndex){
+    btn.classList.add('correct');
+    quiz.correct++;
+  }else{
+    btn.classList.add('wrong');
+    buttons[correctIndex]?.classList.add('correct');
+  }
+  const exp = $('#qExp');
+  if(q.explanation){ exp.style.display='block'; exp.textContent = q.explanation; }
+  $('#qNext').disabled = false;
+}
+
+$('#qNext').onclick = ()=>{
+  if(quiz.idx<9){
+    quiz.idx++;
+    renderQuestion();
+  }else{
+    // finish
+    close('#overlayQuiz');
+    const score = Math.round((quiz.correct/10)*100);
+    storeHistory(score, quiz.catLabel);
+    showResult(score, quiz.catLabel);
+    updateScoreHistory();
+  }
+};
+$('#qClose').onclick = ()=>{ if(confirm('中断しますか？進捗は保存されません。')) close('#overlayQuiz'); };
+
+function storeHistory(score, catLabel){
+  const hist = LS.get('sleepquiz_history', []);
+  hist.push({score, cat:catLabel, at:Date.now()});
+  LS.set('sleepquiz_history', hist);
+}
+
+function showResult(score, catLabel, fromHistory=false){
+  const hist = LS.get('sleepquiz_history', []);
+  const last3 = hist.slice(-3);
+  const avg = last3.length? Math.round(last3.reduce((s,v)=>s+v.score,0)/last3.length) : score;
+  const rank = rankFromScore(avg);
+  $('#resultBody').innerHTML = `
+    <div style="font-size:16px;margin-bottom:8px">${fromHistory?'直近の受検結果':'受検ありがとうございました！'}</div>
+    <div><b>${catLabel}</b>：<b>${score}点</b> / 100</div>
+    <div class="sep"></div>
+    <div>直近3回平均：<b>${avg}点</b> → <span class="result-rank">${rank}</span></div>
+    <div class="small">※ 段位は目安です（MVP仕様）。</div>
+  `;
+  open('#overlayResult');
+}
+$('#resRetry').onclick = ()=>{ close('#overlayResult'); beginQuiz(quiz.catKey, quiz.catLabel); };
+$('#resClose').onclick = ()=>close('#overlayResult');
+
+/* 初期描画 */
+updateScoreHistory();
+</script>
+</body>
+</html>
+
+
+  /* ===== 状態 & 便利関数 ===== */
+  let SELECTED_CAT = null;
+  let picked=[], qIdx=0, correct=0, answered=false;
+
+function labelCat(cat){
+  const f = CATEGORY_LIST.find(c => c.key === cat);
+  return f ? f.label : 'その他';
+}
+
+// 10問以上あれば開始可能にする判定は既存の canStart(cat) を使用
+// canStart はそのままでOK: function canStart(cat){ return (BANKS[cat]||[]).length >= 10; }
+
+function renderCategoryButtons(){
+  const wrap = document.getElementById('catButtons');
+  if(!wrap) return;
+  wrap.innerHTML = '';
+
+  CATEGORY_LIST.forEach(c => {
+    const total = (BANKS[c.key] || []).length;
+    const startable = total >= 10;
+
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-block ' + (startable ? 'btn-pink' : 'btn-gray');
+    btn.dataset.cat = c.key;
+    btn.innerHTML = `${c.label}（全 <span class="count">${total}</span> 問）`;
+    wrap.appendChild(btn);
+  });
+
+  // クリックイベント（描画後に毎回結線）
+  wrap.querySelectorAll('button[data-cat]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const cat = btn.dataset.cat;
+      if(!canStart(cat)){
+        alert(`${labelCat(cat)}は準備中です。10問以上にしてからお試しください。`);
+        return;
+      }
+      SELECTED_CAT = cat;
+      window.SELECTED_CAT = cat;   // ←これが超重要！
+      document.getElementById('overlayCat').style.display='none';
+
+      // 広告ゲート（AndroidBridge連携があればそちらを呼ぶ）
+      if (window.AndroidBridge && typeof AndroidBridge.showRewardedAndStart === "function") {
+        AndroidBridge.showRewardedAndStart();
+      } else {
+        openAdGate();
+      }
+    });
+  });
+}
+
+function canStart(cat){ return (BANKS[cat]||[]).length >= 10; }
+ // 既存の updateCatCounts を置き換え（モーダルを開くたびに最新で再描画）
+
+function updateCatCounts(){
+  renderCategoryButtons();
+}
+
+  /* ===== 広告（擬似） ===== */
+  function openAdGate(){
+    $('#overlayAd').style.display='flex';
+    const btn=$('#btnAdStart');
+    btn.disabled=true;
+    let t=5; $('#fakeAd').textContent='[ 動画広告（擬似） '+t+' 秒 ]';
+    const timer=setInterval(()=>{
+      t--; $('#fakeAd').textContent='[ 動画広告（擬似） '+t+' 秒 ]';
+      if(t<=0){ clearInterval(timer); btn.disabled=false; }
+    },1000);
+  }
+  $('#btnAdStart').addEventListener('click',()=>{ $('#overlayAd').style.display='none'; startQuiz(SELECTED_CAT); });
+  $('#btnAdClose').addEventListener('click',()=>$('#overlayAd').style.display='none');
+
+  /* ===== Quiz ===== */
+  function startQuiz(cat){
+    window.SELECTED_CAT = cat;  // 念のため
+    const bank=BANKS[cat]||[];
+    if(bank.length<10){ alert('このカテゴリは準備中です。10問以上に達したら開始できます。'); return; }
+    picked=shuffle(bank.slice()).slice(0,10);
+    qIdx=0; correct=0; answered=false;
+    $('#overlayQuiz').style.display='flex';
+    renderQuestion(cat);
+  }
+function renderQuestion(cat){
+  // ← 追加
+  const nextBtn = $('#qNext');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.disabled = false;
+  nextBtn.textContent = (qIdx === 9) ? '結果を見る' : '次へ';
+  $('#qClose').textContent = '中断';
+  // →
+
+  const q = picked[qIdx];
+  $('#qTitle').textContent = `検定（10問）｜${labelCat(cat)}`;
+  $('#qProg').textContent = `${qIdx+1} / 10`;
+  const body=[];
+  body.push(`<div style="font-weight:700;margin-bottom:6px">${q.question}</div>`);
+  q.options.forEach((op,i)=>body.push(`<button class="q-option" data-i="${i}">${op}</button>`));
+  body.push(`<div id="exp" class="q-exp" style="display:none"></div>`);
+  $('#qBody').innerHTML=body.join('');
+    answered=false;
+    $('#qBody').querySelectorAll('.q-option').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        if(answered) return; answered=true;
+        const sel=+btn.dataset.i;
+        if(sel===q.answerIndex){ correct++; btn.classList.add('correct'); }
+        else { btn.classList.add('wrong'); $('#qBody').querySelectorAll('.q-option')[q.answerIndex].classList.add('correct'); }
+        const exp=$('#exp'); exp.style.display='block'; exp.textContent=q.explanation||'';
+      });
+    });
+    $('#qNext').textContent=(qIdx===9)?'結果を見る':'次へ';
+   $('#qNext').onclick=()=>{
+  if(qIdx<9){
+    qIdx++;
+    renderQuestion(cat);
+  } else {
+    // ←ここで新しいモーダルを呼ぶ
+    showSimpleResult(correct, picked.length);  // ←こ
+    $('#overlayQuiz').style.display='none'; // クイズ画面を閉じる
+  }
+};
+    $('#qClose').onclick=()=>$('#overlayQuiz').style.display='none';
+  }
+
+// カテゴリ別最新スコア（0〜100）の保存先
+const SK_PER_CAT_KEY = 'sleep_kentei_percat_v1'; // { pillow: 70, light: 80, ... }
+
+function skSavePerCategoryScore(cat, score){
+  try{
+    const raw = localStorage.getItem(SK_PER_CAT_KEY);
+    const obj = raw ? JSON.parse(raw) : {};
+    obj[cat] = score;
+    localStorage.setItem(SK_PER_CAT_KEY, JSON.stringify(obj));
+  }catch(_){}
+}
+
+
+
+  /* ===== スコア保存 ===== */
+  function saveScore(score,cat){
+    const key='sleep_hist_v3';
+    const hist=LS.get(key,[]);
+    hist.unshift({score,rank:rankFromScore(score),at:new Date().toISOString(),ver:'3.0.0',cat});
+    LS.set(key,hist.slice(0,300));
+    refreshTopScores();
+  }
+// 🔄 これで「直近3回のスコア」が正しいキーを見ます
+// 直近3回のスコア表示を更新
+function refreshTopScores(){
+  try{
+    const raw = localStorage.getItem(window.SK_SCORES_KEY);
+    const arr = raw ? JSON.parse(raw) : [];
+    const el = document.getElementById('scoreHistory');
+    if(!arr.length){ el && (el.textContent = 'なし'); return; }
+    const recent = arr.slice(0,3).map(x => x.score);
+    const avg = Math.round(recent.reduce((a,b)=>a+b,0)/recent.length);
+    el && (el.textContent = `${recent.join(' / ')}（平均 ${avg}）`);
+  }catch(_){}
+}
+
+// カテゴリ別の最新スコアを保存（レーダー用）
+function skSavePerCategoryScore(cat, score){
+  try{
+    const key = String(window.SK_PERCAT_KEY || 'sleep_kentei_percat_v1');
+    const raw = localStorage.getItem(key);
+    const obj = raw ? JSON.parse(raw) : {};
+    obj[cat] = Number(score) || 0;
+    // ← 第1引数と第2引数の間に **半角の** カンマが必須
+    localStorage.setItem(key, JSON.stringify(obj));
+  }catch(e){
+    console.warn('skSavePerCategoryScore failed', e);
+  }
+}
+
+  /* ===== カテゴリモーダル ===== */
+  function openCategorySelect(){
+    updateCatCounts();
+    $('#overlayCat').style.display='flex';
+  }
+  $('#catClose').addEventListener('click',()=>$('#overlayCat').style.display='none');
+  $('#overlayCat').querySelectorAll('[data-cat]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const cat = btn.dataset.cat;
+      if(!canStart(cat)){
+        alert(`${labelCat(cat)}は準備中です。問題を10問以上にしてからお試しください。`);
+        return;
+      }
+      SELECTED_CAT = cat;
+      window.SELECTED_CAT = cat; // ← 追加
+      $('#overlayCat').style.display='none';
+      if (window.AndroidBridge && typeof AndroidBridge.showRewardedAndStart === "function") {
+        AndroidBridge.showRewardedAndStart(); // 視聴完了後に startQuiz(SELECTED_CAT) をネイティブから呼べるとベスト
+      } else {
+        openAdGate(); // ブラウザ用フォールバック
+      }
+    });
+  });
+
+</script>
+<!-- 結果モーダル（シンプル版） -->
+<style>
+  .sk-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;z-index:9999}
+  .sk-modal{background:#fff;width:min(520px,92vw);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.18);padding:20px 20px 16px}
+  .sk-h{margin:0 0 8px;font-size:20px;font-weight:700;color:#0f172a}
+  .sk-sub{margin:0 0 16px;color:#6b7280;font-size:13px}
+  .sk-row{display:flex;gap:12px;align-items:center;margin:12px 0}
+  .sk-badge{background:#fce7f3;color:#be185d;padding:4px 10px;border-radius:999px;font-weight:700}
+  .sk-score{font-size:40px;font-weight:800;line-height:1.1;color:#0f172a}
+  .sk-note{font-size:13px;color:#6b7280;margin-top:4px}
+  .sk-avg{background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:10px;margin-top:10px}
+  .sk-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+  .sk-btn{appearance:none;border:1px solid #e5e7eb;border-radius:999px;padding:10px 14px;background:#fff;cursor:pointer}
+  .sk-btn-primary{background:#e91e63;border-color:#e91e63;color:#fff;font-weight:700}
+</style>
+
+<div id="skResultModal" class="sk-modal-backdrop" aria-hidden="true">
+  <div class="sk-modal" role="dialog" aria-modal="true" aria-labelledby="skResultTitle">
+    <h3 id="skResultTitle" class="sk-h">結果</h3>
+    <p class="sk-sub">おつかれさま！今回のスコアはこちらです。</p>
+
+    <div class="sk-row">
+      <div class="sk-score"><span id="skScore">--</span> / 100</div>
+      <div class="sk-badge" id="skRank">—</div>
+    </div>
+    <div class="sk-note" id="skSummary">正答 <span id="skCorrect">-</span> / <span id="skTotal">-</span> 問</div>
+
+    <div class="sk-avg">
+      <div style="font-weight:700;margin-bottom:4px;">直近3回の平均</div>
+      <div><span id="skAvg">—</span> 点</div>
+    </div>
+
+    <div class="sk-actions">
+    　<button class="btn" id="shareBtn">結果をシェア</button>
+      <button class="sk-btn" id="skCloseBtn">閉じる</button>
+      <button class="sk-btn sk-btn-primary" id="skRetryBtn">もう一度受ける</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ====== 公開関数：クイズ終了時に呼ぶだけ ======
+  // 例）showSimpleResult(correctCount, totalQuestions)
+  window.showSimpleResult = function(correctCount, totalQuestions){
+    const score = Math.round((correctCount / Math.max(totalQuestions,1)) * 100);
+    const rank = skRankLabel(score);
+
+    // 保存＆平均
+    const recent = skSaveScore(score); // 直近3件に更新
+    // カテゴリ別最新スコアも保存
+if (window.SELECTED_CAT) skSavePerCategoryScore(window.SELECTED_CAT, score);
+    refreshTopScores(); // ← 直近3回の表示更新
+    const avg = skAverage(recent.map(r => r.score));
+
+    // DOM反映
+    document.getElementById('skScore').textContent = String(score);
+    document.getElementById('skRank').textContent  = rank;
+    document.getElementById('skCorrect').textContent = String(correctCount);
+    document.getElementById('skTotal').textContent   = String(totalQuestions);
+    document.getElementById('skAvg').textContent     = isNaN(avg) ? '—' : String(Math.round(avg));
+
+    // 表示
+    skOpenModal();
+    refreshTopScores();
+  }
+
+  // ====== 内部ユーティリティ ======
+  const SK_LOCAL_KEY = 'sleep_kentei_scores_v1'; // {score:number, ts:number} を最大3件保存
+
+  // どの<script>から呼ばれても再宣言されない安全なキー
+  window.SK_SCORES_KEY  = window.SK_SCORES_KEY  || 'sleep_kentei_scores_v1';
+  window.SK_PERCAT_KEY  = window.SK_PERCAT_KEY  || 'sleep_kentei_percat_v1';
+
+  function skOpenModal(){
+    const el = document.getElementById('skResultModal');
+    el.style.display = 'flex';
+    el.setAttribute('aria-hidden', 'false');
+  }
+  function skCloseModal(){
+    const el = document.getElementById('skResultModal');
+    el.style.display = 'none';
+    el.setAttribute('aria-hidden', 'true');
+  }
+
+  function skRankLabel(score){
+    if(score >= 90) return 'S（睡眠マスター）';
+    if(score >= 80) return 'A（上級）';
+    if(score >= 70) return 'B（中級）';
+    if(score >= 60) return 'C（初級）';
+    return 'D（入門）';
+  }
+
+  function skLoadScores(){
+    try{
+      const raw = localStorage.getItem(window.SK_SCORES_KEY);
+      return raw ? JSON.parse(raw) : [];
+    }catch(e){ return []; }
+  }
+
+  function skSaveScore(score){
+    const arr = skLoadScores();
+    arr.unshift({score, ts: Date.now()});
+    const trimmed = arr.slice(0,3);
+    localStorage.setItem(window.SK_SCORES_KEY, JSON.stringify(trimmed));
+    return trimmed;
+  }
+
+  function skAverage(nums){
+    if(!nums || !nums.length) return NaN;
+    return nums.reduce((a,b)=>a+b,0)/nums.length;
+  }
+
+  // 共有URL（App Store公開後に差し替え推奨）
+  window.SK_SHARE_URL = '';  // 例: 'https://apps.apple.com/app/xxxxxxxx'
+
+  // X(Twitter) 共有用ヘルパー
+  function skOpenTwitter(text, url, hashtags = []) {
+    const q = new URLSearchParams({
+      text,
+      url,
+      hashtags: hashtags.join(',')
+    });
+    const w = 640, h = 480;
+    const y = (window.top?.outerHeight ?? window.outerHeight) / 2 + (window.top?.screenY ?? window.screenY) - (h/2);
+    const x = (window.top?.outerWidth  ?? window.outerWidth ) / 2 + (window.top?.screenX ?? window.screenX) - (w/2);
+    window.open(
+      `https://twitter.com/intent/tweet?${q.toString()}`,
+      '_blank',
+      `popup=yes,width=${w},height=${h},left=${x},top=${y}`
+    );
+  }
+
+  // ====== ボタン動作 ======
+  (function bindSkButtons(){
+    const closeBtn = document.getElementById('skCloseBtn');
+    const retryBtn = document.getElementById('skRetryBtn');
+    const shareBtn = document.getElementById('skShareBtn');
+
+    closeBtn?.addEventListener('click', skCloseModal);
+
+    retryBtn?.addEventListener('click', () => {
+      skCloseModal();
+      if(window.startQuiz && window.SELECTED_CAT){
+        window.startQuiz(window.SELECTED_CAT); // 今選んでいるカテゴリで再受験
+      }
+    });
+
+    // ▼ 結果共有（iPad/ネイティブ優先 → Web Share → Twitter）
+    shareBtn?.addEventListener('click', async () => {
+      const score = document.getElementById('skScore')?.textContent?.trim() ?? '0';
+      const rank  = document.getElementById('skRank')?.textContent?.trim() ?? '';
+      const text  = `睡眠検定で ${score} 点（${rank}）でした！ #睡眠検定`;
+
+      if (!text.length) return;
+
+      const shareUrl =
+        (typeof window.SK_SHARE_URL === 'string' && window.SK_SHARE_URL.trim().length)
+          ? window.SK_SHARE_URL
+          : location.href.split('#')[0];
+
+      const tags = ['睡眠', 'SleepTest', 'ヘルスケア'];
+
+      // 二重タップ防止（1秒だけ無効化）
+      shareBtn.disabled = true;
+      setTimeout(() => (shareBtn.disabled = false), 1000);
+
+      // 1) WKWebView（iOS/iPadOSネイティブ共有）
+      if (window.webkit?.messageHandlers?.share) {
+        window.webkit.messageHandlers.share.postMessage(`${text}\n${shareUrl}`);
+        return;
+      }
+
+      // 2) Web Share API（対応ブラウザ）
+      if (navigator.share) {
+        try {
+          await navigator.share({ text, url: shareUrl });
+          return;
+        } catch (e) {
+          // キャンセル等は無視して Twitter にフォールバック
+        }
+      }
+
+      // 3) Twitter intent（最終手段）
+      const intent =
+        'https://twitter.com/intent/tweet?' +
+        `text=${encodeURIComponent(text)}&` +
+        `url=${encodeURIComponent(shareUrl)}&` +
+        `hashtags=${encodeURIComponent(tags.join(','))}`;
+
+      window.open(intent, '_blank', 'noopener,noreferrer');
+    });
+  })();
+</script>
+<!-- Chart.js CDN（未読み込みなら追加） -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<style>
+  .sk-radar-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;z-index:9999}
+  .sk-radar{background:#fff;width:min(560px,94vw);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.18);padding:18px}
+  .sk-radar h3{margin:0 0 10px;font-size:18px}
+  .sk-radar-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+</style>
+
+<div id="skRadarModal" class="sk-radar-backdrop" aria-hidden="true">
+  <div class="sk-radar" role="dialog" aria-modal="true" aria-labelledby="skRadarTitle">
+    <h3 id="skRadarTitle">受検結果（カテゴリ別レーダー）</h3>
+    <canvas id="skRadarCanvas" width="480" height="360"></canvas>
+    <div class="sk-radar-actions">
+      <button class="sk-btn" id="skRadarClose">閉じる</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ========== グローバル設定（再宣言安全） ========== */
+  /* 他の<script>に const SK_PER_CAT_KEY / const SK_LOCAL_KEY があれば削除してください */
+  window.SK_SCORES_KEY = window.SK_SCORES_KEY || 'sleep_kentei_scores_v1';   // 直近3回
+  window.SK_PERCAT_KEY = window.SK_PERCAT_KEY || 'sleep_kentei_percat_v1';   // カテゴリ別最新
+  window.SK_SHARE_URL  = window.SK_SHARE_URL  || '';                          // 共有URL（空なら現在ページ）
+
+  /* jQueryなしでも使える簡易ヘルパ */
+  if (typeof window.$ !== 'function') window.$ = (sel)=>document.querySelector(sel);
+  const $id = (id)=>document.getElementById(id);
+
+  /* ========== 結果モーダルのUI ========== */
+  function skOpenModal(){ const el=$id('skResultModal'); if(!el) return; el.style.display='flex'; el.setAttribute('aria-hidden','false'); }
+  function skCloseModal(){ const el=$id('skResultModal'); if(!el) return; el.style.display='none'; el.setAttribute('aria-hidden','true'); }
+  function skRankLabel(score){ if(score>=90) return 'S（睡眠マスター）'; if(score>=80) return 'A（上級）'; if(score>=70) return 'B（中級）'; if(score>=60) return 'C（初級）'; return 'D（入門）'; }
+
+  /* ========== スコア保存/読み出し ========== */
+  function skLoadScores(){
+    try{ const raw = localStorage.getItem(window.SK_SCORES_KEY); return raw ? JSON.parse(raw) : []; }catch(_){ return []; }
+  }
+  function skSaveScore(score){
+    const arr = skLoadScores();
+    arr.unshift({score, ts: Date.now()});
+    const trimmed = arr.slice(0,3);
+    localStorage.setItem(window.SK_SCORES_KEY, JSON.stringify(trimmed));
+    return trimmed;
+  }
+  function skAverage(nums){ return (!nums||!nums.length) ? NaN : nums.reduce((a,b)=>a+b,0)/nums.length; }
+  function refreshTopScores(){
+    try{
+      const raw = localStorage.getItem(window.SK_SCORES_KEY);
+      const arr = raw ? JSON.parse(raw) : [];
+      const el  = $id('scoreHistory');
+      if(!el) return;
+      if(!arr.length){ el.textContent='なし'; return; }
+      const recent = arr.slice(0,3).map(x=>x.score);
+      const avg = Math.round(recent.reduce((a,b)=>a+b,0)/recent.length);
+      el.textContent = `${recent.join(' / ')}（平均 ${avg}）`;
+    }catch(_){}
+  }
+
+  /* カテゴリ別スコア（レーダー用） */
+  function skSavePerCategoryScore(cat, score){
+    try{
+      const raw = localStorage.getItem(window.SK_PERCAT_KEY);
+      const obj = raw ? JSON.parse(raw) : {};
+      obj[cat] = score;
+      // ← ここ、カンマ必須です（カンマ抜けが "missing )" の原因）
+      localStorage.setItem(window.SK_PERCAT_KEY, JSON.stringify(obj));
+    }catch(_){}
+  }
+
+  /* ========== 公開関数：結果表示 ========== */
+  window.showSimpleResult = function(correctCount, totalQuestions){
+    const score = Math.round((correctCount / Math.max(totalQuestions,1)) * 100);
+    const rank  = skRankLabel(score);
+
+    // 保存
+    const recent = skSaveScore(score);
+    if (window.SELECTED_CAT) skSavePerCategoryScore(window.SELECTED_CAT, score);
+
+    // 直近3回の平均
+    const avg = skAverage(recent.map(r=>r.score));
+
+    // 反映
+    $id('skScore').textContent   = String(score);
+    $id('skRank').textContent    = rank;
+    $id('skCorrect').textContent = String(correctCount);
+    $id('skTotal').textContent   = String(totalQuestions);
+    $id('skAvg').textContent     = isNaN(avg) ? '—' : String(Math.round(avg));
+
+    skOpenModal();
+    refreshTopScores();
+  };
+
+  /* ========== X(Twitter) 共有 ========== */
+  function skOpenTwitter(text, url, hashtags=[]){
+    const q = new URLSearchParams({ text, url, hashtags: hashtags.join(',') });
+    const w=640,h=480,x=(screen.width-w)/2,y=(screen.height-h)/2;
+    window.open(`https://twitter.com/intent/tweet?${q.toString()}`,'_blank',`popup=yes,width=${w},height=${h},left=${x},top=${y}`);
+  }
+
+  /* ========== レーダーチャート ========== */
+  function skOpenRadar(){ const el=$id('skRadarModal'); if(!el) return; el.style.display='flex'; el.setAttribute('aria-hidden','false'); }
+  function skCloseRadar(){ const el=$id('skRadarModal'); if(!el) return; el.style.display='none'; el.setAttribute('aria-hidden','true'); }
+
+  let skRadarInstance=null;
+  function skRenderRadar(){
+    const labels  = ['枕','しきパッド','敷布団','掛け布団','食べ物','運動','生活習慣','光'];
+    const catKeys = ['pillow','mattress','futon','kakebuton','food','exercise','habit','light'];
+
+    let perCat={};
+    try{ perCat = JSON.parse(localStorage.getItem(window.SK_PERCAT_KEY)||'{}'); }catch(_){}
+
+    const data = catKeys.map(k => Number.isFinite(+perCat[k]) ? +perCat[k] : 0);
+
+    const canvas = $id('skRadarCanvas'); if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if(skRadarInstance){ skRadarInstance.destroy(); }
+    skRadarInstance = new Chart(ctx, {
+      type:'radar',
+      data:{ labels, datasets:[{ label:'カテゴリ別スコア', data, fill:true }]},
+      options:{
+        responsive:true,
+        scales:{ r:{ suggestedMin:0, suggestedMax:100, ticks:{ stepSize:20 } } },
+        plugins:{ legend:{ display:false } }
+      }
+    });
+  }
+
+  /* ========== DOM構築後に一括結線 ========== */
+  window.addEventListener('DOMContentLoaded', ()=>{
+    // 「今すぐ開始」「検定をはじめる」
+    const startWithAds = (e)=>{ e.preventDefault(); if (typeof openCategorySelect==='function') openCategorySelect(); };
+    $id('btnStartTop') ?.addEventListener('click', startWithAds);
+    $id('btnStartHero')?.addEventListener('click', startWithAds);
+
+    // 「受検結果を確認」
+    $id('btnResults')  ?.addEventListener('click', (e)=>{ e.preventDefault(); skRenderRadar(); skOpenRadar(); openAdGate();});
+
+    // About
+    $id('btnAbout')    ?.addEventListener('click', ()=>alert('カテゴリ選択→広告→ランダム10問。枕120問を収録、他カテゴリは準備中です。'));
+
+    // 結果モーダルのボタン
+    $id('skCloseBtn') ?.addEventListener('click', skCloseModal);
+    $id('skRetryBtn') ?.addEventListener('click', ()=>{ skCloseModal(); if(window.startQuiz && window.SELECTED_CAT){ window.startQuiz(window.SELECTED_CAT); } });
+    $id('skShareBtn') ?.addEventListener('click', ()=>{
+      const score = $id('skScore')?.textContent || '0';
+      const rank  = $id('skRank') ?.textContent || '';
+      const text  = `睡眠検定で ${score} 点（${rank}）でした！ #睡眠検定`;
+      const shareUrl = window.SK_SHARE_URL && window.SK_SHARE_URL.trim() ? window.SK_SHARE_URL : location.href.split('#')[0];
+      skOpenTwitter(text, shareUrl, ['睡眠','SleepTest','ヘルスケア']);
+    });
+
+    // レーダーモーダルの閉じる
+    $id('skRadarClose')?.addEventListener('click', skCloseRadar);
+  });
+
+    /* ========= Share Bridge (iPad対応・多段フォールバック) ========= */
+    /* 使い方：
+       1) クイズ採点後に shareSetLastResult({ score, correct, total, rank }) を一回呼ぶ
+       2) 「結果をシェア」ボタンに id="shareBtn" か data-share を付ける（自動で拾います）
+    */
+    const Share = {
+      async share({ title, text, url }) {
+        // 1) Web Share API
+        try {
+          if (navigator.share) {
+            await navigator.share({ title, text, url });
+            return true;
+          }
+        } catch (_) { /* ユーザーキャンセル等は無視 */ }
+
+        // 2) ネイティブ（WKWebView ScriptMessageHandler）
+        try {
+          const handler = window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.share;
+          if (handler && typeof handler.postMessage === 'function') {
+            handler.postMessage({ title, text, url });
+            return true;
+          }
+        } catch (_) {}
+
+        // 3) クリップボードにテキストを退避
+        const fallback = [title, text, url].filter(Boolean).join('\n');
+        try {
+          await navigator.clipboard.writeText(fallback);
+          alert('共有リンクをコピーしました。お好きなアプリに貼り付けてください。');
+          return true;
+        } catch (_) {
+          alert('共有に失敗しました。もう一度お試しください。');
+          return false;
+        }
+      }
+    };
+
+    // 直近の結果を保持して共有文面を構成
+    let __lastResult = null;
+    /** クイズ採点直後に呼んでください */
+    function shareSetLastResult({ score: finalScore, correct: correctCount, total: 10, rank: rankFromScore(finalScore) });
+    }
+
+    // ボタンと自動連携（id="shareBtn" / id="btnShare" / [data-share] どれでもOK）
+    function __bindShareButtons() {
+      const tryBind = (sel) => {
+        document.querySelectorAll(sel).forEach(btn => {
+          if (btn.__shareBound) return;
+          btn.__shareBound = true;
+          btn.addEventListener('click', async () => {
+            // 結果が未セットの場合でも最低限動かす
+            const r = __lastResult || {
+              score: 0, correct: 0, total: 10, rank: '—'
+            };
+            const title = '睡眠検定の結果';
+            const text  = `今回のスコア: ${r.score} 点（${r.correct}/${r.total} 正解） / 段位: ${r.rank}`;
+            const url   = 'https://sleep-kentei.example'; // 公開URLがあれば差し替え
+
+            await Share.share({ title, text, url });
+          });
+        });
+      };
+      tryBind('#shareBtn');
+      tryBind('#btnShare');
+      tryBind('[data-share]');
+    }
+    // DOM生成後と一定間隔で監視（モーダル描画が遅れても確実に紐づく）
+    document.addEventListener('DOMContentLoaded', __bindShareButtons);
+    const __observer = new MutationObserver(__bindShareButtons);
+    __observer.observe(document.documentElement, { childList: true, subtree: true });
+
+    // ===== 1) バンク正規化と結合 =====
+    const normalize = (raw, fallbackDomain) => raw.map(q => ({
+      id: q.id,
+      domain: q.cat?.replace('kakebuton','kakebuton') || (q.category?.split('-')[0]) || fallbackDomain, // 'pillow','mattress','kakebuton'
+      season: q.season || (q.category?.split('-')[1] || null),
+      question: q.question,
+      options: q.options,
+      answerIndex: q.answerIndex,
+      explanation: q.explanation
+    }));
+
+    const BANK_PILLOW = [
+      ...normalize(BANK_PILLOW_SUMMER,'pillow'),
+      ...normalize(BANK_PILLOW_WINTER,'pillow')
+    ];
+    const BANK_MATTRESS_ALL = normalize(BANK_MATTRESS,'mattress');
+    const BANK_KAKEBUTON = normalize(BANK_KAKEBUTON_SUMMER,'kakebuton'); // 冬もできたらここに追記
+
+    const BANKS_BY_DOMAIN = {
+      pillow: BANK_PILLOW,
+      mattress: BANK_MATTRESS_ALL,
+      kakebuton: BANK_KAKEBUTON
+    };
+
+    // ===== 2) カテゴリボタン描画 =====
+    function openModal(el){ el.style.display='flex'; }
+    function closeModal(el){ el.style.display='none'; }
+
+    function renderCategoryButtons(){
+      const wrap = $('#catButtons');
+      wrap.innerHTML = '';
+      CATEGORY_LIST.forEach(c => {
+        const hasBank = BANKS_BY_DOMAIN[c.key]?.length >= 10;
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-block ' + (hasBank ? 'btn-pink' : 'btn-gray');
+        btn.textContent = c.label + (hasBank ? '' : '（準備中）');
+        btn.disabled = !hasBank;
+        btn.addEventListener('click', () => startAdGate(c.key));
+        wrap.appendChild(btn);
+      });
+    }
+
+    // ===== 3) Ad Gate（5秒で解放）→ 検定開始 =====
+    let selectedDomain = null;
+    function startAdGate(domain){
+      selectedDomain = domain;
+      openModal($('#overlayAd'));
+      $('#btnAdStart').disabled = true;
+      $('#fakeAd').textContent = '[ 動画広告（擬似） 5 秒 ]';
+      setTimeout(() => { $('#btnAdStart').disabled = false; }, 5000);
+    }
+    $('#btnAdStart').addEventListener('click', () => {
+      closeModal($('#overlayAd'));
+      startQuiz(selectedDomain);
+    });
+    $('#btnAdClose').addEventListener('click', () => closeModal($('#overlayAd')));
+
+    // ===== 4) クイズ（10問ランダム） =====
+    let quiz = { items:[], idx:0, correct:0 };
+
+    function pick10(domain){
+      const pool = BANKS_BY_DOMAIN[domain] || [];
+      return shuffle(pool.slice()).slice(0,10);
+    }
+    function renderQ(){
+      const i = quiz.idx, item = quiz.items[i];
+      $('#qTitle').textContent = '検定（10問）';
+      $('#qProg').textContent = (i+1) + ' / 10';
+      const body = $('#qBody');
+      body.innerHTML = `<div class="q-question">${item.question}</div>`;
+      item.options.forEach((op, oi) => {
+        const b = document.createElement('button');
+        b.className = 'q-option';
+        b.textContent = op;
+        b.addEventListener('click', () => {
+          const isCorrect = oi === item.answerIndex;
+          if(isCorrect){ quiz.correct++; b.classList.add('correct'); }
+          else { b.classList.add('wrong'); }
+          // 全ボタン無効化
+          [...body.querySelectorAll('.q-option')].forEach(el => el.disabled = true);
+          // 解説
+          const exp = document.createElement('div');
+          exp.className = 'q-exp';
+          exp.textContent = item.explanation;
+          body.appendChild(exp);
+        });
+        body.appendChild(b);
+      });
+    }
+
+    function startQuiz(domain){
+      quiz = { items: pick10(domain), idx:0, correct:0 };
+      renderQ();
+      openModal($('#overlayQuiz'));
+    }
+
+    $('#qNext').addEventListener('click', () => {
+      if(quiz.idx < quiz.items.length - 1){
+        quiz.idx++; renderQ();
+      } else {
+        finishQuiz();
+      }
+    });
+    $('#qClose').addEventListener('click', () => closeModal($('#overlayQuiz')));
+
+    // ===== 5) 結果保存・段位 =====
+    function finishQuiz(){
+      closeModal($('#overlayQuiz'));
+      const score = Math.round(quiz.correct / quiz.items.length * 100);
+      const hist = LS.get('scoreHistory', []);
+      hist.unshift(score);
+      LS.set('scoreHistory', hist.slice(0, 10)); // 10件保持
+      updateHistoryUI();
+      const avg3 = Math.round((hist[0] + (hist[1]||0) + (hist[2]||0)) / Math.min(hist.length,3));
+      alert(`スコア：${score}点\n直近3回平均：${avg3}点\n段位：${rankFromScore(avg3)}`);
+    }
+
+    function updateHistoryUI(){
+      const hist = LS.get('scoreHistory', []);
+      $('#scoreHistory').textContent = hist.length ? hist.slice(0,3).join(' / ') : 'なし';
+    }
+
+    function init(){
+      updateHistoryUI();
+      $('#btnStartTop').onclick = $('#btnStartHero').onclick = () => {
+        renderCategoryButtons();
+        openModal($('#overlayCat'));
+      };
+      $('#catClose').onclick = () => closeModal($('#overlayCat'));
+      $('#btnResults').onclick = () => alert('直近スコア：' + ($('#scoreHistory').textContent));
+      $('#btnAbout').onclick = () => alert('この検定は睡眠リテラシーのセルフチェック用MVPです。');
+      $('#btnRankTable').onclick = () => alert('段位目安：98〜二段/95〜初段/…50〜9級/未満10級');
+    }
+    document.addEventListener('DOMContentLoaded', init);
+
+    /* ===== 1) 問題アイテムを実行時に正規化 ===== */
+    function normalize(item){
+      const fromCat = item.category || item.cat || "";
+      const cat = item.cat ?? (fromCat.includes('-') ? fromCat.split('-')[0] : fromCat || null);
+      const season = item.season ?? (fromCat.includes('winter') ? 'winter' : (fromCat.includes('summer') ? 'summer' : null));
+      return {
+        id: item.id,
+        cat,
+        season,
+        question: item.question,
+        options: item.options,
+        answerIndex: item.answerIndex,
+        explanation: item.explanation
+      };
+    }
+
+    /* ===== 2) バンク登録（存在するものだけ） ===== */
+    // ⚠ BANK_FUTON は紛らわしいので未使用なら削除推奨
+    const BANKS = {
+      pillow:   [...BANK_PILLOW_SUMMER, ...BANK_PILLOW_WINTER].map(normalize),
+      mattress: [...BANK_MATTRESS].map(normalize),
+      // futon:   [...], kakebuton: [...], food: [...], exercise: [...], habit: [...], light: [...]
+    };
+
+    /* ===== 3) 利用可能カテゴリからボタンを生成 ===== */
+    function renderCategoryButtons(){
+      const wrap = $('#catButtons');
+      wrap.innerHTML = '';
+      CATEGORY_LIST.forEach(({key, label})=>{
+        const bank = BANKS[key] || [];
+        const enabled = bank.length >= 10;
+        const btn = document.createElement('button');
+        btn.className = `btn btn-block ${enabled ? 'btn-pink' : 'btn-gray'}`;
+        btn.type = 'button';
+        btn.textContent = enabled ? label : `${label}（準備中）`;
+        btn.disabled = !enabled;
+        if(enabled){
+          btn.addEventListener('click', ()=>startQuiz(key));
+        }
+        wrap.appendChild(btn);
+      });
+    }
+    renderCategoryButtons();
+
+    /* ===== 4) 10問抽出の安全化 ===== */
+    function pickRandomQuestions(bank, n=10){
+      if(bank.length < n) throw new Error('問題数が不足しています。');
+      const copy = bank.slice();
+      shuffle(copy);
+      return copy.slice(0, n);
+    }
+
+    /* ===== 5) モーダル: Esc閉じ＆フォーカストラップ（簡易） ===== */
+    function enableModalA11y(overlay, closeBtnSelector){
+      function esc(e){ if(e.key === 'Escape'){ overlay.classList.remove('show'); } }
+      overlay.addEventListener('transitionend', ()=>{ if(overlay.classList.contains('show')) overlay.querySelector('button, [href], input, select, textarea')?.focus(); });
+      document.addEventListener('keydown', esc);
+      // フォーカストラップ（超簡易）
+      overlay.addEventListener('keydown', e=>{
+        if(e.key !== 'Tab') return;
+        const f = overlay.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        const first = f[0], last = f[f.length-1];
+        if(!first) return;
+        if(e.shiftKey && document.activeElement === first){ last.focus(); e.preventDefault(); }
+        else if(!e.shiftKey && document.activeElement === last){ first.focus(); e.preventDefault(); }
+      });
+      // 閉じるボタン
+      const closeBtn = overlay.querySelector(closeBtnSelector);
+      if(closeBtn) closeBtn.addEventListener('click', ()=> overlay.classList.remove('show'));
+    }
+    ['#overlayCat','#overlayAd','#overlayQuiz','#overlayResult','#overlayRank','#overlayAbout'].forEach(sel=>{
+      const ov = document.querySelector(sel);
+      if(ov) enableModalA11y(ov, '.btn.ghost, #qClose, #resClose, #rankClose, #aboutClose, #btnAdClose');
+    });
+
+    /* ===== 6) 選択肢は button で、ARIA を付与 ===== */
+    function renderQuestion($body, q, onPick){
+      $body.innerHTML = '';
+      const group = document.createElement('div');
+      group.setAttribute('role','radiogroup');
+      group.setAttribute('aria-label','選択肢');
+      q.options.forEach((opt, idx)=>{
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'q-option';
+        b.setAttribute('role','radio');
+        b.setAttribute('aria-checked','false');
+        b.textContent = opt; // ← 安全
+        b.addEventListener('click', ()=>{
+          onPick(idx);
+          // 状態更新（視覚＆ARIA）
+          [...group.children].forEach(el=>{ el.setAttribute('aria-checked','false'); el.classList.remove('correct','wrong'); });
+          b.setAttribute('aria-checked','true');
+          b.classList.add(idx === q.answerIndex ? 'correct' : 'wrong');
+        });
+        group.appendChild(b);
+      });
+      $body.appendChild(group);
+      // 解説ボックスは onPick 側で textContent 差し込み推奨
+    }
+
+    /* ===== 7) LS: カテゴリ別に直近3回平均を保存/表示 ===== */
+    function pushScore(cat, score){
+      const key = `scores:${cat}`;
+      const arr = LS.get(key, []);
+      arr.unshift(score);
+      LS.set(key, arr.slice(0,3));
+    }
+    function getAvg(cat){
+      const arr = LS.get(`scores:${cat}`, []);
+      if(!arr.length) return null;
+      return Math.round( arr.reduce((a,b)=>a+b,0) / arr.length );
+    }
+    function refreshHistoryUI(){
+      // ざっくり全カテゴリの直近を表示（必要ならカテゴリ別にする）
+      const parts = Object.keys(BANKS).map(k=>{
+        const arr = LS.get(`scores:${k}`, []);
+        if(!arr.length) return null;
+        const avg = getAvg(k);
+        return `${CATEGORY_LIST.find(c=>c.key===k)?.label ?? k}：${arr.join(' / ')}（平均 ${avg}→${rankFromScore(avg)}）`;
+      }).filter(Boolean);
+      $('#scoreHistory').textContent = parts.length ? parts.join('　|　') : 'なし';
+    }
+    refreshHistoryUI();
+
+    /* ===== 8) 「開始」ハンドラ例（あなたの実装に合わせて） ===== */
+    function startQuiz(catKey){
+      const bank = (BANKS[catKey] || []).slice();
+      try{
+        const quiz = pickRandomQuestions(bank, 10);
+        // 以降：現在の実装に合わせて、qBodyへ renderQuestion() を使って描画し、
+        // 最終的に pushScore(catKey, score); refreshHistoryUI(); するだけでOK。
+      }catch(e){
+        $('#bankWarn').textContent = 'このカテゴリは問題数が不足しています。';
+        $('#bankWarn').style.display = 'block';
+      }
+    }
+</script>
+
+
+</body>
+</html>

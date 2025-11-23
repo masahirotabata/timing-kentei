@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>数レーザー｜SIEGE (items+boss) FIX</title>
+<style>
+  :root{ --ink:#e5e7eb; --bg0:#0b1220; --bg1:#151c2c; --accent:#7dd3fc; }
+  html,body{height:100%;margin:0;background:radial-gradient(1200px 700px at 50% 0%,var(--bg1),var(--bg0) 60%);font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN","Noto Sans JP", "Noto Sans", Helvetica, Arial, sans-serif;color:var(--ink);}
+  #ui{position:fixed;inset:0;display:flex;flex-direction:column;pointer-events:auto;z-index:1}
+  .topbar{display:flex;gap:16px;align-items:center;justify-content:space-between;padding:10px 14px;font-weight:600;mix-blend:screen}
+  .pill{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);backdrop-filter: blur(6px); padding:6px 10px;border-radius:999px;pointer-events:auto}
+  #centerMsg{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font-weight:700;letter-spacing:0.02em; pointer-events:auto; z-index:5}
+  #centerMsg .card{padding:24px 28px;border-radius:16px;background:rgba(10,15,25,.82);border:1px solid rgba(255,255,255,.10);box-shadow:0 10px 40px rgba(0,0,0,.45)}
+  button{cursor:pointer;border:none;border-radius:12px;padding:10px 14px;font-weight:700;color:#0b1220;background:linear-gradient(180deg,#99f6e4,#67e8f9);}
+  button.secondary{background:linear-gradient(180deg,#c7d2fe,#93c5fd)}
+  select, .chk{appearance:none;background:rgba(255,255,255,.1);color:var(--ink);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:8px 12px;font-weight:700}
+  label{font-size:12px;opacity:.85;display:block;margin-bottom:6px;text-align:left}
+  #canvas{position:relative;display:block;width:100vw;height:100vh;touch-action:none;z-index:0}
+  .logo{font-size:14px;letter-spacing:.1em;opacity:.9}
+  .stat{min-width:120px;text-align:center}
+  .caption{font-size:12px;opacity:.8}
+  .tiny{font-size:12px;opacity:.75}
+  .row{display:flex;gap:12px;align-items:center;justify-content:center;margin-top:8px}
+  .hpbar{position:absolute;left:50%;transform:translateX(-50%);bottom:12px;width:min(680px,80vw);height:10px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.15) inset;pointer-events:none}
+  .hpbar>div{height:100%;background:linear-gradient(90deg,#34d399,#60a5fa);width:100%}
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+
+<div id="ui">
+  <div class="topbar">
+    <div class="pill logo">数レーザー / NUMBER LASER</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <div class="pill stat"><div class="caption">SCORE</div><div id="score">0</div></div>
+      <div class="pill stat"><div class="caption">COMBO</div><div id="combo">x1.0</div></div>
+      <div class="pill stat"><div class="caption">WAVE</div><div id="wave">1</div></div>
+      <div class="pill stat"><div class="caption">REMAIN</div><div id="remain">0</div></div>
+      <div class="pill stat"><div class="caption">BASE</div><div id="basehp">100%</div></div>
+      <div class="pill stat"><div class="caption">POWER</div><div id="pow">x1 / 0s</div></div>
+      <div class="pill stat"><div class="caption">MODE</div><div id="mode">BEAM</div></div>
+    </div>
+    <div class="pill tiny">操作: クリック/タップで狙う・ドラッグで追従</div>
+  </div>
+  <div class="hpbar"><div id="hpfill"></div></div>
+
+  <div id="centerMsg">
+    <div class="card">
+      <h1 style="margin:0 0 8px;filter:drop-shadow(0 0 10px rgba(125,211,252,.6))">SIEGE（城防衛）</h1>
+      <p style="margin:0 0 14px;opacity:.9">ビーム照射で数字（HP）を削り、城を守れ。<br><span class="tiny">P=Power（火力&幅）/ S=Spread（3WAY）/ B=Bullet（弾）</span></p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px auto 10px;max-width:480px">
+        <div>
+          <label>敵のタイプ</label>
+          <select id="enemyType">
+            <option value="ghost">ゴースト（4色）</option>
+            <option value="zombie">ゾンビ</option>
+            <option value="orb">オーブ</option>
+          </select>
+        </div>
+        <div>
+          <label>Waveごとの体数</label>
+          <select id="enemyCount">
+            <option>30</option>
+            <option selected>50</option>
+            <option>100</option>
+          </select>
+        </div>
+      </div>
+      <div class="row" style="margin-bottom:8px">
+        <input id="assist" type="checkbox" class="chk" style="width:16px;height:16px;border-radius:6px" checked>
+        <label for="assist" style="margin:0">オートロック（近い強敵へスナップ）</label>
+      </div>
+      <div class="row">
+        <button id="startBtn">▶ はじめる</button>
+        <button id="endlessBtn" class="secondary">∞ エンドレス</button>
+      </div>
+      <p class="tiny" style="margin-top:10px;opacity:.8">5 Waveごとにボス出現</p>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  const ui = {
+    root: document.getElementById('ui'),
+    score: document.getElementById('score'),
+    combo: document.getElementById('combo'),
+    wave: document.getElementById('wave'),
+    remain: document.getElementById('remain'),
+    basehp: document.getElementById('basehp'),
+    hpfill: document.getElementById('hpfill'),
+    center: document.getElementById('centerMsg'),
+    startBtn: document.getElementById('startBtn'),
+    endlessBtn: document.getElementById('endlessBtn'),
+    enemyType: document.getElementById('enemyType'),
+    enemyCount: document.getElementById('enemyCount'),
+    assist: document.getElementById('assist'),
+    pow: document.getElementById('pow'),
+    mode: document.getElementById('mode'),
+  };
+
+  // --- State ---
+  const state = {
+    mode:'menu',
+    wave:1, score:0, combo:1.0,
+    enemies:[], particles:[], items:[], bullets:[],
+    laser:{ x: innerWidth/2, y: innerHeight*0.85, angle:-Math.PI/2, width:6 },
+    remain:0, endless:false,
+    config:{ type:'ghost', count:50 },
+    assist:true,
+    base:{ x: innerWidth/2, y: innerHeight*0.90, r:28, hp:10, hpMax:10 }, // ← 100→10
+    effects:{ power:0, multi:0, bullet:0 },
+    dpsBase:20, fireTimer:0,
+  };
+  const rand=(a,b)=> a+Math.random()*(b-a);
+
+  // --- Fit & relocate base/laser ---
+  function fit() {
+    const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    canvas.width = Math.floor(innerWidth * dpr);
+    canvas.height = Math.floor(innerHeight * dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+
+    // 画面サイズに合わせて基準位置を更新
+    state.base.x = innerWidth/2;
+    state.base.y = innerHeight*0.90;
+    state.laser.x = innerWidth/2;
+    state.laser.y = innerHeight*0.85;
+  }
+  addEventListener('resize', fit, {passive:true});
+  fit();
+
+  // 初期はメニュー操作可能 / Canvasは無効
+  ui.root.style.pointerEvents = 'auto';
+  canvas.style.pointerEvents = 'none';
+
+  // --- Audio ---
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  let actx = null;
+  function ensureAudio(){ if(!actx) actx = new AudioCtx(); }
+  function beep(f=880,t=0.08,type='sine',g=0.08){
+    if(!actx) return;
+    const o=actx.createOscillator(), m=actx.createGain();
+    o.type=type; o.frequency.value=f; m.gain.value=g;
+    o.connect(m); m.connect(actx.destination); o.start(); o.stop(actx.currentTime+t);
+  }
+  const sfx = { hit(){ beep(980,0.05,'square',0.05) }, clear(){ beep(520,0.12,'sine',0.06); setTimeout(()=>beep(760,0.12,'sine',0.06),90)}, hurt(){ beep(220,0.08,'sawtooth',0.06) }, over(){ beep(160,0.16,'triangle',0.08) }, item(){ beep(1200,0.08,'sine',0.05) } };
+
+  // --- HUD ---
+  function setHUD(){
+    ui.score.textContent = Math.floor(state.score);
+    ui.combo.textContent = 'x' + state.combo.toFixed(1);
+    ui.wave.textContent = state.wave;
+    ui.remain.textContent = state.remain;
+    const p = Math.max(0, state.base.hp)/state.base.hpMax*100;
+    ui.basehp.textContent = Math.round(p) + '%';
+    ui.hpfill.style.width = p + '%';
+    const powMul = (1 + (state.effects.power>0 ? 0.8 : 0)).toFixed(1);
+    const dur = Math.max(0, Math.ceil(state.effects.power));
+    ui.pow.textContent = `x${powMul} / ${dur}s`;
+    ui.mode.textContent = state.effects.bullet>0 ? 'BULLET' : (state.effects.multi>0 ? 'BEAM×3' : 'BEAM');
+  }
+
+  // --- Game control ---
+  function resetGame({endless=false,type='ghost',count=50}={}){
+    state.mode='play'; ensureAudio();
+    state.endless=endless; state.wave=1;
+    state.score=0; state.combo=1.0;
+    state.enemies.length=0; state.particles.length=0; state.items.length=0; state.bullets.length=0;
+    state.effects.power=0; state.effects.multi=0; state.effects.bullet=0;
+    state.laser.angle=-Math.PI/2; state.laser.width=6;
+    state.config={type,count};
+    state.base.hp = state.base.hpMax = 10;
+
+    spawnWave();
+
+    // 入力先をCanvasへ
+    ui.center.style.display='none';
+    ui.root.style.pointerEvents='none';
+    canvas.style.pointerEvents='auto';
+
+    setHUD();
+  }
+
+  function spawnWave(){
+    const bossWave = (state.wave % 5)===0;
+    const count = bossWave ? 1 : Math.floor(state.config.count * (1 + (state.wave-1)*0.25));
+    const maxHP = bossWave ? 800 + (state.wave/5-1)*300 : 20 + (state.wave-1)*10;
+    const speed = bossWave ? 0.45 : 0.6 + (state.wave-1)*0.08;
+    spawnEnemies(count, maxHP, speed, state.config.type, bossWave);
+  }
+
+  function spawnEnemies(count, maxHP, speed, type, boss=false){
+    state.enemies.length=0;
+    const palette=['#ef4444','#22c55e','#60a5fa','#f97316'];
+    for(let i=0;i<count;i++){
+      const hp = boss ? maxHP : Math.max(6, Math.floor(rand(maxHP*0.3, maxHP)));
+      const a = Math.random()*Math.PI*2;
+      const r = Math.max(innerWidth, innerHeight)*0.60;
+      const x = innerWidth/2 + Math.cos(a)*r;
+      const y = innerHeight*0.55 + Math.sin(a)*r*0.8;
+      const dir = Math.atan2(state.base.y - y, state.base.x - x) + rand(-0.25,0.25);
+      const sp = rand(speed*0.7, speed*1.0);
+      state.enemies.push({ x,y, vx:Math.cos(dir)*sp, vy:Math.sin(dir)*sp, r: boss?40:22, hp, hpMax:hp, alive:true, type, color:palette[Math.floor(Math.random()*palette.length)], boss });
+    }
+    state.remain = state.enemies.length;
+  }
+
+  function dropItem(x,y,forceKind=null){
+    const roll = Math.random();
+    const kind = forceKind || (roll < 0.33 ? 'power' : (roll < 0.66 ? 'multi' : 'bullet'));
+    state.items.push({x,y, kind, vy: rand(1.0,1.8), t:0, r:12});
+    sfx.item();
+  }
+
+  function collectItem(it){
+    applyItem(it.kind);
+    it.collected = true;
+    for(let i=0;i<10;i++){
+      const a = Math.random()*Math.PI*2, sp = rand(2,5);
+      state.particles.push({x:it.x,y:it.y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:260+Math.random()*180,t:0});
+    }
+  }
+
+  // --- Aiming & pointer ---
+  function aimTo(clientX, clientY){
+    state.laser.angle = Math.atan2(clientY - state.laser.y, clientX - state.laser.x);
+  }
+  let pointerActive=false, pointerId=null;
+  canvas.addEventListener('pointerdown', (e)=>{
+    if (ui.center.style.display !== 'none') return;
+    pointerActive=true; pointerId=e.pointerId;
+    canvas.setPointerCapture(e.pointerId);
+    aimTo(e.clientX,e.clientY);
+  });
+  canvas.addEventListener('pointermove', (e)=>{
+    if(!pointerActive || ui.center.style.display !== 'none') return;
+    aimTo(e.clientX,e.clientY);
+  });
+  function endPtr(){ if(pointerId!=null){ try{ canvas.releasePointerCapture(pointerId); }catch{} } pointerActive=false; pointerId=null; }
+  canvas.addEventListener('pointerup', endPtr);
+  canvas.addEventListener('pointercancel', endPtr);
+  canvas.addEventListener('click', (e)=>{ if (ui.center.style.display === 'none') aimTo(e.clientX,e.clientY); });
+
+  // --- Math helpers ---
+  function rayHitsCircle(ox,oy,dx,dy,len,cx,cy,rr){
+    const ex=cx-ox, ey=cy-oy;
+    const proj = (ex*dx + ey*dy);
+    if(proj<0 || proj>len) return false;
+    const px = ox + dx*proj, py = oy + dy*proj;
+    return (cx-px)**2 + (cy-py)**2 <= rr*rr;
+  }
+
+  // --- Update ---
+  function update(dt){
+    const dts = dt/1000;
+
+    // Assist
+    if(state.assist && !pointerActive && state.mode==='play'){
+      let best=null, bestScore=-1;
+      for(const e of state.enemies){ if(!e.alive) continue;
+        const d = Math.hypot(e.x-state.laser.x, e.y-state.laser.y);
+        const score = e.hp + Math.max(0, 400-d) + (e.boss? 300:0);
+        if(score>bestScore){ best=e; bestScore=score; }
+      }
+      if(best){
+        const ta = Math.atan2(best.y - state.laser.y, best.x - state.laser.x);
+        let da = ta - state.laser.angle;
+        while(da > Math.PI) da -= Math.PI*2;
+        while(da < -Math.PI) da += Math.PI*2;
+        state.laser.angle += da * 0.05;
+      }
+    }
+
+    // Enemies
+    for(const e of state.enemies){
+      if(!e.alive) continue;
+      e.x += e.vx; e.y += e.vy;
+      const ta = Math.atan2(state.base.y-e.y, state.base.x-e.x);
+      const steer = e.boss? 0.03 : 0.04;
+      e.vx = e.vx*(1-steer) + Math.cos(ta)*steer;
+      e.vy = e.vy*(1-steer) + Math.sin(ta)*steer;
+      if (Math.hypot(e.x-state.base.x, e.y-state.base.y) < state.base.r + e.r*0.7) {
+        const hit = 1;                 // ボスを重くするなら const hit = e.boss ? 2 : 1;
+        state.base.hp -= hit;          // ← 連続減少ではなく回数で減らす
+        e.alive = false;
+        state.remain--;
+        sfx.hurt();
+      }
+    }
+
+    // Items
+    for(const it of state.items){
+      it.t += dt; it.y += it.vy;
+      if(Math.hypot(it.x-state.base.x, it.y-state.base.y) < state.base.r*1.8) collectItem(it);
+    }
+    state.items = state.items.filter(i=>!i.collected && i.y < innerHeight+40);
+
+    // Effects
+    for(const k of Object.keys(state.effects)){
+      if(state.effects[k]>0) state.effects[k]-=dts;
+      if(state.effects[k]<0) state.effects[k]=0;
+    }
+    state.laser.width = 6 * (state.effects.power>0 ? 1.6 : 1);
+
+    // Bullet mode
+    if(state.effects.bullet>0){
+      state.fireTimer -= dts;
+      if(state.fireTimer<=0){
+        state.fireTimer = 0.12;
+        fireBullet(state.laser.angle);
+        if(state.effects.multi>0){ fireBullet(state.laser.angle-0.12); fireBullet(state.laser.angle+0.12); }
+      }
+    }
+
+    for(const bl of state.bullets){
+      bl.x += bl.vx; bl.y += bl.vy; bl.life -= dt;
+      for(const e of state.enemies){
+        if(!e.alive) continue;
+        if((e.x-bl.x)**2 + (e.y-bl.y)**2 <= (e.r+2.5)*(e.r+2.5)){
+          e.hp -= 60; bl.life=0;
+          if(e.hp<=0){ killEnemy(e); }
+        }
+      }
+      for(const it of state.items){
+        if(it.collected) continue;
+        if((it.x-bl.x)**2 + (it.y-bl.y)**2 <= (it.r+2.5)*(it.r+2.5)){ collectItem(it); bl.life=0; }
+      }
+    }
+    state.bullets = state.bullets.filter(b=>b.life>0 && b.x>-40 && b.x<innerWidth+40 && b.y>-40 && b.y<innerHeight+40);
+
+    // Beam & hits
+    const L=1400, ox=state.laser.x, oy=state.laser.y;
+    const dirs = state.effects.multi>0 ? [state.laser.angle, state.laser.angle-0.15, state.laser.angle+0.15] : [state.laser.angle];
+    for(const ang of dirs){
+      const dx=Math.cos(ang), dy=Math.sin(ang);
+      let best=null, bestD=L;
+      for(const e of state.enemies){
+        if(!e.alive) continue;
+        if(rayHitsCircle(ox,oy,dx,dy,L,e.x,e.y,e.r+state.laser.width)){ const d=Math.hypot(e.x-ox,e.y-oy); if(d<bestD){ best=e; bestD=d; } }
+      }
+      drawLaser(ox,oy, ox+dx*bestD, oy+dy*bestD);
+      if(state.effects.bullet<=0 && best){
+        const mul = (state.effects.power>0 ? 1.8 : 1);
+        const dps = state.dpsBase * mul * (1 + (state.combo-1)*0.5);
+        best.hp -= dps * dts;
+        if(best.hp<=0){ killEnemy(best); }
+      }
+      for(const it of state.items){
+        if(it.collected) continue;
+        if(rayHitsCircle(ox,oy,dx,dy,L,it.x,it.y,it.r+state.laser.width*0.6)){ collectItem(it); }
+      }
+    }
+
+    // Particles
+    for(let i=state.particles.length-1;i>=0;i--){
+      const p=state.particles[i]; p.t+=dt; p.x+=p.vx; p.y+=p.vy; p.vx*=0.99; p.vy*=0.99;
+      if(p.t>p.life) state.particles.splice(i,1);
+    }
+
+    // Progress
+    if(state.base.hp<=0){
+      state.mode='over'; sfx.over();
+      showCenter(`GAME OVER<br><span class="tiny">SCORE ${Math.floor(state.score)}</span>`, true);
+    }else if(state.remain===0){
+      if(state.endless){ state.wave++; spawnWave(); }
+      else { state.mode='pause'; sfx.clear(); showCenter(`WAVE ${state.wave} CLEAR!`, false, ()=>{ state.mode='play'; state.wave++; spawnWave(); ui.center.style.display='none'; ui.root.style.pointerEvents='none'; canvas.style.pointerEvents='auto'; }); }
+    }
+  }
+
+  function killEnemy(e){
+    e.alive=false; state.remain--;
+    state.combo = Math.min(2.0, +(state.combo + 0.05).toFixed(2));
+    state.score += Math.round(10 + e.hpMax * 1.2);
+    sfx.hit();
+    if(Math.random()<0.15 || e.boss) dropItem(e.x,e.y);
+  }
+
+  function fireBullet(angle){
+    const sp = 16;
+    state.bullets.push({ x: state.laser.x, y: state.laser.y, vx: Math.cos(angle)*sp, vy: Math.sin(angle)*sp, life: 1200 });
+  }
+
+  function applyItem(kind){
+    if(kind==='power'){ state.effects.power = 10; }
+    if(kind==='multi'){ state.effects.multi = 10; }
+    if(kind==='bullet'){ state.effects.bullet = 10; state.fireTimer=0; }
+    setHUD();
+  }
+
+  // --- Rendering helpers ---
+  function paintBackground(t){
+    ctx.save();
+    ctx.globalAlpha = 0.15; ctx.fillStyle = '#0ea5e9';
+    const step = 40, off = (t*0.02)%step;
+    for(let y=0;y<innerHeight;y+=step){ ctx.fillRect(0, y+off, innerWidth, 1); }
+    ctx.restore();
+  }
+  function drawLaser(x0,y0,x1,y1){
+    ctx.save();
+    const grad = ctx.createLinearGradient(x0,y0,x1,y1);
+    grad.addColorStop(0, 'rgba(125,211,252,0.0)');
+    grad.addColorStop(0.1, 'rgba(125,211,252,0.9)');
+    grad.addColorStop(1, 'rgba(56,189,248,0.0)');
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = state.laser.width;
+    ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+    ctx.globalAlpha = 0.6;
+    ctx.lineWidth = state.laser.width*2.2;
+    ctx.strokeStyle = 'rgba(56,189,248,0.18)';
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+    ctx.restore();
+  }
+  function drawBase(b){
+    ctx.save();
+    const g = ctx.createRadialGradient(b.x,b.y,0,b.x,b.y,b.r*2.2);
+    g.addColorStop(0,'rgba(125,211,252,0.35)'); g.addColorStop(1,'rgba(14,165,233,0)');
+    ctx.fillStyle=g; ctx.globalAlpha=0.7;
+    ctx.beginPath(); ctx.arc(b.x,b.y,b.r*2.2,0,Math.PI*2); ctx.fill();
+    ctx.globalAlpha=1;
+    ctx.fillStyle='rgba(255,255,255,0.12)';
+    ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.arc(b.x,b.y,b.r,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.restore();
+  }
+  function drawEnemy(e, t){
+    ctx.save();
+    if(e.type==='ghost'){
+      const w=e.r*1.4, h=e.r*1.6;
+      ctx.beginPath();
+      ctx.moveTo(e.x-w*0.5, e.y);
+      ctx.lineTo(e.x-w*0.5, e.y-h*0.3);
+      ctx.quadraticCurveTo(e.x-w*0.5, e.y-h*1.05, e.x, e.y-h*1.05);
+      ctx.quadraticCurveTo(e.x+w*0.5, e.y-h*1.05, e.x+w*0.5, e.y-h*0.3);
+      ctx.lineTo(e.x+w*0.5, e.y);
+      const n=4, step=w/n;
+      for(let i=0;i<n;i++){ const cx = e.x+w*0.5 - step*(i+0.5); ctx.quadraticCurveTo(cx, e.y+e.r*0.6, e.x+w*0.5 - step*(i+1), e.y); }
+      ctx.closePath();
+      ctx.fillStyle='rgba(255,255,255,0.10)';
+      ctx.strokeStyle= e.boss ? '#facc15' : e.color; ctx.lineWidth= e.boss? 3:2; ctx.fill(); ctx.stroke();
+      ctx.fillStyle='#0f172a';
+      ctx.beginPath(); ctx.arc(e.x-w*0.18, e.y-h*0.65, e.r*0.22, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(e.x+w*0.18, e.y-h*0.65, e.r*0.22, 0, Math.PI*2); ctx.fill();
+    }else if(e.type==='zombie'){
+      ctx.beginPath();
+      ctx.fillStyle='rgba(34,197,94,0.22)';
+      ctx.strokeStyle='rgba(34,197,94,0.6)'; ctx.lineWidth=e.boss?3:2;
+      ctx.arc(e.x,e.y,e.r*0.95,0,Math.PI*2); ctx.fill(); ctx.stroke();
+      const sway = Math.sin(t*0.02)>0 ? 1 : -1;
+      ctx.strokeStyle='rgba(34,197,94,0.8)'; ctx.lineWidth=3;
+      ctx.beginPath(); ctx.moveTo(e.x-e.r*0.8, e.y-e.r*0.1); ctx.lineTo(e.x-e.r*0.2, e.y+e.r*0.1*sway); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(e.x+e.r*0.8, e.y-e.r*0.1); ctx.lineTo(e.x+e.r*0.2, e.y-e.r*0.1*sway); ctx.stroke();
+      ctx.fillStyle='#0f172a';
+      ctx.beginPath(); ctx.arc(e.x-e.r*0.35, e.y-e.r*0.2, e.r*0.18, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(e.x+e.r*0.35, e.y-e.r*0.2, e.r*0.18, 0, Math.PI*2); ctx.fill();
+      ctx.strokeStyle='rgba(239,68,68,0.9)';
+      ctx.beginPath(); ctx.moveTo(e.x-e.r*0.4, e.y+e.r*0.25); ctx.lineTo(e.x+e.r*0.4, e.y+e.r*0.25); ctx.stroke();
+      if(e.boss){ ctx.strokeStyle='#facc15'; ctx.lineWidth=3; ctx.strokeRect(e.x-e.r, e.y-e.r, e.r*2, e.r*2); }
+    }else{
+      const g = ctx.createRadialGradient(e.x,e.y,0,e.x,e.y,e.r*1.2);
+      g.addColorStop(0,'rgba(255,255,255,0.8)'); g.addColorStop(1,'rgba(255,255,255,0.06)');
+      ctx.fillStyle=g; ctx.strokeStyle=e.boss?'#facc15':'rgba(255,255,255,0.25)'; ctx.lineWidth=e.boss?3:1.2;
+      ctx.beginPath(); ctx.arc(e.x,e.y,e.r,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    }
+    ctx.fillStyle= e.boss ? '#fde68a' : '#e2e8f0'; ctx.font='700 16px ui-sans-serif,system-ui';
+    ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(Math.ceil(e.hp), e.x, e.y+0.5);
+    ctx.restore();
+  }
+  function drawItems(){
+    for(const it of state.items){
+      ctx.save();
+      const color = it.kind==='power' ? '#34d399' : (it.kind==='multi' ? '#60a5fa' : '#f59e0b');
+      ctx.strokeStyle = color; ctx.fillStyle='rgba(255,255,255,0.12)'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.arc(it.x,it.y, it.r, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+      ctx.font='700 12px ui-sans-serif'; ctx.fillStyle=color; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(it.kind==='power'?'P': it.kind==='multi'?'S':'B', it.x, it.y+0.5);
+      ctx.restore();
+    }
+  }
+  function drawBullets(){
+    ctx.save(); ctx.fillStyle='rgba(125,211,252,1)';
+    for(const bl of state.bullets){ ctx.beginPath(); ctx.arc(bl.x,bl.y,2.5,0,Math.PI*2); ctx.fill(); }
+    ctx.restore();
+  }
+
+  // --- Center message (with proper toggles) ---
+  function showCenter(html, isGameOver=false, onNext=null){
+    ui.root.style.pointerEvents='auto';
+    canvas.style.pointerEvents='none';
+    try{ if(pointerId!=null){ canvas.releasePointerCapture(pointerId); } }catch(e){}
+    pointerActive=false; pointerId=null;
+
+    ui.center.style.display='grid';
+    ui.center.querySelector('.card').innerHTML = `
+      <h2 style="margin:0 0 8px">${isGameOver ? 'GAME OVER' : 'CLEAR!'}</h2>
+      <p style="margin:0 0 10px">${html}<br/>SCORE: <b>${Math.floor(state.score)}</b> / COMBO: x${state.combo.toFixed(1)}</p>
+      <div style="display:flex;gap:10px;justify-content:center">
+        ${onNext ? '<button id="nextBtn">▶ 次へ</button>' : ''}
+        <button id="replayBtn">↻ もう一度</button>
+        <button id="menuBtn" class="secondary">□ メニュー</button>
+      </div>`;
+
+    if(onNext){ document.getElementById('nextBtn').addEventListener('click', ()=>{ ui.center.style.display='none'; ui.root.style.pointerEvents='none'; canvas.style.pointerEvents='auto'; onNext(); }, {once:true}); }
+    document.getElementById('replayBtn').addEventListener('click', ()=>{
+      ui.center.style.display='none'; ui.root.style.pointerEvents='none'; canvas.style.pointerEvents='auto';
+      const {type,count}=state.config; resetGame({endless:state.endless,type,count});
+    }, {once:true});
+    document.getElementById('menuBtn').addEventListener('click', ()=> location.reload(), {once:true});
+  }
+
+  // --- Main loop ---
+  function paintBackground(t){
+    ctx.save(); ctx.globalAlpha = 0.15; ctx.fillStyle = '#0ea5e9';
+    const step = 40, off = (t*0.02)%step;
+    for(let y=0;y<innerHeight;y+=step){ ctx.fillRect(0, y+off, innerWidth, 1); }
+    ctx.restore();
+  }
+  
+  function notifyIOSStart(){
+    try { window.webkit?.messageHandlers?.startGame?.postMessage("start"); } catch(e) {}
+  }
+  
+  let last = performance.now();
+  function frame(t){
+    const dt = Math.min(33, t - last);
+    last = t;
+
+    ctx.clearRect(0,0,innerWidth,innerHeight);
+    paintBackground(t);
+
+    // 進行は play のときだけ
+    if (state.mode === 'play') {
+      update(dt);
+    }
+    // 描画は play/pause 両方で OK
+    if (state.mode === 'play' || state.mode === 'pause') {
+      drawBase(state.base);
+      for (const e of state.enemies) { if (!e.alive) continue; drawEnemy(e, t); }
+      drawItems();
+      drawBullets();
+      setHUD();
+    }
+
+    requestAnimationFrame(frame);   // ← これをフレーム末尾に戻す
+  }
+  requestAnimationFrame(frame);     // ← 初回起動
+
+  // --- UI actions ---  ← ループの外に置く
+  ui.startBtn.addEventListener('click', () => {
+    notifyIOSStart();
+    state.assist = ui.assist.checked;
+    resetGame({ endless:false, type:ui.enemyType.value, count:parseInt(ui.enemyCount.value,10) });
+  });
+  ui.endlessBtn.addEventListener('click', () => {
+    notifyIOSStart();
+    state.assist = ui.assist.checked;
+    resetGame({ endless:true, type:ui.enemyType.value, count:parseInt(ui.enemyCount.value,10) });
+  });
+})();
+</script>
+
+</body>
+</html>

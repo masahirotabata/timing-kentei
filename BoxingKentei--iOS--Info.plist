@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- テキストファイル閲覧を許可 -->
+    <key>CFBundleDocumentTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeName</key>
+            <string>Plain Text</string>
+            <key>CFBundleTypeRole</key>
+            <string>Viewer</string>
+            <key>LSItemContentTypes</key>
+            <array>
+                <string>public.text</string>
+            </array>
+        </dict>
+    </array>
+
+    <!-- AdMob アプリID -->
+    <key>GADApplicationIdentifier</key>
+    <string>ca-app-pub-3517487281025314~4345140628</string>
+
+    <!-- iPhone のみ（iPadも対応するなら 2 を追加） -->
+    <key>UIDeviceFamily</key>
+    <array>
+        <integer>1</integer>
+        <!-- <integer>2</integer> -->
+    </array>
+
+    <!-- X(Twitter) アプリ起動を allowlist -->
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>twitter</string>
+        <string>x</string>
+    </array>
+
+    <!-- ATT：ローカライズのフォールバック（英語） -->
+    <key>NSUserTrackingUsageDescription</key>
+    <string>This app uses your device’s advertising identifier (IDFA) to show relevant ads and to measure ad performance.</string>
+</dict>
+</plist>

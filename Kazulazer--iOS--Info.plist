@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+
+  <!-- 基本情報 -->
+  <key>CFBundleDevelopmentRegion</key>
+  <string>$(DEVELOPMENT_LANGUAGE)</string>
+
+  <!-- ここが無いと今回のような CFBundleExecutable エラーになります -->
+  <key>CFBundleExecutable</key>
+  <string>$(EXECUTABLE_NAME)</string>
+
+  <key>CFBundleIdentifier</key>
+  <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+
+  <key>CFBundleInfoDictionaryVersion</key>
+  <string>6.0</string>
+
+  <key>CFBundleName</key>
+  <string>KazuLazer</string>
+  
+  <key>CFBundleIconName</key>
+  <string>AppIcon</string>
+
+  <key>CFBundleDisplayName</key>
+  <string>KazuLazer</string>
+
+  <!-- これも必須 -->
+  <key>CFBundlePackageType</key>
+  <string>APPL</string>
+
+  <key>CFBundleShortVersionString</key>
+  <string>1.1</string>
+  <key>CFBundleVersion</key>
+  <string>16</string>
+
+  <!-- シーン（最低限でOK） -->
+  <key>UIApplicationSceneManifest</key>
+  <dict>
+    <key>UIApplicationSupportsMultipleScenes</key>
+    <false/>
+  </dict>
+
+  <!-- 起動向け（必要に応じて回転を調整） -->
+  <key>UISupportedInterfaceOrientations</key>
+  <array>
+    <string>UIInterfaceOrientationPortrait</string>
+  </array>
+  <key>UISupportedInterfaceOrientations~ipad</key>
+  <array>
+    <string>UIInterfaceOrientationPortrait</string>
+  </array>
+
+  <!-- デバイスファミリー（iPhoneのみなら1、Universalなら1 & 2）-->
+  <key>UIDeviceFamily</key>
+  <array>
+    <integer>1</integer>
+  </array>
+
+  <!-- ドキュメントタイプ（元から入っていたもの） -->
+  <key>CFBundleDocumentTypes</key>
+  <array>
+    <dict>
+      <key>CFBundleTypeName</key>
+      <string>Plain Text</string>
+      <key>CFBundleTypeRole</key>
+      <string>Viewer</string>
+      <key>LSItemContentTypes</key>
+      <array>
+        <string>public.text</string>
+      </array>
+    </dict>
+  </array>
+
+  <!-- 外部スキーム -->
+  <key>LSApplicationQueriesSchemes</key>
+  <array>
+    <string>twitter</string>
+    <string>x</string>
+  </array>
+
+  <!-- AdMob App ID（アプリID）-->
+  <key>GADApplicationIdentifier</key>
+  <string>ca-app-pub-3517487281025314~1238151975</string>
+
+  <!-- ATT ダイアログ文言 -->
+  <key>NSUserTrackingUsageDescription</key>
+  <string>アプリの品質向上および適切な広告表示のため、追跡の許可をお願いします。</string>
+
+  <!-- （任意）SKAdNetwork は必要になったら追加でOK
+  <key>SKAdNetworkItems</key>
+  <array>
+    <dict>
+      <key>SKAdNetworkIdentifier</key>
+      <string>cstr6suwn9.skadnetwork</string>
+    </dict>
+  </array>
+  -->
+
+</dict>
+</plist>

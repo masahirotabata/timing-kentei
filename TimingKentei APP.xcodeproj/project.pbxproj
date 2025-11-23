@@ -1,0 +1,2439 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 70;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		222237172E87CCF40091639E /* NativeBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2269F2F42E7FC79E00E0AEB3 /* NativeBridge.swift */; };
+		222237192E87CCF40091639E /* (null) in Frameworks */ = {isa = PBXBuildFile; };
+		222237532E8AEBBD0091639E /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222237522E8AEBB10091639E /* HomeViewController.swift */; };
+		222F587C2EADCE25007E28FE /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 222F587B2EADCE25007E28FE /* GoogleMobileAds */; };
+		222F58882EB89B1D007E28FE /* AdsFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222F58872EB89B0A007E28FE /* AdsFacade.swift */; };
+		222F588A2EB89D23007E28FE /* UIHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222F58892EB89D15007E28FE /* UIHelpers.swift */; };
+		222F588C2EBB8B6B007E28FE /* AdsBootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222F588B2EBB8B55007E28FE /* AdsBootstrap.swift */; };
+		222F58972EC8210B007E28FE /* AdRequestFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222F58962EC820F8007E28FE /* AdRequestFactory.swift */; };
+		222F58CB2ECC89D5007E28FE /* Assets_DoubleTapBrowser.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 222F58C92ECC87DB007E28FE /* Assets_DoubleTapBrowser.xcassets */; };
+		2231BF1E2E9778DB005E17CA /* AppTrackingTransparency.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2231BF1D2E9778DB005E17CA /* AppTrackingTransparency.framework */; };
+		2231BF1F2E977932005E17CA /* AppTrackingTransparency.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2231BF1D2E9778DB005E17CA /* AppTrackingTransparency.framework */; };
+		2231BFD12E99334C005E17CA /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2231BFD02E99334C005E17CA /* AdSupport.framework */; };
+		2231BFD82E9957D7005E17CA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2231BFD52E995060005E17CA /* ContentView.swift */; };
+		2231BFDD2E9963E1005E17CA /* AppMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227CD03B2E8588E5005BA5E1 /* AppMain.swift */; };
+		2231BFFF2E9E9518005E17CA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2231BFFE2E9E9518005E17CA /* InfoPlist.strings */; };
+		2231C0032E9E9625005E17CA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2231C0022E9E9625005E17CA /* InfoPlist.strings */; };
+		2231C0042E9E9BB6005E17CA /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2231BFD02E99334C005E17CA /* AdSupport.framework */; };
+		2231C0052E9E9BC8005E17CA /* AppTrackingTransparency.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2231BF1D2E9778DB005E17CA /* AppTrackingTransparency.framework */; };
+		2231C0092E9EA262005E17CA /* BoxingKentei--iOS--Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2231C0082E9EA262005E17CA /* BoxingKentei--iOS--Info.plist */; };
+		2231C0122E9FBDB3005E17CA /* ForceKeepIDFA.m in Sources */ = {isa = PBXBuildFile; fileRef = 2231C0112E9FBDB3005E17CA /* ForceKeepIDFA.m */; };
+		2231C0132E9FC2E0005E17CA /* ForceKeepIDFA.m in Sources */ = {isa = PBXBuildFile; fileRef = 2231C0112E9FBDB3005E17CA /* ForceKeepIDFA.m */; };
+		2231C0492EA1127E005E17CA /* Assets_Boxing.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2269F2AC2E7FBD8C00E0AEB3 /* Assets_Boxing.xcassets */; };
+		22641D2C2ECDEABB009B821C /* Boxing_Kentei_v5.html in Resources */ = {isa = PBXBuildFile; fileRef = 22C1E6E22EACEC240075B29E /* Boxing_Kentei_v5.html */; };
+		2269F2C32E7FBD8C00E0AEB3 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2269F2C22E7FBD8C00E0AEB3 /* Tests_iOS.swift */; };
+		2269F2C52E7FBD8C00E0AEB3 /* Tests_iOSLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2269F2C42E7FBD8C00E0AEB3 /* Tests_iOSLaunchTests.swift */; };
+		2269F2CF2E7FBD8C00E0AEB3 /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2269F2CE2E7FBD8C00E0AEB3 /* Tests_macOS.swift */; };
+		2269F2D12E7FBD8C00E0AEB3 /* Tests_macOSLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2269F2D02E7FBD8C00E0AEB3 /* Tests_macOSLaunchTests.swift */; };
+		2269F2F32E7FC6B000E0AEB3 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 2269F2F22E7FC6B000E0AEB3 /* index.html */; };
+		2269F2F52E7FC79E00E0AEB3 /* NativeBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2269F2F42E7FC79E00E0AEB3 /* NativeBridge.swift */; };
+		2269F2F92E7FC7CE00E0AEB3 /* IAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2269F2F82E7FC7CE00E0AEB3 /* IAPManager.swift */; };
+		227CCFD82E844594005BA5E1 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2269F2EA2E7FC17E00E0AEB3 /* WebView.swift */; };
+		227CCFDB2E844594005BA5E1 /* NativeBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2269F2F42E7FC79E00E0AEB3 /* NativeBridge.swift */; };
+		227CCFDF2E844594005BA5E1 /* privacy.html in Resources */ = {isa = PBXBuildFile; fileRef = 22EC27E82E82AE39007BB4D4 /* privacy.html */; };
+		227CCFE02E844594005BA5E1 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 2269F2F22E7FC6B000E0AEB3 /* index.html */; };
+		227CD0352E857CA6005BA5E1 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 227CD0342E857CA6005BA5E1 /* GoogleMobileAds */; };
+		228063AD2ED21A12009B25ED /* Assets_NearestLunch.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 228063AB2ED1A88B009B25ED /* Assets_NearestLunch.xcassets */; };
+		22BEE8BD2ED0B9A800A39063 /* Kazulazer--iOS--Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 22641D2D2ECDF6BB009B821C /* Kazulazer--iOS--Info.plist */; };
+		22BEE8C22ED0BC8000A39063 /* number_laser_siege_items_boss_fix2.html in Resources */ = {isa = PBXBuildFile; fileRef = 22C1E6E12EACEC240075B29E /* number_laser_siege_items_boss_fix2.html */; };
+		22BEE8C32ED0C3E900A39063 /* Assets_Kazulazer.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 222F58782EAD201A007E28FE /* Assets_Kazulazer.xcassets */; };
+		22BEE8C42ED0E65200A39063 /* AdManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222F587A2EADCB68007E28FE /* AdManager.swift */; };
+		22BEE8D02ED0E99200A39063 /* DoubleTapBrowser--iOS--Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 22BEE8CE2ED0E96300A39063 /* DoubleTapBrowser--iOS--Info.plist */; };
+		22BEE8D22ED0EC4E00A39063 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 22BEE8D12ED0EC4E00A39063 /* GoogleMobileAds */; };
+		22C1E65A2EA4AD060075B29E /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 22C1E6592EA4AD060075B29E /* GoogleMobileAds */; };
+		22C1E6D32EACE70D0075B29E /* ForceKeepIDFA.m in Sources */ = {isa = PBXBuildFile; fileRef = 2231C0112E9FBDB3005E17CA /* ForceKeepIDFA.m */; };
+		22C1E6D42EACE70D0075B29E /* NativeBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2269F2F42E7FC79E00E0AEB3 /* NativeBridge.swift */; };
+		22C1E6D62EACE70D0075B29E /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2231BFD02E99334C005E17CA /* AdSupport.framework */; };
+		22C1E6D72EACE70D0075B29E /* AppTrackingTransparency.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2231BF1D2E9778DB005E17CA /* AppTrackingTransparency.framework */; };
+		22C1E6EB2EACF6120075B29E /* ContentView_Kazulazer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C1E6E72EACEF080075B29E /* ContentView_Kazulazer.swift */; };
+		22C1E6EC2EACF6170075B29E /* GameWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C1E6E62EACEEDA0075B29E /* GameWebView.swift */; };
+		22C1E6EE2EACFA540075B29E /* AdBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C1E6E82EACEF290075B29E /* AdBannerView.swift */; };
+		22C1E6EF2EACFB610075B29E /* AppMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C1E6E92EACEF5B0075B29E /* AppMain.swift */; };
+		22D626FE2E85A4A600C08853 /* AdsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227CD03C2E85890B005BA5E1 /* AdsManager.swift */; };
+		22D627002E86827400C08853 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D626FF2E86826A00C08853 /* AppDelegate.swift */; };
+		22EC27E92E82AE3A007BB4D4 /* privacy.html in Resources */ = {isa = PBXBuildFile; fileRef = 22EC27E82E82AE39007BB4D4 /* privacy.html */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		222F58AE2ECC77EA007E28FE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2269F2A52E7FBD8A00E0AEB3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 222F589B2ECC77E7007E28FE;
+			remoteInfo = DoubleTapBrowser;
+		};
+		222F58B82ECC77EA007E28FE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2269F2A52E7FBD8A00E0AEB3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 222F589B2ECC77E7007E28FE;
+			remoteInfo = DoubleTapBrowser;
+		};
+		2269F2BF2E7FBD8C00E0AEB3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2269F2A52E7FBD8A00E0AEB3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2269F2B02E7FBD8C00E0AEB3;
+			remoteInfo = "TimingKentei (iOS)";
+		};
+		2269F2CB2E7FBD8C00E0AEB3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2269F2A52E7FBD8A00E0AEB3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2269F2B62E7FBD8C00E0AEB3;
+			remoteInfo = "TimingKentei (macOS)";
+		};
+		22BEE8EC2ED18E4300A39063 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2269F2A52E7FBD8A00E0AEB3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 22BEE8D92ED18E3F00A39063;
+			remoteInfo = NearestLunch;
+		};
+		22BEE8F62ED18E4300A39063 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2269F2A52E7FBD8A00E0AEB3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 22BEE8D92ED18E3F00A39063;
+			remoteInfo = NearestLunch;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		222237222E87CCF40091639E /* SleepKentei.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SleepKentei.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		222237522E8AEBB10091639E /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		222F58782EAD201A007E28FE /* Assets_Kazulazer.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets_Kazulazer.xcassets; sourceTree = "<group>"; };
+		222F587A2EADCB68007E28FE /* AdManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdManager.swift; sourceTree = "<group>"; };
+		222F58872EB89B0A007E28FE /* AdsFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdsFacade.swift; sourceTree = "<group>"; };
+		222F58892EB89D15007E28FE /* UIHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIHelpers.swift; sourceTree = "<group>"; };
+		222F588B2EBB8B55007E28FE /* AdsBootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdsBootstrap.swift; sourceTree = "<group>"; };
+		222F58962EC820F8007E28FE /* AdRequestFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdRequestFactory.swift; sourceTree = "<group>"; };
+		222F589C2ECC77E7007E28FE /* DoubleTapBrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DoubleTapBrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		222F58AD2ECC77EA007E28FE /* DoubleTapBrowserTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DoubleTapBrowserTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		222F58B72ECC77EA007E28FE /* DoubleTapBrowserUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DoubleTapBrowserUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		222F58C92ECC87DB007E28FE /* Assets_DoubleTapBrowser.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets_DoubleTapBrowser.xcassets; sourceTree = "<group>"; };
+		2231BF1D2E9778DB005E17CA /* AppTrackingTransparency.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppTrackingTransparency.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.2.sdk/System/Library/Frameworks/AppTrackingTransparency.framework; sourceTree = DEVELOPER_DIR; };
+		2231BF712E97DCA1005E17CA /* sleep-kentai-top-v2.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = "sleep-kentai-top-v2.html"; path = "../Shared/Web/sleep-kentai-top-v2.html"; sourceTree = "<group>"; };
+		2231BF7A2E97E58B005E17CA /* AdBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdBannerView.swift; sourceTree = "<group>"; };
+		2231BFD02E99334C005E17CA /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.2.sdk/System/Library/Frameworks/AdSupport.framework; sourceTree = DEVELOPER_DIR; };
+		2231BFD52E995060005E17CA /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		2231BFFE2E9E9518005E17CA /* InfoPlist.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = InfoPlist.strings; sourceTree = "<group>"; };
+		2231C0022E9E9625005E17CA /* InfoPlist.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = InfoPlist.strings; sourceTree = "<group>"; };
+		2231C0072E9EA262005E17CA /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = "Base.lproj/BoxingKentei--iOS--Info.plist"; sourceTree = "<group>"; };
+		2231C0112E9FBDB3005E17CA /* ForceKeepIDFA.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ForceKeepIDFA.m; sourceTree = "<group>"; };
+		2231C0512EA3D102005E17CA /* Assets_Taming.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets_Taming.xcassets; sourceTree = "<group>"; };
+		22641D2D2ECDF6BB009B821C /* Kazulazer--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Kazulazer--iOS--Info.plist"; sourceTree = "<group>"; };
+		2269F2AC2E7FBD8C00E0AEB3 /* Assets_Boxing.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets_Boxing.xcassets; sourceTree = "<group>"; };
+		2269F2B12E7FBD8C00E0AEB3 /* TimingKentei.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TimingKentei.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2269F2B72E7FBD8C00E0AEB3 /* TimingKentei.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TimingKentei.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2269F2B92E7FBD8C00E0AEB3 /* macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
+		2269F2BE2E7FBD8C00E0AEB3 /* Tests iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2269F2C22E7FBD8C00E0AEB3 /* Tests_iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_iOS.swift; sourceTree = "<group>"; };
+		2269F2C42E7FBD8C00E0AEB3 /* Tests_iOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_iOSLaunchTests.swift; sourceTree = "<group>"; };
+		2269F2CA2E7FBD8C00E0AEB3 /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2269F2CE2E7FBD8C00E0AEB3 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
+		2269F2D02E7FBD8C00E0AEB3 /* Tests_macOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOSLaunchTests.swift; sourceTree = "<group>"; };
+		2269F2E62E7FBF4200E0AEB3 /* TimingKenteiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimingKenteiApp.swift; sourceTree = "<group>"; };
+		2269F2E82E7FBF5E00E0AEB3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		2269F2EA2E7FC17E00E0AEB3 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
+		2269F2F22E7FC6B000E0AEB3 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = index.html; path = ../../Downloads/index.html; sourceTree = "<group>"; };
+		2269F2F42E7FC79E00E0AEB3 /* NativeBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeBridge.swift; sourceTree = "<group>"; };
+		2269F2F62E7FC7B800E0AEB3 /* AdsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdsManager.swift; sourceTree = "<group>"; };
+		2269F2F82E7FC7CE00E0AEB3 /* IAPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPManager.swift; sourceTree = "<group>"; };
+		227CCFE42E844594005BA5E1 /* BoxingKentei.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BoxingKentei.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		227CCFED2E8445B6005BA5E1 /* BoxingKentei (macOS).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "BoxingKentei (macOS).app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		227CCFEE2E8445BF005BA5E1 /* File.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = File.txt; sourceTree = "<group>"; };
+		227CD03A2E8588D3005BA5E1 /* AdBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdBannerView.swift; sourceTree = "<group>"; };
+		227CD03B2E8588E5005BA5E1 /* AppMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppMain.swift; sourceTree = "<group>"; };
+		227CD03C2E85890B005BA5E1 /* AdsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdsManager.swift; sourceTree = "<group>"; };
+		228063AB2ED1A88B009B25ED /* Assets_NearestLunch.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets_NearestLunch.xcassets; sourceTree = "<group>"; };
+		22BEE8A82ED0AE6D00A39063 /* AdBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdBannerView.swift; sourceTree = "<group>"; };
+		22BEE8A92ED0AE6D00A39063 /* AdRequestFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdRequestFactory.swift; sourceTree = "<group>"; };
+		22BEE8AA2ED0AE6D00A39063 /* AdsBootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdsBootstrap.swift; sourceTree = "<group>"; };
+		22BEE8AB2ED0AE6D00A39063 /* AdsFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdsFacade.swift; sourceTree = "<group>"; };
+		22BEE8AC2ED0AE6D00A39063 /* Boxing_Kentei_v5.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Boxing_Kentei_v5.html; sourceTree = "<group>"; };
+		22BEE8AD2ED0AE6D00A39063 /* ContentView_Kazulazer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView_Kazulazer.swift; sourceTree = "<group>"; };
+		22BEE8AE2ED0AE6D00A39063 /* GameWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameWebView.swift; sourceTree = "<group>"; };
+		22BEE8AF2ED0AE6D00A39063 /* number_laser_siege_items_boss_fix2.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = number_laser_siege_items_boss_fix2.html; sourceTree = "<group>"; };
+		22BEE8B02ED0AE6D00A39063 /* sleep-kentai-top-v2.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "sleep-kentai-top-v2.html"; sourceTree = "<group>"; };
+		22BEE8B12ED0AE6D00A39063 /* UIHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIHelpers.swift; sourceTree = "<group>"; };
+		22BEE8CE2ED0E96300A39063 /* DoubleTapBrowser--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DoubleTapBrowser--iOS--Info.plist"; sourceTree = "<group>"; };
+		22BEE8DA2ED18E3F00A39063 /* NearestLunch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NearestLunch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		22BEE8EB2ED18E4300A39063 /* NearestLunchTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NearestLunchTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		22BEE8F52ED18E4300A39063 /* NearestLunchUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NearestLunchUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		22C1E6962EA4C0060075B29E /* Assets_Sleep.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets_Sleep.xcassets; sourceTree = "<group>"; };
+		22C1E6C62EA4C9DB0075B29E /* Boxing_Kentei_v5.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Boxing_Kentei_v5.html; sourceTree = "<group>"; };
+		22C1E6DE2EACE70D0075B29E /* KazuLazer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KazuLazer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		22C1E6DF2EACEA6A0075B29E /* number_laser_siege_items_boss_fix2.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = number_laser_siege_items_boss_fix2.html; sourceTree = "<group>"; };
+		22C1E6E12EACEC240075B29E /* number_laser_siege_items_boss_fix2.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = number_laser_siege_items_boss_fix2.html; sourceTree = "<group>"; };
+		22C1E6E22EACEC240075B29E /* Boxing_Kentei_v5.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Boxing_Kentei_v5.html; sourceTree = "<group>"; };
+		22C1E6E32EACEC240075B29E /* sleep-kentai-top-v2.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = "sleep-kentai-top-v2.html"; path = "../Shared/Web/sleep-kentai-top-v2.html"; sourceTree = "<group>"; };
+		22C1E6E62EACEEDA0075B29E /* GameWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameWebView.swift; sourceTree = "<group>"; };
+		22C1E6E72EACEF080075B29E /* ContentView_Kazulazer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView_Kazulazer.swift; sourceTree = "<group>"; };
+		22C1E6E82EACEF290075B29E /* AdBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdBannerView.swift; sourceTree = "<group>"; };
+		22C1E6E92EACEF5B0075B29E /* AppMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppMain.swift; sourceTree = "<group>"; };
+		22D626FF2E86826A00C08853 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		22EC27E82E82AE39007BB4D4 /* privacy.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = privacy.html; path = ../devsite/privacy.html; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		22BEE90B2ED1939200A39063 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				ContentView.swift,
+			);
+			target = 22BEE8D92ED18E3F00A39063 /* NearestLunch */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		222F589D2ECC77E7007E28FE /* DoubleTapBrowser */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = DoubleTapBrowser; sourceTree = "<group>"; };
+		222F58B02ECC77EA007E28FE /* DoubleTapBrowserTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = DoubleTapBrowserTests; sourceTree = "<group>"; };
+		222F58BA2ECC77EA007E28FE /* DoubleTapBrowserUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = DoubleTapBrowserUITests; sourceTree = "<group>"; };
+		22BEE8DB2ED18E3F00A39063 /* NearestLunch */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (22BEE90B2ED1939200A39063 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = NearestLunch; sourceTree = "<group>"; };
+		22BEE8EE2ED18E4300A39063 /* NearestLunchTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = NearestLunchTests; sourceTree = "<group>"; };
+		22BEE8F82ED18E4300A39063 /* NearestLunchUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = NearestLunchUITests; sourceTree = "<group>"; };
+		22C1E69C2EA4C0060075B29E /* SleepKentei iOS */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "SleepKentei iOS"; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		222237182E87CCF40091639E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				22C1E65A2EA4AD060075B29E /* GoogleMobileAds in Frameworks */,
+				2231BF1E2E9778DB005E17CA /* AppTrackingTransparency.framework in Frameworks */,
+				222237192E87CCF40091639E /* (null) in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		222F58992ECC77E7007E28FE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				22BEE8D22ED0EC4E00A39063 /* GoogleMobileAds in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		222F58AA2ECC77EA007E28FE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		222F58B42ECC77EA007E28FE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2269F2AE2E7FBD8C00E0AEB3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2231C0042E9E9BB6005E17CA /* AdSupport.framework in Frameworks */,
+				2231C0052E9E9BC8005E17CA /* AppTrackingTransparency.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2269F2B42E7FBD8C00E0AEB3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2269F2BB2E7FBD8C00E0AEB3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2269F2C72E7FBD8C00E0AEB3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		227CCFDC2E844594005BA5E1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2231BFD12E99334C005E17CA /* AdSupport.framework in Frameworks */,
+				227CD0352E857CA6005BA5E1 /* GoogleMobileAds in Frameworks */,
+				2231BF1F2E977932005E17CA /* AppTrackingTransparency.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		227CCFE72E8445B6005BA5E1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		22BEE8D72ED18E3F00A39063 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		22BEE8E82ED18E4300A39063 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		22BEE8F22ED18E4300A39063 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		22C1E6D52EACE70D0075B29E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				222F587C2EADCE25007E28FE /* GoogleMobileAds in Frameworks */,
+				22C1E6D62EACE70D0075B29E /* AdSupport.framework in Frameworks */,
+				22C1E6D72EACE70D0075B29E /* AppTrackingTransparency.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2222376F2E8EA6A30091639E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2231BFD02E99334C005E17CA /* AdSupport.framework */,
+				2231BF1D2E9778DB005E17CA /* AppTrackingTransparency.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		222F58C82ECC783B007E28FE /* DoubleTapBrowser */ = {
+			isa = PBXGroup;
+			children = (
+				222F589D2ECC77E7007E28FE /* DoubleTapBrowser */,
+			);
+			path = DoubleTapBrowser;
+			sourceTree = "<group>";
+		};
+		2231C0002E9E95E9005E17CA /* en.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				2231C0022E9E9625005E17CA /* InfoPlist.strings */,
+			);
+			path = en.lproj;
+			sourceTree = "<group>";
+		};
+		2231C0012E9E95F8005E17CA /* ja.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				2231BFFE2E9E9518005E17CA /* InfoPlist.strings */,
+			);
+			path = ja.lproj;
+			sourceTree = "<group>";
+		};
+		2231C00A2E9FBD0F005E17CA /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				2231C00B2E9FBD28005E17CA /* ObjC */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		2231C00B2E9FBD28005E17CA /* ObjC */ = {
+			isa = PBXGroup;
+			children = (
+				2231C0112E9FBDB3005E17CA /* ForceKeepIDFA.m */,
+			);
+			path = ObjC;
+			sourceTree = "<group>";
+		};
+		2269F2A42E7FBD8A00E0AEB3 = {
+			isa = PBXGroup;
+			children = (
+				22BEE8CE2ED0E96300A39063 /* DoubleTapBrowser--iOS--Info.plist */,
+				22641D2D2ECDF6BB009B821C /* Kazulazer--iOS--Info.plist */,
+				22C1E6C82EA4C9DB0075B29E /* Web2 */,
+				22C1E6C52EA4C3C50075B29E /* SleepKentei iOS */,
+				22C1E69C2EA4C0060075B29E /* SleepKentei iOS */,
+				227CD0392E8588BD005BA5E1 /* BoxingKentei iOS */,
+				2231C0082E9EA262005E17CA /* BoxingKentei--iOS--Info.plist */,
+				22EC27E82E82AE39007BB4D4 /* privacy.html */,
+				2269F2F82E7FC7CE00E0AEB3 /* IAPManager.swift */,
+				2269F2F62E7FC7B800E0AEB3 /* AdsManager.swift */,
+				2269F2F42E7FC79E00E0AEB3 /* NativeBridge.swift */,
+				2269F2EC2E7FC1EE00E0AEB3 /* Resources Group */,
+				2269F2EA2E7FC17E00E0AEB3 /* WebView.swift */,
+				2269F2E82E7FBF5E00E0AEB3 /* ContentView.swift */,
+				2269F2E62E7FBF4200E0AEB3 /* TimingKenteiApp.swift */,
+				2269F2A92E7FBD8A00E0AEB3 /* Shared */,
+				2269F2B82E7FBD8C00E0AEB3 /* macOS */,
+				2269F2C12E7FBD8C00E0AEB3 /* Tests iOS */,
+				2269F2CD2E7FBD8C00E0AEB3 /* Tests macOS */,
+				222F58C82ECC783B007E28FE /* DoubleTapBrowser */,
+				222F58B02ECC77EA007E28FE /* DoubleTapBrowserTests */,
+				222F58BA2ECC77EA007E28FE /* DoubleTapBrowserUITests */,
+				22BEE8DB2ED18E3F00A39063 /* NearestLunch */,
+				22BEE8EE2ED18E4300A39063 /* NearestLunchTests */,
+				22BEE8F82ED18E4300A39063 /* NearestLunchUITests */,
+				2222376F2E8EA6A30091639E /* Frameworks */,
+				2269F2B22E7FBD8C00E0AEB3 /* Products */,
+				22C1E6962EA4C0060075B29E /* Assets_Sleep.xcassets */,
+			);
+			sourceTree = "<group>";
+		};
+		2269F2A92E7FBD8A00E0AEB3 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				228063AB2ED1A88B009B25ED /* Assets_NearestLunch.xcassets */,
+				222F58C92ECC87DB007E28FE /* Assets_DoubleTapBrowser.xcassets */,
+				2231C0512EA3D102005E17CA /* Assets_Taming.xcassets */,
+				2231BF7A2E97E58B005E17CA /* AdBannerView.swift */,
+				2269F2AC2E7FBD8C00E0AEB3 /* Assets_Boxing.xcassets */,
+				222F58782EAD201A007E28FE /* Assets_Kazulazer.xcassets */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		2269F2B22E7FBD8C00E0AEB3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2269F2B12E7FBD8C00E0AEB3 /* TimingKentei.app */,
+				2269F2B72E7FBD8C00E0AEB3 /* TimingKentei.app */,
+				2269F2BE2E7FBD8C00E0AEB3 /* Tests iOS.xctest */,
+				2269F2CA2E7FBD8C00E0AEB3 /* Tests macOS.xctest */,
+				227CCFE42E844594005BA5E1 /* BoxingKentei.app */,
+				227CCFED2E8445B6005BA5E1 /* BoxingKentei (macOS).app */,
+				222237222E87CCF40091639E /* SleepKentei.app */,
+				22C1E6DE2EACE70D0075B29E /* KazuLazer.app */,
+				222F587A2EADCB68007E28FE /* AdManager.swift */,
+				22C1E6E92EACEF5B0075B29E /* AppMain.swift */,
+				22C1E6E42EACEC240075B29E /* Web_2 */,
+				222F589C2ECC77E7007E28FE /* DoubleTapBrowser.app */,
+				222F58AD2ECC77EA007E28FE /* DoubleTapBrowserTests.xctest */,
+				222F58B72ECC77EA007E28FE /* DoubleTapBrowserUITests.xctest */,
+				22BEE8DA2ED18E3F00A39063 /* NearestLunch.app */,
+				22BEE8EB2ED18E4300A39063 /* NearestLunchTests.xctest */,
+				22BEE8F52ED18E4300A39063 /* NearestLunchUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2269F2B82E7FBD8C00E0AEB3 /* macOS */ = {
+			isa = PBXGroup;
+			children = (
+				227CCFEE2E8445BF005BA5E1 /* File.txt */,
+				2269F2B92E7FBD8C00E0AEB3 /* macOS.entitlements */,
+			);
+			path = macOS;
+			sourceTree = "<group>";
+		};
+		2269F2C12E7FBD8C00E0AEB3 /* Tests iOS */ = {
+			isa = PBXGroup;
+			children = (
+				2269F2C22E7FBD8C00E0AEB3 /* Tests_iOS.swift */,
+				2269F2C42E7FBD8C00E0AEB3 /* Tests_iOSLaunchTests.swift */,
+			);
+			path = "Tests iOS";
+			sourceTree = "<group>";
+		};
+		2269F2CD2E7FBD8C00E0AEB3 /* Tests macOS */ = {
+			isa = PBXGroup;
+			children = (
+				2269F2CE2E7FBD8C00E0AEB3 /* Tests_macOS.swift */,
+				2269F2D02E7FBD8C00E0AEB3 /* Tests_macOSLaunchTests.swift */,
+			);
+			path = "Tests macOS";
+			sourceTree = "<group>";
+		};
+		2269F2EC2E7FC1EE00E0AEB3 /* Resources Group */ = {
+			isa = PBXGroup;
+			children = (
+				2269F2F22E7FC6B000E0AEB3 /* index.html */,
+			);
+			path = "Resources Group";
+			sourceTree = "<group>";
+		};
+		227CD0392E8588BD005BA5E1 /* BoxingKentei iOS */ = {
+			isa = PBXGroup;
+			children = (
+				2231C00A2E9FBD0F005E17CA /* Sources */,
+				2231C0012E9E95F8005E17CA /* ja.lproj */,
+				2231C0002E9E95E9005E17CA /* en.lproj */,
+				2231BFD52E995060005E17CA /* ContentView.swift */,
+				222237522E8AEBB10091639E /* HomeViewController.swift */,
+				22D626FF2E86826A00C08853 /* AppDelegate.swift */,
+				227CD03C2E85890B005BA5E1 /* AdsManager.swift */,
+				227CD03B2E8588E5005BA5E1 /* AppMain.swift */,
+				227CD03A2E8588D3005BA5E1 /* AdBannerView.swift */,
+			);
+			path = "BoxingKentei iOS";
+			sourceTree = "<group>";
+		};
+		22BEE8B22ED0AE6D00A39063 /* Web_2 */ = {
+			isa = PBXGroup;
+			children = (
+				22BEE8A82ED0AE6D00A39063 /* AdBannerView.swift */,
+				22BEE8A92ED0AE6D00A39063 /* AdRequestFactory.swift */,
+				22BEE8AA2ED0AE6D00A39063 /* AdsBootstrap.swift */,
+				22BEE8AB2ED0AE6D00A39063 /* AdsFacade.swift */,
+				22BEE8AC2ED0AE6D00A39063 /* Boxing_Kentei_v5.html */,
+				22BEE8AD2ED0AE6D00A39063 /* ContentView_Kazulazer.swift */,
+				22BEE8AE2ED0AE6D00A39063 /* GameWebView.swift */,
+				22BEE8AF2ED0AE6D00A39063 /* number_laser_siege_items_boss_fix2.html */,
+				22BEE8B02ED0AE6D00A39063 /* sleep-kentai-top-v2.html */,
+				22BEE8B12ED0AE6D00A39063 /* UIHelpers.swift */,
+			);
+			path = Web_2;
+			sourceTree = "<group>";
+		};
+		22C1E6C52EA4C3C50075B29E /* SleepKentei iOS */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "SleepKentei iOS";
+			sourceTree = "<group>";
+		};
+		22C1E6C82EA4C9DB0075B29E /* Web2 */ = {
+			isa = PBXGroup;
+			children = (
+				22C1E6DF2EACEA6A0075B29E /* number_laser_siege_items_boss_fix2.html */,
+				22BEE8B22ED0AE6D00A39063 /* Web_2 */,
+				22C1E6C62EA4C9DB0075B29E /* Boxing_Kentei_v5.html */,
+				2231BF712E97DCA1005E17CA /* sleep-kentai-top-v2.html */,
+			);
+			path = Web2;
+			sourceTree = "<group>";
+		};
+		22C1E6E42EACEC240075B29E /* Web_2 */ = {
+			isa = PBXGroup;
+			children = (
+				222F58962EC820F8007E28FE /* AdRequestFactory.swift */,
+				222F588B2EBB8B55007E28FE /* AdsBootstrap.swift */,
+				222F58892EB89D15007E28FE /* UIHelpers.swift */,
+				222F58872EB89B0A007E28FE /* AdsFacade.swift */,
+				22C1E6E82EACEF290075B29E /* AdBannerView.swift */,
+				22C1E6E72EACEF080075B29E /* ContentView_Kazulazer.swift */,
+				22C1E6E62EACEEDA0075B29E /* GameWebView.swift */,
+				22C1E6E12EACEC240075B29E /* number_laser_siege_items_boss_fix2.html */,
+				22C1E6E22EACEC240075B29E /* Boxing_Kentei_v5.html */,
+				22C1E6E32EACEC240075B29E /* sleep-kentai-top-v2.html */,
+			);
+			path = Web_2;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2222370F2E87CCF40091639E /* SleepKentei (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2222371F2E87CCF40091639E /* Build configuration list for PBXNativeTarget "SleepKentei (iOS)" */;
+			buildPhases = (
+				222237102E87CCF40091639E /* Sources */,
+				222237182E87CCF40091639E /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "SleepKentei (iOS)";
+			productName = "TimingKentei (iOS)";
+			productReference = 222237222E87CCF40091639E /* SleepKentei.app */;
+			productType = "com.apple.product-type.application";
+		};
+		222F589B2ECC77E7007E28FE /* DoubleTapBrowser */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 222F58BF2ECC77EA007E28FE /* Build configuration list for PBXNativeTarget "DoubleTapBrowser" */;
+			buildPhases = (
+				222F58982ECC77E7007E28FE /* Sources */,
+				222F58992ECC77E7007E28FE /* Frameworks */,
+				222F589A2ECC77E7007E28FE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				222F589D2ECC77E7007E28FE /* DoubleTapBrowser */,
+			);
+			name = DoubleTapBrowser;
+			packageProductDependencies = (
+				22BEE8D12ED0EC4E00A39063 /* GoogleMobileAds */,
+			);
+			productName = DoubleTapBrowser;
+			productReference = 222F589C2ECC77E7007E28FE /* DoubleTapBrowser.app */;
+			productType = "com.apple.product-type.application";
+		};
+		222F58AC2ECC77EA007E28FE /* DoubleTapBrowserTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 222F58C22ECC77EA007E28FE /* Build configuration list for PBXNativeTarget "DoubleTapBrowserTests" */;
+			buildPhases = (
+				222F58A92ECC77EA007E28FE /* Sources */,
+				222F58AA2ECC77EA007E28FE /* Frameworks */,
+				222F58AB2ECC77EA007E28FE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				222F58AF2ECC77EA007E28FE /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				222F58B02ECC77EA007E28FE /* DoubleTapBrowserTests */,
+			);
+			name = DoubleTapBrowserTests;
+			packageProductDependencies = (
+			);
+			productName = DoubleTapBrowserTests;
+			productReference = 222F58AD2ECC77EA007E28FE /* DoubleTapBrowserTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		222F58B62ECC77EA007E28FE /* DoubleTapBrowserUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 222F58C52ECC77EA007E28FE /* Build configuration list for PBXNativeTarget "DoubleTapBrowserUITests" */;
+			buildPhases = (
+				222F58B32ECC77EA007E28FE /* Sources */,
+				222F58B42ECC77EA007E28FE /* Frameworks */,
+				222F58B52ECC77EA007E28FE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				222F58B92ECC77EA007E28FE /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				222F58BA2ECC77EA007E28FE /* DoubleTapBrowserUITests */,
+			);
+			name = DoubleTapBrowserUITests;
+			packageProductDependencies = (
+			);
+			productName = DoubleTapBrowserUITests;
+			productReference = 222F58B72ECC77EA007E28FE /* DoubleTapBrowserUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		2269F2B02E7FBD8C00E0AEB3 /* TimingKentei (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2269F2DA2E7FBD8C00E0AEB3 /* Build configuration list for PBXNativeTarget "TimingKentei (iOS)" */;
+			buildPhases = (
+				2269F2AD2E7FBD8C00E0AEB3 /* Sources */,
+				2269F2AE2E7FBD8C00E0AEB3 /* Frameworks */,
+				2269F2AF2E7FBD8C00E0AEB3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				22C1E69C2EA4C0060075B29E /* SleepKentei iOS */,
+			);
+			name = "TimingKentei (iOS)";
+			productName = "TimingKentei (iOS)";
+			productReference = 2269F2B12E7FBD8C00E0AEB3 /* TimingKentei.app */;
+			productType = "com.apple.product-type.application";
+		};
+		2269F2B62E7FBD8C00E0AEB3 /* TimingKentei (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2269F2DD2E7FBD8C00E0AEB3 /* Build configuration list for PBXNativeTarget "TimingKentei (macOS)" */;
+			buildPhases = (
+				2269F2B32E7FBD8C00E0AEB3 /* Sources */,
+				2269F2B42E7FBD8C00E0AEB3 /* Frameworks */,
+				2269F2B52E7FBD8C00E0AEB3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "TimingKentei (macOS)";
+			productName = "TimingKentei (macOS)";
+			productReference = 2269F2B72E7FBD8C00E0AEB3 /* TimingKentei.app */;
+			productType = "com.apple.product-type.application";
+		};
+		2269F2BD2E7FBD8C00E0AEB3 /* Tests iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2269F2E02E7FBD8C00E0AEB3 /* Build configuration list for PBXNativeTarget "Tests iOS" */;
+			buildPhases = (
+				2269F2BA2E7FBD8C00E0AEB3 /* Sources */,
+				2269F2BB2E7FBD8C00E0AEB3 /* Frameworks */,
+				2269F2BC2E7FBD8C00E0AEB3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2269F2C02E7FBD8C00E0AEB3 /* PBXTargetDependency */,
+			);
+			name = "Tests iOS";
+			productName = "Tests iOS";
+			productReference = 2269F2BE2E7FBD8C00E0AEB3 /* Tests iOS.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		2269F2C92E7FBD8C00E0AEB3 /* Tests macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2269F2E32E7FBD8C00E0AEB3 /* Build configuration list for PBXNativeTarget "Tests macOS" */;
+			buildPhases = (
+				2269F2C62E7FBD8C00E0AEB3 /* Sources */,
+				2269F2C72E7FBD8C00E0AEB3 /* Frameworks */,
+				2269F2C82E7FBD8C00E0AEB3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2269F2CC2E7FBD8C00E0AEB3 /* PBXTargetDependency */,
+			);
+			name = "Tests macOS";
+			productName = "Tests macOS";
+			productReference = 2269F2CA2E7FBD8C00E0AEB3 /* Tests macOS.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		227CCFD42E844594005BA5E1 /* BoxingKentei (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 227CCFE12E844594005BA5E1 /* Build configuration list for PBXNativeTarget "BoxingKentei (iOS)" */;
+			buildPhases = (
+				227CCFD52E844594005BA5E1 /* Sources */,
+				227CCFDC2E844594005BA5E1 /* Frameworks */,
+				227CCFDD2E844594005BA5E1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "BoxingKentei (iOS)";
+			productName = "TimingKentei (iOS)";
+			productReference = 227CCFE42E844594005BA5E1 /* BoxingKentei.app */;
+			productType = "com.apple.product-type.application";
+		};
+		227CCFE52E8445B6005BA5E1 /* BoxingKentei (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 227CCFEA2E8445B6005BA5E1 /* Build configuration list for PBXNativeTarget "BoxingKentei (macOS)" */;
+			buildPhases = (
+				227CCFE62E8445B6005BA5E1 /* Sources */,
+				227CCFE72E8445B6005BA5E1 /* Frameworks */,
+				227CCFE82E8445B6005BA5E1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "BoxingKentei (macOS)";
+			productName = "TimingKentei (macOS)";
+			productReference = 227CCFED2E8445B6005BA5E1 /* BoxingKentei (macOS).app */;
+			productType = "com.apple.product-type.application";
+		};
+		22BEE8D92ED18E3F00A39063 /* NearestLunch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 22BEE8FD2ED18E4300A39063 /* Build configuration list for PBXNativeTarget "NearestLunch" */;
+			buildPhases = (
+				22BEE8D62ED18E3F00A39063 /* Sources */,
+				22BEE8D72ED18E3F00A39063 /* Frameworks */,
+				22BEE8D82ED18E3F00A39063 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				22BEE8DB2ED18E3F00A39063 /* NearestLunch */,
+			);
+			name = NearestLunch;
+			packageProductDependencies = (
+			);
+			productName = NearestLunch;
+			productReference = 22BEE8DA2ED18E3F00A39063 /* NearestLunch.app */;
+			productType = "com.apple.product-type.application";
+		};
+		22BEE8EA2ED18E4300A39063 /* NearestLunchTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 22BEE9002ED18E4300A39063 /* Build configuration list for PBXNativeTarget "NearestLunchTests" */;
+			buildPhases = (
+				22BEE8E72ED18E4300A39063 /* Sources */,
+				22BEE8E82ED18E4300A39063 /* Frameworks */,
+				22BEE8E92ED18E4300A39063 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				22BEE8ED2ED18E4300A39063 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				22BEE8EE2ED18E4300A39063 /* NearestLunchTests */,
+			);
+			name = NearestLunchTests;
+			packageProductDependencies = (
+			);
+			productName = NearestLunchTests;
+			productReference = 22BEE8EB2ED18E4300A39063 /* NearestLunchTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		22BEE8F42ED18E4300A39063 /* NearestLunchUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 22BEE9032ED18E4300A39063 /* Build configuration list for PBXNativeTarget "NearestLunchUITests" */;
+			buildPhases = (
+				22BEE8F12ED18E4300A39063 /* Sources */,
+				22BEE8F22ED18E4300A39063 /* Frameworks */,
+				22BEE8F32ED18E4300A39063 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				22BEE8F72ED18E4300A39063 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				22BEE8F82ED18E4300A39063 /* NearestLunchUITests */,
+			);
+			name = NearestLunchUITests;
+			packageProductDependencies = (
+			);
+			productName = NearestLunchUITests;
+			productReference = 22BEE8F52ED18E4300A39063 /* NearestLunchUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		22C1E6CD2EACE70D0075B29E /* KazuLazer(iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 22C1E6DB2EACE70D0075B29E /* Build configuration list for PBXNativeTarget "KazuLazer(iOS)" */;
+			buildPhases = (
+				22C1E6CE2EACE70D0075B29E /* Sources */,
+				22C1E6D52EACE70D0075B29E /* Frameworks */,
+				22BEE8BB2ED0B80900A39063 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				22C1E69C2EA4C0060075B29E /* SleepKentei iOS */,
+			);
+			name = "KazuLazer(iOS)";
+			productName = "TimingKentei (iOS)";
+			productReference = 22C1E6DE2EACE70D0075B29E /* KazuLazer.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2269F2A52E7FBD8A00E0AEB3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1620;
+				LastUpgradeCheck = 1320;
+				TargetAttributes = {
+					222F589B2ECC77E7007E28FE = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					222F58AC2ECC77EA007E28FE = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 222F589B2ECC77E7007E28FE;
+					};
+					222F58B62ECC77EA007E28FE = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 222F589B2ECC77E7007E28FE;
+					};
+					2269F2B02E7FBD8C00E0AEB3 = {
+						CreatedOnToolsVersion = 13.2.1;
+					};
+					2269F2B62E7FBD8C00E0AEB3 = {
+						CreatedOnToolsVersion = 13.2.1;
+						LastSwiftMigration = 1620;
+					};
+					2269F2BD2E7FBD8C00E0AEB3 = {
+						CreatedOnToolsVersion = 13.2.1;
+						TestTargetID = 2269F2B02E7FBD8C00E0AEB3;
+					};
+					2269F2C92E7FBD8C00E0AEB3 = {
+						CreatedOnToolsVersion = 13.2.1;
+						TestTargetID = 2269F2B62E7FBD8C00E0AEB3;
+					};
+					227CCFD42E844594005BA5E1 = {
+						LastSwiftMigration = 1620;
+					};
+					227CCFE52E8445B6005BA5E1 = {
+						LastSwiftMigration = 1620;
+					};
+					22BEE8D92ED18E3F00A39063 = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					22BEE8EA2ED18E4300A39063 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 22BEE8D92ED18E3F00A39063;
+					};
+					22BEE8F42ED18E4300A39063 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 22BEE8D92ED18E3F00A39063;
+					};
+				};
+			};
+			buildConfigurationList = 2269F2A82E7FBD8A00E0AEB3 /* Build configuration list for PBXProject "TimingKentei APP" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 2269F2A42E7FBD8A00E0AEB3;
+			packageReferences = (
+				227CD0332E857CA6005BA5E1 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+				222237652E8BC4760091639E /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */,
+			);
+			productRefGroup = 2269F2B22E7FBD8C00E0AEB3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2269F2B02E7FBD8C00E0AEB3 /* TimingKentei (iOS) */,
+				2269F2B62E7FBD8C00E0AEB3 /* TimingKentei (macOS) */,
+				2269F2BD2E7FBD8C00E0AEB3 /* Tests iOS */,
+				2269F2C92E7FBD8C00E0AEB3 /* Tests macOS */,
+				227CCFD42E844594005BA5E1 /* BoxingKentei (iOS) */,
+				227CCFE52E8445B6005BA5E1 /* BoxingKentei (macOS) */,
+				2222370F2E87CCF40091639E /* SleepKentei (iOS) */,
+				22C1E6CD2EACE70D0075B29E /* KazuLazer(iOS) */,
+				222F589B2ECC77E7007E28FE /* DoubleTapBrowser */,
+				222F58AC2ECC77EA007E28FE /* DoubleTapBrowserTests */,
+				222F58B62ECC77EA007E28FE /* DoubleTapBrowserUITests */,
+				22BEE8D92ED18E3F00A39063 /* NearestLunch */,
+				22BEE8EA2ED18E4300A39063 /* NearestLunchTests */,
+				22BEE8F42ED18E4300A39063 /* NearestLunchUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		222F589A2ECC77E7007E28FE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				22BEE8D02ED0E99200A39063 /* DoubleTapBrowser--iOS--Info.plist in Resources */,
+				222F58CB2ECC89D5007E28FE /* Assets_DoubleTapBrowser.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		222F58AB2ECC77EA007E28FE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		222F58B52ECC77EA007E28FE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2269F2AF2E7FBD8C00E0AEB3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				22EC27E92E82AE3A007BB4D4 /* privacy.html in Resources */,
+				2269F2F32E7FC6B000E0AEB3 /* index.html in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2269F2B52E7FBD8C00E0AEB3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2269F2BC2E7FBD8C00E0AEB3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2269F2C82E7FBD8C00E0AEB3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		227CCFDD2E844594005BA5E1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				227CCFDF2E844594005BA5E1 /* privacy.html in Resources */,
+				2231C0032E9E9625005E17CA /* InfoPlist.strings in Resources */,
+				2231BFFF2E9E9518005E17CA /* InfoPlist.strings in Resources */,
+				22641D2C2ECDEABB009B821C /* Boxing_Kentei_v5.html in Resources */,
+				2231C0492EA1127E005E17CA /* Assets_Boxing.xcassets in Resources */,
+				227CCFE02E844594005BA5E1 /* index.html in Resources */,
+				2231C0092E9EA262005E17CA /* BoxingKentei--iOS--Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		227CCFE82E8445B6005BA5E1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		22BEE8BB2ED0B80900A39063 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				22BEE8C22ED0BC8000A39063 /* number_laser_siege_items_boss_fix2.html in Resources */,
+				22BEE8C32ED0C3E900A39063 /* Assets_Kazulazer.xcassets in Resources */,
+				22BEE8BD2ED0B9A800A39063 /* Kazulazer--iOS--Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		22BEE8D82ED18E3F00A39063 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				228063AD2ED21A12009B25ED /* Assets_NearestLunch.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		22BEE8E92ED18E4300A39063 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		22BEE8F32ED18E4300A39063 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		222237102E87CCF40091639E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				222237172E87CCF40091639E /* NativeBridge.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		222F58982ECC77E7007E28FE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				22BEE8C42ED0E65200A39063 /* AdManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		222F58A92ECC77EA007E28FE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		222F58B32ECC77EA007E28FE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2269F2AD2E7FBD8C00E0AEB3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2269F2F92E7FC7CE00E0AEB3 /* IAPManager.swift in Sources */,
+				2231C0132E9FC2E0005E17CA /* ForceKeepIDFA.m in Sources */,
+				2269F2F52E7FC79E00E0AEB3 /* NativeBridge.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2269F2B32E7FBD8C00E0AEB3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2269F2BA2E7FBD8C00E0AEB3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2269F2C52E7FBD8C00E0AEB3 /* Tests_iOSLaunchTests.swift in Sources */,
+				2269F2C32E7FBD8C00E0AEB3 /* Tests_iOS.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2269F2C62E7FBD8C00E0AEB3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2269F2D12E7FBD8C00E0AEB3 /* Tests_macOSLaunchTests.swift in Sources */,
+				2269F2CF2E7FBD8C00E0AEB3 /* Tests_macOS.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		227CCFD52E844594005BA5E1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				22D626FE2E85A4A600C08853 /* AdsManager.swift in Sources */,
+				227CCFD82E844594005BA5E1 /* WebView.swift in Sources */,
+				2231C0122E9FBDB3005E17CA /* ForceKeepIDFA.m in Sources */,
+				2231BFD82E9957D7005E17CA /* ContentView.swift in Sources */,
+				222237532E8AEBBD0091639E /* HomeViewController.swift in Sources */,
+				22D627002E86827400C08853 /* AppDelegate.swift in Sources */,
+				2231BFDD2E9963E1005E17CA /* AppMain.swift in Sources */,
+				227CCFDB2E844594005BA5E1 /* NativeBridge.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		227CCFE62E8445B6005BA5E1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		22BEE8D62ED18E3F00A39063 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		22BEE8E72ED18E4300A39063 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		22BEE8F12ED18E4300A39063 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		22C1E6CE2EACE70D0075B29E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				22C1E6EE2EACFA540075B29E /* AdBannerView.swift in Sources */,
+				22C1E6EB2EACF6120075B29E /* ContentView_Kazulazer.swift in Sources */,
+				22C1E6D32EACE70D0075B29E /* ForceKeepIDFA.m in Sources */,
+				222F588A2EB89D23007E28FE /* UIHelpers.swift in Sources */,
+				22C1E6EC2EACF6170075B29E /* GameWebView.swift in Sources */,
+				22C1E6EF2EACFB610075B29E /* AppMain.swift in Sources */,
+				222F58882EB89B1D007E28FE /* AdsFacade.swift in Sources */,
+				222F58972EC8210B007E28FE /* AdRequestFactory.swift in Sources */,
+				22C1E6D42EACE70D0075B29E /* NativeBridge.swift in Sources */,
+				222F588C2EBB8B6B007E28FE /* AdsBootstrap.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		222F58AF2ECC77EA007E28FE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 222F589B2ECC77E7007E28FE /* DoubleTapBrowser */;
+			targetProxy = 222F58AE2ECC77EA007E28FE /* PBXContainerItemProxy */;
+		};
+		222F58B92ECC77EA007E28FE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 222F589B2ECC77E7007E28FE /* DoubleTapBrowser */;
+			targetProxy = 222F58B82ECC77EA007E28FE /* PBXContainerItemProxy */;
+		};
+		2269F2C02E7FBD8C00E0AEB3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2269F2B02E7FBD8C00E0AEB3 /* TimingKentei (iOS) */;
+			targetProxy = 2269F2BF2E7FBD8C00E0AEB3 /* PBXContainerItemProxy */;
+		};
+		2269F2CC2E7FBD8C00E0AEB3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2269F2B62E7FBD8C00E0AEB3 /* TimingKentei (macOS) */;
+			targetProxy = 2269F2CB2E7FBD8C00E0AEB3 /* PBXContainerItemProxy */;
+		};
+		22BEE8ED2ED18E4300A39063 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 22BEE8D92ED18E3F00A39063 /* NearestLunch */;
+			targetProxy = 22BEE8EC2ED18E4300A39063 /* PBXContainerItemProxy */;
+		};
+		22BEE8F72ED18E4300A39063 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 22BEE8D92ED18E3F00A39063 /* NearestLunch */;
+			targetProxy = 22BEE8F62ED18E4300A39063 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		2231C0082E9EA262005E17CA /* BoxingKentei--iOS--Info.plist */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2231C0072E9EA262005E17CA /* Base */,
+			);
+			name = "BoxingKentei--iOS--Info.plist";
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		222237202E87CCF40091639E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = SleepKentei_AppIcon;
+				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=iphoneos*]" = SleepKentei_AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = BM9XZ2729G;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "SleepKentei--iOS--Info.plist";
+				"INFOPLIST_FILE[sdk=*]" = "SleepKentei--iOS--Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "睡眠検定";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.sleepkentei;
+				PRODUCT_NAME = SleepKentei;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = SleepKentei;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		222237212E87CCF40091639E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = SleepKentei_AppIcon;
+				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=iphoneos*]" = SleepKentei_AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = BM9XZ2729G;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "SleepKentei--iOS--Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "睡眠検定";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.sleepkentei;
+				PRODUCT_NAME = SleepKentei;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = SleepKentei;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		222F58C02ECC77EA007E28FE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon 1";
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = BM9XZ2729G;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "DoubleTapBrowser--iOS--Info.plist";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.DoubleTapBrowser;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = DoubleTapBrowser;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		222F58C12ECC77EA007E28FE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon 1";
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = BM9XZ2729G;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "DoubleTapBrowser--iOS--Info.plist";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.DoubleTapBrowser;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = DoubleTapBrowser;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		222F58C32ECC77EA007E28FE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BM9XZ2729G;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.bijyotanMobile.DoubleTapBrowserTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DoubleTapBrowser.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DoubleTapBrowser";
+			};
+			name = Debug;
+		};
+		222F58C42ECC77EA007E28FE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BM9XZ2729G;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.bijyotanMobile.DoubleTapBrowserTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DoubleTapBrowser.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DoubleTapBrowser";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		222F58C62ECC77EA007E28FE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BM9XZ2729G;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.bijyotanMobile.DoubleTapBrowserUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = DoubleTapBrowser;
+			};
+			name = Debug;
+		};
+		222F58C72ECC77EA007E28FE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BM9XZ2729G;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.bijyotanMobile.DoubleTapBrowserUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = DoubleTapBrowser;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		2269F2D82E7FBD8C00E0AEB3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "";
+				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				"INFOPLIST_FILE[sdk=*]" = "";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		2269F2D92E7FBD8C00E0AEB3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "";
+				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		2269F2DB2E7FBD8C00E0AEB3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BM9XZ2729G;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.TimingKentei;
+				PRODUCT_NAME = TimingKentei;
+				PROVISIONING_PROFILE_SPECIFIER = "TimingKentei AppStore Profile";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		2269F2DC2E7FBD8C00E0AEB3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BM9XZ2729G;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.TimingKentei;
+				PRODUCT_NAME = TimingKentei;
+				PROVISIONING_PROFILE_SPECIFIER = "TimingKentei AppStore Profile";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		2269F2DE2E7FBD8C00E0AEB3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.TimingKentei;
+				PRODUCT_NAME = TimingKentei;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		2269F2DF2E7FBD8C00E0AEB3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.TimingKentei;
+				PRODUCT_NAME = TimingKentei;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		2269F2E12E7FBD8C00E0AEB3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BM9XZ2729G;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.tabata.Tests-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "TimingKentei (iOS)";
+				a = "";
+			};
+			name = Debug;
+		};
+		2269F2E22E7FBD8C00E0AEB3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BM9XZ2729G;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.tabata.Tests-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "TimingKentei (iOS)";
+				VALIDATE_PRODUCT = YES;
+				a = "";
+			};
+			name = Release;
+		};
+		2269F2E42E7FBD8C00E0AEB3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BM9XZ2729G;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.tabata.Tests-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "TimingKentei (macOS)";
+			};
+			name = Debug;
+		};
+		2269F2E52E7FBD8C00E0AEB3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BM9XZ2729G;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.tabata.Tests-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "TimingKentei (macOS)";
+			};
+			name = Release;
+		};
+		227CCFE22E844594005BA5E1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = BoxingKentei_AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "";
+				"ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME[sdk=*]" = "";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 30;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = BM9XZ2729G;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "/Users/tabatamasahiro/TimingKentei/BoxingKentei--iOS--Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "ボクシング検定";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "トラッキングを許可すると、より関連性の高い広告を表示できます。";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.BoxingKentei;
+				PRODUCT_NAME = BoxingKentei;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = boxingkentei;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		227CCFE32E844594005BA5E1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = BoxingKentei_AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 30;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = BM9XZ2729G;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "/Users/tabatamasahiro/TimingKentei/BoxingKentei--iOS--Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "ボクシング検定";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "トラッキングを許可すると、より関連性の高い広告を表示できます。";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.BoxingKentei;
+				PRODUCT_NAME = BoxingKentei;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = boxingkentei;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		227CCFEB2E8445B6005BA5E1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BM9XZ2729G;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.TimingKentei;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		227CCFEC2E8445B6005BA5E1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BM9XZ2729G;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.TimingKentei;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		22BEE8FE2ED18E4300A39063 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"NearestLunch/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = BM9XZ2729G;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.NearestLunch;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = com.tabata.NearestLunch;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		22BEE8FF2ED18E4300A39063 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"NearestLunch/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = BM9XZ2729G;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.NearestLunch;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = com.tabata.NearestLunch;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		22BEE9012ED18E4300A39063 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BM9XZ2729G;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.NearestLunchTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NearestLunch.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/NearestLunch";
+			};
+			name = Debug;
+		};
+		22BEE9022ED18E4300A39063 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BM9XZ2729G;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.NearestLunchTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NearestLunch.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/NearestLunch";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		22BEE9042ED18E4300A39063 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BM9XZ2729G;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.NearestLunchUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = NearestLunch;
+			};
+			name = Debug;
+		};
+		22BEE9052ED18E4300A39063 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BM9XZ2729G;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.NearestLunchUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = NearestLunch;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		22C1E6DC2EACE70D0075B29E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 16;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = BM9XZ2729G;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Kazulazer--iOS--Info.plist";
+				"INFOPLIST_FILE[sdk=*]" = "Kazulazer--iOS--Info.plist";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.1;
+				NEW_SETTING = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.kazulazer;
+				PRODUCT_NAME = KazuLazer;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = Kazulazer;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		22C1E6DD2EACE70D0075B29E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 16;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = BM9XZ2729G;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Kazulazer--iOS--Info.plist";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.1;
+				NEW_SETTING = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.tabata.kazulazer;
+				PRODUCT_NAME = KazuLazer;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = Kazulazer;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2222371F2E87CCF40091639E /* Build configuration list for PBXNativeTarget "SleepKentei (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				222237202E87CCF40091639E /* Debug */,
+				222237212E87CCF40091639E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		222F58BF2ECC77EA007E28FE /* Build configuration list for PBXNativeTarget "DoubleTapBrowser" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				222F58C02ECC77EA007E28FE /* Debug */,
+				222F58C12ECC77EA007E28FE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		222F58C22ECC77EA007E28FE /* Build configuration list for PBXNativeTarget "DoubleTapBrowserTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				222F58C32ECC77EA007E28FE /* Debug */,
+				222F58C42ECC77EA007E28FE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		222F58C52ECC77EA007E28FE /* Build configuration list for PBXNativeTarget "DoubleTapBrowserUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				222F58C62ECC77EA007E28FE /* Debug */,
+				222F58C72ECC77EA007E28FE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2269F2A82E7FBD8A00E0AEB3 /* Build configuration list for PBXProject "TimingKentei APP" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2269F2D82E7FBD8C00E0AEB3 /* Debug */,
+				2269F2D92E7FBD8C00E0AEB3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2269F2DA2E7FBD8C00E0AEB3 /* Build configuration list for PBXNativeTarget "TimingKentei (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2269F2DB2E7FBD8C00E0AEB3 /* Debug */,
+				2269F2DC2E7FBD8C00E0AEB3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2269F2DD2E7FBD8C00E0AEB3 /* Build configuration list for PBXNativeTarget "TimingKentei (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2269F2DE2E7FBD8C00E0AEB3 /* Debug */,
+				2269F2DF2E7FBD8C00E0AEB3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2269F2E02E7FBD8C00E0AEB3 /* Build configuration list for PBXNativeTarget "Tests iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2269F2E12E7FBD8C00E0AEB3 /* Debug */,
+				2269F2E22E7FBD8C00E0AEB3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2269F2E32E7FBD8C00E0AEB3 /* Build configuration list for PBXNativeTarget "Tests macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2269F2E42E7FBD8C00E0AEB3 /* Debug */,
+				2269F2E52E7FBD8C00E0AEB3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		227CCFE12E844594005BA5E1 /* Build configuration list for PBXNativeTarget "BoxingKentei (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				227CCFE22E844594005BA5E1 /* Debug */,
+				227CCFE32E844594005BA5E1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		227CCFEA2E8445B6005BA5E1 /* Build configuration list for PBXNativeTarget "BoxingKentei (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				227CCFEB2E8445B6005BA5E1 /* Debug */,
+				227CCFEC2E8445B6005BA5E1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		22BEE8FD2ED18E4300A39063 /* Build configuration list for PBXNativeTarget "NearestLunch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				22BEE8FE2ED18E4300A39063 /* Debug */,
+				22BEE8FF2ED18E4300A39063 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		22BEE9002ED18E4300A39063 /* Build configuration list for PBXNativeTarget "NearestLunchTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				22BEE9012ED18E4300A39063 /* Debug */,
+				22BEE9022ED18E4300A39063 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		22BEE9032ED18E4300A39063 /* Build configuration list for PBXNativeTarget "NearestLunchUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				22BEE9042ED18E4300A39063 /* Debug */,
+				22BEE9052ED18E4300A39063 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		22C1E6DB2EACE70D0075B29E /* Build configuration list for PBXNativeTarget "KazuLazer(iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				22C1E6DC2EACE70D0075B29E /* Debug */,
+				22C1E6DD2EACE70D0075B29E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		222237652E8BC4760091639E /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-user-messaging-platform";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
+		227CD0332E857CA6005BA5E1 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.11.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		222F587B2EADCE25007E28FE /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = GoogleMobileAds;
+		};
+		227CD0342E857CA6005BA5E1 /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 227CD0332E857CA6005BA5E1 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
+		};
+		22BEE8D12ED0EC4E00A39063 /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 227CD0332E857CA6005BA5E1 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
+		};
+		22C1E6592EA4AD060075B29E /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 227CD0332E857CA6005BA5E1 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 2269F2A52E7FBD8A00E0AEB3 /* Project object */;
+}

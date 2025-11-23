@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Plain Text</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.text</string>
+			</array>
+		</dict>
+	</array>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-3517487281025314~5699069026</string>
+	<key>SKAdNetworkItems</key>
+	<string></string>
+	<key>UIDeviceFamily</key>
+	<array>
+		<integer>1</integer>
+	</array>
+</dict>
+</plist>

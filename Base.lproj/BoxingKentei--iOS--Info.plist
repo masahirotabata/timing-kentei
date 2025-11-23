@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- 既存: AdMob アプリID -->
+    <key>GADApplicationIdentifier</key>
+    <string>ca-app-pub-3517487281025314~4345140628</string>
+
+    <!-- 既存: iPhone のみ（iPadも対応するなら 2 を追加） -->
+    <key>UIDeviceFamily</key>
+    <array>
+        <integer>1</integer>
+    </array>
+
+    <!-- 既存: X(Twitter) アプリ起動を allowlist -->
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>twitter</string>
+        <string>x</string>
+    </array>
+
+    <!-- ★ 追加（ATT）：トラッキング許可ダイアログの説明文 -->
+    <key>NSUserTrackingUsageDescription</key>
+    <string>ユーザーに合わせた広告表示と機能改善のため、トラッキングの許可をお願いしています。</string>
+</dict>
+</plist>

@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ボクシング検定 v5｜モード固定・30ターン上限・チュートリアル付</title>
+<style>
+  :root{
+    --pink:#e91e63; --ink:#0f172a; --bg:#f7f8fc; --card:#ffffff; --muted:#64748b;
+    --good:#10b981; --bad:#ef4444; --dark:#111827;
+    --bannerH:60px; /* 下部固定バナー高さ */
+  }
+  *{box-sizing:border-box}
+
+  /* 画面収まり（安全領域＋バナー分の余白を常に確保） */
+  html,body{margin:0;height:100%}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: calc(var(--bannerH) + env(safe-area-inset-bottom));
+    overscroll-behavior:contain;
+  }
+
+  .wrap{
+    max-width:540px;margin:0 auto;padding:16px;
+    min-height:100dvh; display:flex; flex-direction:column; gap:12px;
+  }
+  header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  h1{font-size:20px;margin:0;color:var(--pink);letter-spacing:.02em}
+  .icon-btn{border:none;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:8px 10px;cursor:pointer}
+
+  .card{background:var(--card);border:1px solid #eceff3;border-radius:16px;box-shadow:0 4px 14px rgba(2,6,23,.05)}
+  #gameCard{display:flex;flex-direction:column}
+
+  /* ARENA: アスペクト維持＋端末ごとに最大高で収める */
+  #arena{
+    position:relative; aspect-ratio:9/16; width:100%; height:auto;
+    /* 画面高 - (ヘッダー/余白などの概算) - バナー - 安全領域 */
+    max-height: calc(100dvh - 220px - var(--bannerH) - env(safe-area-inset-bottom));
+    overflow:hidden; border-bottom-left-radius:16px; border-bottom-right-radius:16px; touch-action:none;
+  }
+
+  #hud{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid #eef2f7;gap:8px;flex-wrap:wrap}
+  #score{font-weight:700}
+  #timer{font-variant-numeric:tabular-nums}
+  #rank{color:var(--muted);font-weight:600}
+  #modeBadge{font-size:12px;background:#e0f2fe;color:#075985;border:1px solid #bae6fd;border-radius:999px;padding:4px 8px}
+
+  .btn{width:100%; padding:14px 16px; border-radius:12px; border:none; font-size:16px; font-weight:700; cursor:pointer}
+  .btn-primary{background:var(--pink); color:#fff}
+  .btn-dark{background:var(--dark); color:#fff}
+  .btn-ghost{background:#fff;color:var(--pink);border:2px solid var(--pink)}
+  .btn-accent{background:var(--good); color:#fff}
+  .center{display:flex;align-items:center;justify-content:center}
+  .stack{display:flex;flex-direction:column;gap:12px}
+  .row{display:flex;gap:10px}
+  .row>.btn{flex:1}
+  .fade-in{animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .fist{
+    position:absolute; width:120px; height:120px; border-radius:60px;
+    display:flex;align-items:center;justify-content:center; font-size:56px; user-select:none;
+    background: radial-gradient(circle at 35% 35%, #ffb3c1, #ff6b81 60%, #c81e1e 100%);
+    box-shadow:0 12px 30px rgba(200,30,30,.35); border:3px solid rgba(0,0,0,.08)
+  }
+  .fist.slide-in{transition:transform .6s ease}
+  .playerShadow{
+    position:absolute; bottom:24px; left:50%; transform:translateX(-50%);
+    width:120px; height:14px; background: radial-gradient(ellipse at center, rgba(0,0,0,.25), rgba(0,0,0,0) 70%);
+    border-radius:50%;
+  }
+
+  .bubble{
+    position:absolute; padding:10px 14px; background:#fff; color:#111;
+    font-weight:900; letter-spacing:.04em; border:3px solid #111;
+    filter:drop-shadow(0 6px 0 #111); transform:rotate(-3deg); user-select:none; cursor:pointer;
+    clip-path: polygon(10% 0%, 90% 0%, 100% 30%, 85% 50%, 100% 70%, 90% 100%, 10% 100%, 0% 70%, 15% 50%, 0% 30%);
+  }
+  @keyframes shake {0%{transform:rotate(-2deg) translateX(-2px)}50%{transform:rotate(2deg) translateX(2px)}100%{transform:rotate(-2deg) translateX(-2px)}}
+  .shake{ animation: shake .18s ease-in-out infinite }
+
+  .flash{position:absolute; inset:0; background:rgba(16,185,129,.16); pointer-events:none; opacity:0; transition:opacity .2s ease}
+  .flash.bad{background:rgba(239,68,68,.22)}
+  .flash.show{opacity:1}
+  .toast{
+    position:absolute; top:10px; left:50%; transform:translateX(-50%);
+    background:#111827; color:#fff; padding:8px 12px; border-radius:999px; font-weight:700; font-size:13px;
+    opacity:0; transition:opacity .2s ease, transform .2s ease;
+  }
+  .toast.show{opacity:1; transform:translate(-50%, 6px)}
+  .notice{color:var(--muted); font-size:13px; text-align:center}
+
+  /* 初期は非表示（ゲーム開始で表示） */
+  #statusBar{
+    position:absolute; top:8px; left:8px; z-index:5;
+    background:rgba(255,255,255,.9); border:1px solid #e5e7eb;
+    border-radius:999px; padding:4px 10px; font-weight:700;
+    visibility: hidden; /* ← 追加 */
+  }
+  #lives{font-size:16px; letter-spacing:2px}
+
+  /* モーダル共通（安全領域考慮） */
+  .modal{ position:fixed; inset:0; background:rgba(15,23,42,.55); display:none; align-items:center; justify-content:center; padding: max(16px, env(safe-area-inset-top)) 16px max(16px, calc(16px + env(safe-area-inset-bottom))); z-index:1000 }
+  .modalCard{ background:#fff; border-radius:16px; width:min(520px,92vw); padding:20px; text-align:center; position:relative; overflow:auto; max-height:92vh }
+  .modal h3{margin:.2em 0 .6em}
+  .big{font-size:36px; font-weight:900}
+  .muted{color:var(--muted)}
+  .tag{display:inline-block;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:999px;padding:6px 10px;font-weight:700;margin:2px 4px}
+
+  /* 固定バナー（安全領域ぶんの下パディングも） */
+  #bannerSlot{ position:fixed; left:0; right:0; bottom:0; height:var(--bannerH); z-index:9999; background:#111; color:#fff; display:flex; align-items:center; justify-content:center; padding-bottom:env(safe-area-inset-bottom);}
+  #bannerSlot .dummy{ width:100%; max-width:728px; height:100%; display:flex; align-items:center; justify-content:center;
+    font-weight:800; letter-spacing:.08em; border-top:3px solid #e91e63; background: repeating-linear-gradient(45deg, #222 0 10px, #1a1a1a 10px 20px);}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>🥊 ボクシング検定 v5</h1>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span id="modeBadge" title="現在のモード">未選択</span>
+        <span id="rank">ランク：-</span>
+        <button id="howToBtn" class="icon-btn" title="遊び方">❓</button>
+      </div>
+    </header>
+
+    <div class="card" id="gameCard">
+      <div id="hud">
+        <div><span class="muted">SCORE</span> <span id="score">0</span></div>
+        <div><span class="muted">TIME</span> <span id="timer">90.0</span>s</div>
+        <div><span class="muted">BEST</span> <span id="best">0</span></div>
+        <div><span class="muted">TURN</span> <span id="turn">0</span>/30</div>
+      </div>
+
+      <div id="arena" class="card">
+        <div id="statusBar">LIFE <span id="lives">❤️❤️❤️</span></div>
+        <div class="playerShadow"></div>
+        <div id="fx" class="flash"></div>
+        <div id="toast" class="toast">READY</div>
+
+        <!-- スタート：モード選択 -->
+        <div id="startScreen" class="center stack" style="position:absolute;inset:0;padding:16px;background:#fff">
+          <div class="fade-in" style="text-align:center">
+            <h2 style="margin:.4em 0">モードを選択（各30ターン）</h2>
+            <p class="muted">🥊は<strong>スワイプで回避</strong>／「SMASH!」は<strong>タップ</strong>。<br>
+              upper / hook はありません。モード差は<strong>猶予時間のみ</strong>です。</p>
+          </div>
+          <div class="row">
+            <button id="btnEasy"   class="btn btn-primary">EASY（余裕たっぷり）</button>
+            <button id="btnNormal" class="btn btn-dark">NORMAL（標準）</button>
+            <button id="btnHard"   class="btn btn-ghost">HARD（かなりシビア）</button>
+          </div>
+          <button id="btnHow" class="btn" style="margin-top:6px;border:1px solid #e5e7eb">まずは遊び方を見る</button>
+        </div>
+
+        <!-- 結果モーダル -->
+        <div id="resultModal" class="modal">
+          <div class="modalCard">
+            <h3>検定結果</h3>
+            <div class="big" id="rsScore">0</div>
+            <div style="margin:.2em 0 .8em">
+              <span class="muted">RANK：</span><b id="rsRank">-</b>
+              <span class="muted">BEST：</span><b id="rsBest">0</b>
+              <span class="muted">MODE：</span><b id="rsMode">-</b>
+            </div>
+            <div id="rsTags" class="muted" style="margin-bottom:10px"></div>
+            <div class="row" style="margin-top:8px">
+              <button id="btnRetry" class="btn btn-accent">↻ 同じモードで再挑戦</button>
+              <!-- Xに共有ボタン削除 -->
+            </div>
+            <!-- 追加：戻る動線 -->
+            <div class="row" style="margin-top:8px">
+              <button id="btnBackToMode" class="btn btn-dark">← モード選択に戻る</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- チュートリアル（遊び方） -->
+        <div id="howtoModal" class="modal">
+          <div class="modalCard" style="text-align:left">
+            <h3>遊び方</h3>
+            <ol>
+              <li>モード（EASY/NORMAL/HARD）を選ぶ。各モードは<strong>30ターン</strong>で終了。</li>
+              <li>🥊が横から来たら<strong>素早くスワイプ</strong>で回避。</li>
+              <li><code>SMASH!</code>が出たら<strong>タップ</strong>で命中。</li>
+              <li>upper / hook はありません（操作は上記2つのみ）。</li>
+              <li>モードの違い＝<strong>入力猶予の長さ</strong>だけ。</li>
+            </ol>
+            <p class="muted">ヒント：連続成功でスコアが伸びます。焦らず一定のリズムで！</p>
+            <div class="row"><button id="howtoClose" class="btn btn-primary">OK</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="notice" style="margin-top:10px">通常モード相当のLIFEは3。EASYでもHARDでも上限30ターン。自動繰り上がりはありません。</p>
+  </div>
+
+  <!-- 常時バナー（Webデバッグ用。実機はAdMobへ置換） -->
+  <div id="bannerSlot" aria-label="ad-banner">
+    <div class="dummy">[ Banner Ad ]</div>
+  </div>
+
+<script>
+(() => {
+  // ====== 要素 ======
+  const arena = document.getElementById('arena');
+  const hudScore = document.getElementById('score');
+  const hudTimer = document.getElementById('timer');
+  const hudBest  = document.getElementById('best');
+  const hudTurn  = document.getElementById('turn');
+  const rankEl   = document.getElementById('rank');
+  const modeBadge= document.getElementById('modeBadge');
+  const livesEl  = document.getElementById('lives');
+  const fx       = document.getElementById('fx');
+  const toast    = document.getElementById('toast');
+  const startScreen = document.getElementById('startScreen');
+  const resultModal = document.getElementById('resultModal');
+  const btnRetry = document.getElementById('btnRetry');
+  const btnBackToMode = document.getElementById('btnBackToMode'); // 追加
+  const rsScore  = document.getElementById('rsScore');
+  const rsRank   = document.getElementById('rsRank');
+  const rsBest   = document.getElementById('rsBest');
+  const rsMode   = document.getElementById('rsMode');
+  const rsTags   = document.getElementById('rsTags');
+
+  const btnEasy   = document.getElementById('btnEasy');
+  const btnNormal = document.getElementById('btnNormal');
+  const btnHard   = document.getElementById('btnHard');
+  const btnHow    = document.getElementById('btnHow');
+  const howToBtn  = document.getElementById('howToBtn');
+
+  const howtoModal= document.getElementById('howtoModal');
+  const howtoClose= document.getElementById('howtoClose');
+
+  // 追加：statusBar
+  const statusBar = document.getElementById('statusBar');
+
+  // ====== 定数 ======
+  const LIVES = 3;
+  const TIME_TOTAL = 90.0;
+  const TURNS_LIMIT = 30;
+  const MODES = {
+    EASY:   { name:'EASY',   windowMs: 1400, spawnMs: 1100 },
+    NORMAL: { name:'NORMAL', windowMs: 1050, spawnMs: 1000 },
+    HARD:   { name:'HARD',   windowMs:  850, spawnMs:  950 },
+  };
+
+  // ====== 状態 ======
+  let mode = null;
+  let score = 0;
+  let best = Number(localStorage.getItem('boxing_best_v5') || 0);
+  hudBest.textContent = best;
+  let timeLeft = TIME_TOTAL;
+  let lives = LIVES;
+  let currentEvent = null;
+  let loopId = null;
+  let tickingId = null;
+  let touchStart = null;
+  let turns = 0;
+
+  // ====== Audio（シンプル） ======
+  const Audio = (() => {
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    function osc(freq=440, dur=0.12, type='square', vol=0.25){
+      const o=ctx.createOscillator(), g=ctx.createGain();
+      o.type=type; o.frequency.value=freq; g.gain.value=vol;
+      o.connect(g); g.connect(ctx.destination);
+      const now=ctx.currentTime; o.start(now);
+      g.gain.exponentialRampToValueAtTime(0.0001, now+dur); o.stop(now+dur);
+    }
+    function sweep(start=800,end=200,dur=0.25,type='sawtooth',vol=0.25){
+      const o=ctx.createOscillator(), g=ctx.createGain();
+      o.type=type; o.frequency.setValueAtTime(start, ctx.currentTime);
+      o.frequency.exponentialRampToValueAtTime(end, ctx.currentTime+dur);
+      g.gain.value=vol; o.connect(g); g.connect(ctx.destination);
+      o.start(); o.stop(ctx.currentTime+dur);
+    }
+    return {
+      hit:()=>osc(720,0.12,'square',0.28),
+      dodge:()=>osc(520,0.10,'triangle',0.22),
+      miss:()=>sweep(360,180,0.25,'sawtooth',0.30),
+      ok:()=>osc(960,0.18,'triangle',0.22)
+    };
+  })();
+
+  // ====== ユーティリティ ======
+  const rand = (min,max)=> Math.random()*(max-min)+min;
+  const fmtTime = t => (Math.max(0,t)).toFixed(1);
+  const livesString = n => '❤️'.repeat(Math.max(0,n)) + (n<3 ? '🤍'.repeat(Math.max(0,3-n)) : '');
+  const rankFromScore = s => s>=240 ? '四段' : s>=200 ? '三段' : s>=160 ? '二段' : s>=120 ? '初段' : s>=90 ? '1級' : s>=70 ? '3級' : s>=50 ? '5級' : s>=30 ? '7級' : '10級';
+  const bumpRank = ()=> { rankEl.textContent = 'ランク：' + rankFromScore(score); };
+  function addScore(v){ score+=v; hudScore.textContent=score; bumpRank(); }
+  const showFX = (good=true)=>{ fx.classList.toggle('bad',!good); fx.classList.add('show'); setTimeout(()=>fx.classList.remove('show'),180); };
+  const showToast = (msg)=>{ toast.textContent=msg; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),700); };
+
+  function positionBubble(el){
+    const w = arena.clientWidth, h = arena.clientHeight;
+    const x = rand(20, w-140), y = rand(40, h-200);
+    el.style.left = x+'px'; el.style.top = y+'px';
+  }
+  function cleanupEvent(){
+    currentEvent && clearTimeout(currentEvent.timeoutId);
+    [...arena.querySelectorAll('.fist,.bubble')].forEach(el=>el.remove());
+    currentEvent=null;
+  }
+
+  // ====== 進行 ======
+  function resetToMode(sel){
+    mode = sel;
+    score = 0; bumpRank();
+    timeLeft = TIME_TOTAL;
+    lives = LIVES; livesEl.textContent = livesString(lives);
+    turns = 0; hudTurn.textContent = turns;
+    hudScore.textContent = 0; hudTimer.textContent = fmtTime(timeLeft);
+    modeBadge.textContent = MODES[mode].name;
+    modeBadge.style.background = mode==='HARD' ? '#fee2e2' : (mode==='EASY' ? '#dcfce7' : '#e0f2fe');
+    modeBadge.style.color      = mode==='HARD' ? '#991b1b' : (mode==='EASY' ? '#065f46' : '#075985');
+    cleanupEvent();
+    startScreen.style.display='none';
+    resultModal.style.display='none';
+
+    statusBar.style.visibility = 'visible'; // ゲーム開始時にハート表示
+  }
+
+  function startCountdownThenRun(){
+    let c=3;
+    const id=setInterval(()=>{
+      showToast(c===0?'GO!':String(c));
+      if(c>0) Audio.dodge(); else Audio.ok();
+      if(c--===0){ clearInterval(id); run(); }
+    }, 450);
+  }
+
+  function showInterstitial() {
+    if (window.webkit?.messageHandlers?.ads) {
+      window.webkit.messageHandlers.ads.postMessage("interstitial");
+    }
+  }
+
+  function run(){
+    scheduleNext(400);
+    tickingId = setInterval(tick, 100);
+  }
+
+  function tick(){
+    timeLeft -= 0.1; if(timeLeft<0) timeLeft=0;
+    hudTimer.textContent = fmtTime(timeLeft);
+    if(timeLeft<=0){ endAndShowResult('timeup'); }
+  }
+
+  function scheduleNext(delay){
+    const d = (delay!=null) ? delay : MODES[mode].spawnMs;
+    loopId = setTimeout(spawnNext, d);
+  }
+
+  function spawnNext(){
+    if(turns >= TURNS_LIMIT){ endAndShowResult('turnlimit'); return; }
+    turns++; hudTurn.textContent = turns;
+
+    const kind = Math.random() < 0.55 ? 'fist' : 'smash';
+    if(kind==='fist') spawnFist();
+    else spawnSmash();
+  }
+
+  function spawnFist(){
+    cleanupEvent();
+    const fist = document.createElement('div');
+    fist.className='fist slide-in'; fist.innerHTML='🥊';
+    const y = rand(20, arena.clientHeight*0.55);
+    const fromLeft = Math.random() < 0.5;
+    const startX = fromLeft ? -140 : arena.clientWidth + 140;
+    const targetX = arena.clientWidth/2 - 60;
+    fist.style.top = y+'px';
+    fist.style.left = (fromLeft ? startX : targetX)+'px';
+    arena.appendChild(fist);
+    requestAnimationFrame(()=>{ fist.style.transform = `translateX(${fromLeft ? (targetX - startX) : 0}px)`; });
+
+    const windowMs = MODES[mode].windowMs;
+    const timeoutId = setTimeout(()=>{ onDamage('fist_timeout'); }, windowMs);
+
+    function onSwipeSuccess(){
+      clearTimeout(timeoutId);
+      showFX(true); showToast('DODGE!'); Audio.dodge();
+      addScore(5);
+      fist.remove(); currentEvent=null;
+      scheduleNext();
+    }
+
+    currentEvent = { kind:'fist', el:fist, timeoutId };
+    fist._onSwipeSuccess = onSwipeSuccess;
+  }
+
+  function spawnSmash(){
+    cleanupEvent();
+    const bubble = document.createElement('div');
+    bubble.className='bubble';
+    bubble.textContent='SMASH!';
+    positionBubble(bubble);
+    arena.appendChild(bubble);
+
+    const windowMs = MODES[mode].windowMs;
+    const timeoutId = setTimeout(()=>{ onDamage('smash_timeout'); }, windowMs);
+
+    function onTap(){
+      clearTimeout(timeoutId);
+      addScore(10); showFX(true); showToast('HIT!'); Audio.hit();
+      bubble.remove(); currentEvent=null;
+      scheduleNext();
+    }
+
+    bubble.addEventListener('click', onTap, {once:true});
+    bubble.addEventListener('touchstart', (e)=>{ e.preventDefault(); onTap(); }, {once:true});
+    currentEvent = { kind:'smash', el:bubble, timeoutId };
+  }
+
+  function onDamage(){
+    cleanupEvent();
+    showFX(false); Audio.miss();
+    lives = Math.max(0, lives - 1);
+    livesEl.textContent = livesString(lives);
+    showToast('被弾 -1');
+    if(lives<=0){ endAndShowResult('miss'); }
+    else{ scheduleNext(300); }
+  }
+
+  // ====== 入力（スワイプ） ======
+  function onTouchStart(ev){
+    const t = ('touches' in ev) ? ev.touches[0] : ev;
+    touchStart = {x:t.clientX, y:t.clientY, t:performance.now()};
+  }
+  function onTouchEnd(ev){
+    if(!touchStart) return;
+    const t = ('changedTouches' in ev) ? ev.changedTouches[0] : ev;
+    const dx = t.clientX - touchStart.x;
+    const dy = t.clientY - touchStart.y;
+    const dt = performance.now() - touchStart.t;
+    const dist = Math.hypot(dx,dy);
+    const speedOk = dist/dt > 0.3;
+    const isSwipe = dist > 40 && speedOk;
+
+    if(isSwipe && currentEvent && currentEvent.kind==='fist'){
+      const fist = arena.querySelector('.fist');
+      if(fist && fist._onSwipeSuccess){ fist._onSwipeSuccess(); }
+    }
+    touchStart = null;
+  }
+  let mouseDown=false;
+  arena.addEventListener('mousedown', (e)=>{mouseDown=true; onTouchStart(e);});
+  arena.addEventListener('mouseup',   (e)=>{if(mouseDown) onTouchEnd(e); mouseDown=false;});
+  arena.addEventListener('touchstart', onTouchStart, {passive:false});
+  arena.addEventListener('touchend',   onTouchEnd);
+
+  // ====== 結果 ======
+  function endAndShowResult(reason='miss'){
+    clearTimeout(loopId); clearInterval(tickingId);
+    currentEvent && clearTimeout(currentEvent.timeoutId);
+    currentEvent = null;
+
+    if(score>best){ best=score; localStorage.setItem('boxing_best_v5', String(best)); hudBest.textContent=best; }
+
+    rsBest.textContent = best; rsMode.textContent = MODES[mode].name;
+    rsScore.textContent = score;
+    rsRank.textContent  = rankFromScore(score);
+    rsTags.innerHTML = renderTags(score, reason);
+
+    resultModal.style.display='flex';
+  }
+
+  function renderTags(s, reason){
+    const tags = [];
+    if(s>=50) tags.push('反射◎');
+    if(s>=100) tags.push('集中↑');
+    if(reason==='timeup') tags.push('時間切れ');
+    if(reason==='turnlimit') tags.push('30ターン到達');
+    return tags.map(t=>`<span class="tag">${t}</span>`).join('');
+  }
+
+  // ====== UI操作 ======
+  btnEasy.addEventListener('click',  ()=>{ resetToMode('EASY');   startCountdownThenRun(); });
+  btnNormal.addEventListener('click',()=>{ resetToMode('NORMAL'); startCountdownThenRun(); });
+  btnHard.addEventListener('click',  ()=>{ resetToMode('HARD');   startCountdownThenRun(); });
+  btnRetry.addEventListener('click', ()=>{ resetToMode(mode||'NORMAL'); startCountdownThenRun(); });
+
+  // 追加：モード選択に戻る
+  btnBackToMode.addEventListener('click', ()=>{
+    cleanupEvent();
+    clearTimeout(loopId); clearInterval(tickingId);
+    // UI初期化
+    score = 0; hudScore.textContent = '0';
+    timeLeft = TIME_TOTAL; hudTimer.textContent = fmtTime(timeLeft);
+    turns = 0; hudTurn.textContent = '0';
+    lives = LIVES; livesEl.textContent = livesString(lives);
+    // 画面遷移
+    resultModal.style.display = 'none';
+    startScreen.style.display = 'flex';
+    // ハートは非表示に戻す
+    statusBar.style.visibility = 'hidden';
+  });
+
+  // （共有機能は廃止）
+
+  // チュートリアル（遊び方）
+  function openHowto(){ howtoModal.style.display='flex'; }
+  function closeHowto(){ howtoModal.style.display='none'; }
+  btnHow.addEventListener('click', openHowto);
+  howToBtn.addEventListener('click', openHowto);
+  howtoClose.addEventListener('click', closeHowto);
+  howtoModal.addEventListener('click', (e)=>{ if(e.target===howtoModal) closeHowto(); });
+
+  // Escapeでモーダル閉じ
+  window.addEventListener('keydown', (e)=>{
+    if(e.key==='Escape'){
+      if(resultModal.style.display==='flex') resultModal.style.display='none';
+      if(howtoModal.style.display==='flex') howtoModal.style.display='none';
+    }
+  });
+
+  // 初期表示（※statusBar は CSS で非表示のまま）
+  livesEl.textContent = livesString(LIVES);
+})();
+</script>
+</body>
+</html>

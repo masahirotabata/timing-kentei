@@ -1,0 +1,90 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
+  "identifier" : "8536EF59",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "480",
+      "familyShareable" : false,
+      "internalID" : "7EB176F6",
+      "localizations" : [
+        {
+          "description" : "",
+          "displayName" : "",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "om.tabata.NearestLunch.removeAds",
+      "referenceName" : "Remove Ads",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

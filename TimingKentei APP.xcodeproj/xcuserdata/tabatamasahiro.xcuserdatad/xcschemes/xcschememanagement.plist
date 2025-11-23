@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SchemeUserState</key>
+	<dict>
+		<key>BoxingKentei (iOS).xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+		<key>BoxingKentei (macOS).xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>5</integer>
+		</dict>
+		<key>DoubleTapBrowser.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>4</integer>
+		</dict>
+		<key>KazuLazer(iOS).xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
+		<key>NearestLunch.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>7</integer>
+		</dict>
+		<key>SleepKentei (iOS).xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
+		<key>TimingKentei (iOS) copy.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>0</integer>
+		</dict>
+		<key>TimingKentei (iOS).xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>8</integer>
+		</dict>
+		<key>TimingKentei (macOS) copy.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
+		<key>TimingKentei (macOS).xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>6</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>2222370F2E87CCF40091639E</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>222F589B2ECC77E7007E28FE</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>222F58AC2ECC77EA007E28FE</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>222F58B62ECC77EA007E28FE</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>227CCFD42E844594005BA5E1</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>22BEE8D92ED18E3F00A39063</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>22BEE8EA2ED18E4300A39063</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>22BEE8F42ED18E4300A39063</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>22C1E6CD2EACE70D0075B29E</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+	</dict>
+</dict>
+</plist>
