@@ -76,6 +76,11 @@ final class InterstitialAdManager: NSObject, ObservableObject {
 
     private var interstitial: InterstitialAd?
 
+    /// 直近表示した日時
+    private var lastShowDate: Date?
+    /// インターバル（秒）…ここでは「2分に1回まで」
+    private let minInterval: TimeInterval = 120
+
     override init() {
         super.init()
         load()
@@ -95,12 +100,22 @@ final class InterstitialAdManager: NSObject, ObservableObject {
         }
     }
 
+    /// 表示して良い状態か？
+    private func canShow() -> Bool {
+        // まだ一度も出していなければOK
+        guard let last = lastShowDate else { return true }
+        // 最後の表示から minInterval 秒以上あいていればOK
+        return Date().timeIntervalSince(last) >= minInterval
+    }
+
     /// 表示可能なら表示する
     func showIfReady() {
-        guard let root = topViewController(),
+        guard canShow(),
+              let root = topViewController(),
               let ad = interstitial else {
             return
         }
+        lastShowDate = Date()
         ad.present(from: root)
     }
 }
@@ -426,10 +441,6 @@ struct FavoritesView: View {
 
 // MARK: - 設定画面
 
-// MARK: - 設定画面
-
-// MARK: - 設定画面
-
 struct SettingsView: View {
     @EnvironmentObject var settings: AppSettings
     @EnvironmentObject var storeManager: StoreManager
@@ -503,7 +514,7 @@ struct SettingsView: View {
                         )
                         .disabled(isJumpMaxMode)   // ジャンプ系のときは操作不可
                     }
-                } // ← ここで Section をしっかり閉じる
+                } // Section ダブルタップ機能
 
                 // --- Pro アップグレード ---
                 Section(header: Text("Pro アップグレード（買い切り）")) {
@@ -553,6 +564,36 @@ struct SettingsView: View {
                     }
                 }
 
+                // --- 他のアプリ ---
+                Section(header: Text("他のアプリ")) {
+                    Button {
+                        openAppStore(appId: "6753610818")   // 美女と英単語 - Beauty & Words
+                    } label: {
+                        HStack {
+                            Image(systemName: "text.book.closed")
+                            Text("美女と英単語 - Beauty & Words")
+                        }
+                    }
+
+                    Button {
+                        openAppStore(appId: "6753014764")   // ボクシング検定
+                    } label: {
+                        HStack {
+                            Image(systemName: "figure.boxing")
+                            Text("ボクシング検定 - 反射神経＆タイミング")
+                        }
+                    }
+
+                    Button {
+                        openAppStore(appId: "6752886026")   // タイミング検定
+                    } label: {
+                        HStack {
+                            Image(systemName: "timer")
+                            Text("タイミング検定")
+                        }
+                    }
+                }
+
                 // --- アプリ情報 ---
                 Section(header: Text("情報")) {
                     Text("DoubleTapBrowser")
@@ -570,6 +611,11 @@ struct SettingsView: View {
                        Text(purchaseError ?? "")
                    })
         }
+    }
+
+    private func openAppStore(appId: String) {
+        guard let url = URL(string: "https://apps.apple.com/jp/app/id\(appId)") else { return }
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
 
     private func purchase() async {
@@ -760,17 +806,17 @@ struct WebViewRepresentable: UIViewRepresentable {
         }
 
         let isJumpMax = (action == .jumpBottom || action == .jumpTop)
-            let effectiveFactor: Double = isJumpMax ? 10000.0 : scrollFactor
+        let effectiveFactor: Double = isJumpMax ? 10000.0 : scrollFactor
 
-            let configJS = """
-            window._doubleTapConfig = {
-              enabled: \(isDoubleTapEnabled ? "true" : "false"),
-              factor: \(effectiveFactor),
-              mode: "\(action.jsModeString)"
-            };
-            """
-            webView.evaluateJavaScript(configJS, completionHandler: nil)
-        }
+        let configJS = """
+        window._doubleTapConfig = {
+          enabled: \(isDoubleTapEnabled ? "true" : "false"),
+          factor: \(effectiveFactor),
+          mode: "\(action.jsModeString)"
+        };
+        """
+        webView.evaluateJavaScript(configJS, completionHandler: nil)
+    }
 
     // MARK: - Coordinator
 
