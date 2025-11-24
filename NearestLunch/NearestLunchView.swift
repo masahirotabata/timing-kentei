@@ -2,8 +2,6 @@
 //  NearestLunchView.swift
 //  TimingKentei APP
 //
-//  Created by 田端政裕 on 2025/11/22.
-//
 
 import SwiftUI
 import CoreLocation   // 位置情報用
@@ -15,9 +13,9 @@ enum LunchMode: String, CaseIterable, Identifiable {
     case quick   // サクッとランチ
     case relax   // まったりランチ
     case cheers  // 乾杯ご飯屋さん
-    
+
     var id: String { rawValue }
-    
+
     var displayName: String {
         switch self {
         case .quick:  return "サクッと"
@@ -25,7 +23,7 @@ enum LunchMode: String, CaseIterable, Identifiable {
         case .cheers: return "乾杯"
         }
     }
-    
+
     var description: String {
         switch self {
         case .quick:
@@ -59,14 +57,14 @@ struct Restaurant: Identifiable {
     let reviewCount: Int
     let priceLevel: Int?      // 1〜4くらいを想定（¥〜¥¥¥¥）
     let isOpenNow: Bool
-    let closingTimeText: String?  // 例: "22:00 まで"（Nearby Search だけだと詳細は nil）
-    
+    let closingTimeText: String?  // 例: "22:00 まで"
+
     /// 表示用の料金目安（¥〜¥¥¥¥）
     var priceText: String {
         guard let priceLevel = priceLevel, priceLevel > 0 else { return "-" }
         return String(repeating: "¥", count: priceLevel)
     }
-    
+
     /// 距離表示
     var distanceText: String {
         if distanceMeters < 1000 {
@@ -76,7 +74,7 @@ struct Restaurant: Identifiable {
             return String(format: "%.1fkm", km)
         }
     }
-    
+
     /// 営業状況表示
     var openStatusText: String {
         if isOpenNow {
@@ -91,12 +89,11 @@ struct Restaurant: Identifiable {
     }
 }
 
-// MARK: - Places API 用エラー（クォータ超過など）
+// MARK: - Places API 用エラー
 
 enum PlacesAPIError: LocalizedError {
-    /// 429（クォータ上限）相当
-    case quotaExceeded
-    
+    case quotaExceeded   // 429
+
     var errorDescription: String? {
         switch self {
         case .quotaExceeded:
@@ -110,19 +107,17 @@ enum PlacesAPIError: LocalizedError {
 @MainActor
 final class NearestLunchPurchaseManager: ObservableObject {
     static let shared = NearestLunchPurchaseManager()
-    
-    /// App Store Connect で作る非消耗型の Product ID
-    /// 例: com.tabata.NearestLunch.removeAds
+
     private let productId = "com.tabata.NearestLunch.removeAds"
-    
     private let premiumKey = "NearestLunch_isPremium"
-    
+
     @Published private(set) var isPremium: Bool
     @Published var purchaseErrorMessage: String?
     @Published var isProcessing: Bool = false
-    
+
     private init() {
         self.isPremium = UserDefaults.standard.bool(forKey: premiumKey)
+
         // 起動時に一応 Entitlement から再チェック
         Task {
             await refreshPurchasedStatus()
@@ -132,18 +127,18 @@ final class NearestLunchPurchaseManager: ObservableObject {
             await observeTransactions()
         }
     }
-    
+
     private func setPremium(_ value: Bool) {
         isPremium = value
         UserDefaults.standard.set(value, forKey: premiumKey)
     }
-    
+
     /// removeAds の購入処理
     func purchaseRemoveAds() async {
         guard !isPremium else { return }
         isProcessing = true
         purchaseErrorMessage = nil
-        
+
         do {
             let products = try await Product.products(for: [productId])
             guard let product = products.first else {
@@ -151,14 +146,13 @@ final class NearestLunchPurchaseManager: ObservableObject {
                     NSLocalizedDescriptionKey: "課金情報が見つかりませんでした。少し時間をおいて再度お試しください。"
                 ])
             }
-            
+
             let result = try await product.purchase()
-            
+
             switch result {
             case .success(let verification):
                 switch verification {
                 case .verified(let transaction):
-                    // 正常に購入完了
                     setPremium(true)
                     await transaction.finish()
                 case .unverified(_, let error):
@@ -174,10 +168,10 @@ final class NearestLunchPurchaseManager: ObservableObject {
         } catch {
             purchaseErrorMessage = error.localizedDescription
         }
-        
+
         isProcessing = false
     }
-    
+
     /// 購入の復元
     func restorePurchases() async {
         isProcessing = true
@@ -190,11 +184,11 @@ final class NearestLunchPurchaseManager: ObservableObject {
         }
         isProcessing = false
     }
-    
-    /// 現在の Entitlement から isPremium を再判定
+
+    /// Entitlement から isPremium を再判定
     func refreshPurchasedStatus() async {
         var hasPremium = false
-        
+
         for await result in Transaction.currentEntitlements {
             switch result {
             case .verified(let transaction):
@@ -207,10 +201,10 @@ final class NearestLunchPurchaseManager: ObservableObject {
                 break
             }
         }
-        
+
         setPremium(hasPremium)
     }
-    
+
     /// トランザクションのライブ更新監視
     private func observeTransactions() async {
         for await result in Transaction.updates {
@@ -229,111 +223,213 @@ final class NearestLunchPurchaseManager: ObservableObject {
     }
 }
 
+// MARK: - 位置情報サービス
+
+@MainActor
+final class LocationService: NSObject, CLLocationManagerDelegate {
+    private let manager = CLLocationManager()
+
+    // ViewModel へ渡すコールバック
+    var onGotLocation: ((CLLocation) -> Void)?
+    var onPermissionError: (() -> Void)?
+    var onLocationError: ((Error?) -> Void)?
+
+    override init() {
+        super.init()
+        manager.delegate = self
+        manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        manager.distanceFilter = kCLDistanceFilterNone
+        print("[LocationService] init")
+    }
+
+    /// 「現在地から探す」ボタン押下で呼ぶ（純粋に位置情報だけ扱う）
+    func startSearch() {
+        print("[LocationService] startSearch")
+
+        // 端末側の位置情報サービス自体が OFF
+        guard CLLocationManager.locationServicesEnabled() else {
+            print("[LocationService] location services disabled")
+            onLocationError?(nil)
+            return
+        }
+
+        let status = manager.authorizationStatus
+        print("[LocationService] current auth status = \(status.rawValue)")
+
+        switch status {
+        case .notDetermined:
+            print("[LocationService] requestWhenInUseAuthorization")
+            manager.requestWhenInUseAuthorization()
+
+        case .authorizedWhenInUse, .authorizedAlways:
+            print("[LocationService] already authorized -> requestLocation")
+            manager.requestLocation()
+
+        case .denied, .restricted:
+            print("[LocationService] denied or restricted")
+            onPermissionError?()
+
+        @unknown default:
+            print("[LocationService] unknown auth status")
+            onLocationError?(nil)
+        }
+    }
+
+    // MARK: - CLLocationManagerDelegate
+
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        print("[LocationService] locationManagerDidChangeAuthorization")
+        handleAuthorizationChange(manager)
+    }
+
+    func locationManager(_ manager: CLLocationManager,
+                         didChangeAuthorization status: CLAuthorizationStatus) {
+        print("[LocationService] didChangeAuthorization (status = \(status.rawValue))")
+        handleAuthorizationChange(manager)
+    }
+
+    private func handleAuthorizationChange(_ manager: CLLocationManager) {
+        let status = manager.authorizationStatus
+        print("[LocationService] handleAuthorizationChange status = \(status.rawValue)")
+
+        switch status {
+        case .authorizedWhenInUse, .authorizedAlways:
+            print("[LocationService] authorized -> requestLocation")
+            manager.requestLocation()
+
+        case .denied, .restricted:
+            print("[LocationService] denied in handleAuthorizationChange")
+            onPermissionError?()
+
+        case .notDetermined:
+            print("[LocationService] still notDetermined")
+            break
+
+        @unknown default:
+            print("[LocationService] unknown default in handleAuthorizationChange")
+            onLocationError?(nil)
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager,
+                         didUpdateLocations locations: [CLLocation]) {
+        print("[LocationService] didUpdateLocations: \(locations)")
+
+        guard let loc = locations.last else {
+            print("[LocationService] didUpdateLocations but no location")
+            onLocationError?(nil)
+            return
+        }
+
+        onGotLocation?(loc)
+    }
+
+    func locationManager(_ manager: CLLocationManager,
+                         didFailWithError error: Error) {
+        print("[LocationService] didFailWithError: \(error)")
+        onLocationError?(error)
+    }
+}
+
 // MARK: - ViewModel
 
 @MainActor
-final class NearestRestaurantViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
+final class NearestRestaurantViewModel: ObservableObject {
     @Published var screen: AppScreen = .home
     @Published var selectedMode: LunchMode = .quick
     @Published var restaurants: [Restaurant] = []
     @Published var errorMessage: String?
 
-    /// メインで表示する一番近いお店
+    private let locationService = LocationService()
+    private let placesService = GooglePlacesService()
+
+    /// 一番近いお店
     var primaryRestaurant: Restaurant? {
         restaurants.first
     }
 
-    private let placesService = GooglePlacesService()
-    private let locationManager = CLLocationManager()
-    private var locationContinuation: CheckedContinuation<CLLocationCoordinate2D, Error>?
-
-    override init() {
-        super.init()
-        locationManager.delegate = self
-    }
-
-    /// 起動画面からの検索開始
-    func startSearch() {
-        screen = .searching
-        errorMessage = nil
-
-        Task {
-            do {
-                let coord = try await requestLocation()
-                let result = try await placesService.searchNearbyRestaurants(
-                    location: coord,
-                    mode: selectedMode
-                )
-                self.restaurants = result
-                self.screen = .result
-            } catch {
-                let nsError = error as NSError
-
-                if nsError.domain == kCLErrorDomain,
-                   nsError.code == CLError.denied.rawValue {
-                    self.errorMessage = "位置情報の利用が許可されていません。設定アプリで位置情報をオンにしてから、もう一度お試しください。"
-                } else if let placesError = error as? PlacesAPIError {
-                    self.errorMessage = placesError.localizedDescription
-                } else {
-                    self.errorMessage = "お店の取得に失敗しました: \(error.localizedDescription)"
-                }
-
-                self.restaurants = []
-                self.screen = .result
+    init() {
+        // 位置情報取得に成功したとき
+        locationService.onGotLocation = { [weak self] location in
+            guard let self else { return }
+            Task { [weak self] in
+                await self?.searchNearby(from: location.coordinate)
             }
+        }
+        // 権限が許可されていないとき
+        locationService.onPermissionError = { [weak self] in
+            self?.handlePermissionError()
+        }
+        // それ以外の位置情報エラー
+        locationService.onLocationError = { [weak self] error in
+            self?.handleLocationError(error)
         }
     }
 
-    /// モード変更時に再検索（結果画面のタブ切り替え用）
+    /// 「現在地から探す」ボタン押下時に呼ぶ
+    func startSearch() {
+        print("[ViewModel] startSearch")
+
+        errorMessage = nil
+        restaurants.removeAll()
+        screen = .searching
+
+        // ★ 10秒タイムアウト：コールバックが来なくてもクルクルのままにならないようにする
+        Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 10_000_000_000)  // 10秒
+            guard let self = self else { return }
+
+            if self.screen == .searching {
+                print("[ViewModel] timeout -> handleLocationError")
+                self.handleLocationError(nil)
+            }
+        }
+
+        locationService.startSearch()
+    }
+
+    /// 結果画面でモードを変えたときに再検索
     func changeModeAndSearch(_ mode: LunchMode) {
         selectedMode = mode
         startSearch()
     }
 
-    // MARK: - 位置情報
+    // MARK: - 内部処理
 
-    private func requestLocation() async throws -> CLLocationCoordinate2D {
-        switch locationManager.authorizationStatus {
-        case .notDetermined:
-            locationManager.requestWhenInUseAuthorization()
-        case .denied, .restricted:
-            throw NSError(domain: "Location", code: 1, userInfo: [
-                NSLocalizedDescriptionKey: "位置情報の利用が許可されていません。設定アプリから許可してください。"
-            ])
-        case .authorizedAlways, .authorizedWhenInUse, .authorized:
-            break
-        @unknown default:
-            break
+    fileprivate func handlePermissionError() {
+        errorMessage = "位置情報の利用が許可されていません。設定アプリで位置情報をオンにしてから、もう一度お試しください。"
+        screen = .result
+    }
+
+    fileprivate func handleLocationError(_ error: Error?) {
+        errorMessage = "現在地を取得できませんでした。通信状況やGPS設定をご確認のうえ、再度お試しください。"
+        screen = .result
+    }
+
+    private func searchNearby(from coordinate: CLLocationCoordinate2D) async {
+        do {
+            let shops = try await placesService.searchNearbyRestaurants(
+                location: coordinate,
+                mode: selectedMode
+            )
+            self.restaurants = shops
+            self.errorMessage = nil
+            self.screen = .result
+        } catch let error as PlacesAPIError {
+            self.restaurants = []
+            self.errorMessage = error.localizedDescription
+            self.screen = .result
+        } catch {
+            self.restaurants = []
+            self.errorMessage = "近くのご飯屋さんを取得できませんでした。しばらく時間をおいてから再度お試しください。"
+            self.screen = .result
         }
-
-        return try await withCheckedThrowingContinuation { continuation in
-            self.locationContinuation = continuation
-            locationManager.requestLocation()
-        }
-    }
-
-    // CLLocationManagerDelegate
-
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let coord = locations.last?.coordinate else { return }
-        locationContinuation?.resume(returning: coord)
-        locationContinuation = nil
-    }
-
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        locationContinuation?.resume(throwing: error)
-        locationContinuation = nil
-    }
-
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        // 必要ならここで再リクエストなど
     }
 }
 
 // MARK: - Google Places API
 
 final class GooglePlacesService {
-    // TODO: 公開リポジトリに上げる場合はキーは埋め込まないように注意
     private let apiKey = "YOUR_API_KEY_HERE"
 
     struct PlacesResponse: Decodable {
@@ -440,13 +536,12 @@ final class GooglePlacesService {
     }
 }
 
-
 // MARK: - ルートビュー
 
 struct RootView: View {
     @StateObject private var viewModel = NearestRestaurantViewModel()
     @StateObject private var purchaseManager = NearestLunchPurchaseManager.shared
-    
+
     var body: some View {
         ZStack {
             switch viewModel.screen {
@@ -468,7 +563,7 @@ struct RootView: View {
 struct HomeView: View {
     @ObservedObject var viewModel: NearestRestaurantViewModel
     @EnvironmentObject var purchaseManager: NearestLunchPurchaseManager
-    
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 24) {
@@ -476,23 +571,23 @@ struct HomeView: View {
                     Text("いちばん近いご飯屋さんを\nサクッと見つけよう")
                         .font(.title2.bold())
                         .multilineTextAlignment(.center)
-                    
+
                     Text("今いる場所から近いお店を、モードに合わせて提案します。")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
                 }
                 .padding(.top, 40)
-                
+
                 VStack(alignment: .leading, spacing: 8) {
                     Text("モードを選ぶ")
                         .font(.headline)
                     ModePickerView(selected: $viewModel.selectedMode)
                 }
                 .padding(.horizontal)
-                
+
                 Spacer()
-                
+
                 Button(action: {
                     viewModel.startSearch()
                 }) {
@@ -506,14 +601,13 @@ struct HomeView: View {
                 }
                 .padding(.horizontal)
                 .padding(.bottom, 16)
-                
+
                 Text("※ 近くのご飯屋さんを探すために位置情報を使用します。")
                     .font(.footnote)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
-                
-                // ★ ここに実バナーIDを設定
+
                 VStack(spacing: 8) {
                     if purchaseManager.isPremium {
                         Text("広告非表示プランをご利用中です。")
@@ -522,7 +616,7 @@ struct HomeView: View {
                     } else {
                         AdBannerView(adUnitID: "ca-app-pub-3517487281025314/9611381269")
                             .frame(height: 50)
-                        
+
                         Button {
                             Task {
                                 await purchaseManager.purchaseRemoveAds()
@@ -536,7 +630,7 @@ struct HomeView: View {
                                 .cornerRadius(8)
                         }
                         .disabled(purchaseManager.isProcessing)
-                        
+
                         Button {
                             Task {
                                 await purchaseManager.restorePurchases()
@@ -547,7 +641,7 @@ struct HomeView: View {
                         }
                         .disabled(purchaseManager.isProcessing)
                     }
-                    
+
                     if let msg = purchaseManager.purchaseErrorMessage {
                         Text(msg)
                             .font(.footnote)
@@ -566,14 +660,14 @@ struct HomeView: View {
 
 struct SearchingView: View {
     let mode: LunchMode
-    
+
     var body: some View {
         VStack(spacing: 24) {
             Spacer()
-            
+
             ProgressView()
                 .scaleEffect(1.4)
-            
+
             VStack(spacing: 8) {
                 Text("近くのご飯屋さんを探しています…")
                     .font(.headline)
@@ -581,7 +675,7 @@ struct SearchingView: View {
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
-            
+
             Spacer()
         }
     }
@@ -592,7 +686,7 @@ struct SearchingView: View {
 struct ResultView: View {
     @ObservedObject var viewModel: NearestRestaurantViewModel
     @EnvironmentObject var purchaseManager: NearestLunchPurchaseManager
-    
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
@@ -600,9 +694,9 @@ struct ResultView: View {
                     viewModel.changeModeAndSearch(newMode)
                 }
                 .padding()
-                
+
                 Divider()
-                
+
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
                         if let msg = viewModel.errorMessage {
@@ -614,12 +708,12 @@ struct ResultView: View {
                                 .cornerRadius(8)
                                 .padding(.horizontal)
                         }
-                        
+
                         if let main = viewModel.primaryRestaurant {
                             Text("いちばん近いご飯屋さん")
                                 .font(.headline)
                                 .padding(.horizontal)
-                            
+
                             RestaurantCardView(restaurant: main, isPrimary: true)
                                 .padding(.horizontal)
                         } else if viewModel.errorMessage == nil {
@@ -628,21 +722,21 @@ struct ResultView: View {
                                 .foregroundColor(.secondary)
                                 .padding(.horizontal)
                         }
-                        
+
                         if viewModel.restaurants.count > 1 {
                             Text("徒歩10分以内の他の候補")
                                 .font(.headline)
                                 .padding(.horizontal)
                                 .padding(.top, 8)
-                            
+
                             ForEach(viewModel.restaurants.dropFirst()) { r in
                                 RestaurantCardView(restaurant: r, isPrimary: false)
                                     .padding(.horizontal)
                             }
                         }
-                        
+
                         Spacer(minLength: 24)
-                        
+
                         VStack(spacing: 8) {
                             if purchaseManager.isPremium {
                                 Text("広告非表示プランをご利用中です。")
@@ -651,7 +745,7 @@ struct ResultView: View {
                             } else {
                                 AdBannerView(adUnitID: "ca-app-pub-3517487281025314/9611381269")
                                     .frame(height: 50)
-                                
+
                                 Button {
                                     Task {
                                         await purchaseManager.purchaseRemoveAds()
@@ -665,7 +759,7 @@ struct ResultView: View {
                                         .cornerRadius(8)
                                 }
                                 .disabled(purchaseManager.isProcessing)
-                                
+
                                 Button {
                                     Task {
                                         await purchaseManager.restorePurchases()
@@ -676,7 +770,7 @@ struct ResultView: View {
                                 }
                                 .disabled(purchaseManager.isProcessing)
                             }
-                            
+
                             if let msg = purchaseManager.purchaseErrorMessage {
                                 Text(msg)
                                     .font(.footnote)
@@ -694,12 +788,12 @@ struct ResultView: View {
     }
 }
 
-// MARK: - モードピッカー（チップUI）
+// MARK: - モードピッカー
 
 struct ModePickerView: View {
     @Binding var selected: LunchMode
     var onChanged: ((LunchMode) -> Void)? = nil
-    
+
     var body: some View {
         HStack(spacing: 8) {
             ForEach(LunchMode.allCases) { mode in
@@ -774,7 +868,7 @@ struct RestaurantCardView: View {
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
-            
+
             HStack(spacing: 8) {
                 HStack(spacing: 2) {
                     Image(systemName: "star.fill")
@@ -782,20 +876,20 @@ struct RestaurantCardView: View {
                     Text(String(format: "%.1f", restaurant.rating))
                         .font(.subheadline)
                 }
-                
+
                 Text("(\(restaurant.reviewCount)件)")
                     .font(.footnote)
                     .foregroundColor(.secondary)
-                
+
                 Divider()
                     .frame(height: 14)
-                
+
                 Text(restaurant.priceText)
                     .font(.subheadline)
-                
+
                 Spacer()
             }
-            
+
             HStack {
                 Text("距離: \(restaurant.distanceText)")
                     .font(.subheadline)
@@ -804,7 +898,7 @@ struct RestaurantCardView: View {
                     .font(.subheadline)
                     .foregroundColor(restaurant.isOpenNow ? .green : .red)
             }
-            
+
             Button {
                 openInGoogleMaps()
             } label: {

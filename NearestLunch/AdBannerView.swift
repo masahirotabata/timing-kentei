@@ -13,7 +13,7 @@ import GoogleMobileAds
 
 // --- ここで BannerView を定義しておく（ターゲットごとに共有される） ---
 #if canImport(GoogleMobileAds)
-typealias BannerView = GADBannerView
+typealias BannerView = BannerView
 #else
 // Preview や GoogleMobileAds 未リンク時用のダミー
 typealias BannerView = UIView

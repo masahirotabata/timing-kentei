@@ -14,7 +14,6 @@
 		222F58882EB89B1D007E28FE /* AdsFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222F58872EB89B0A007E28FE /* AdsFacade.swift */; };
 		222F588A2EB89D23007E28FE /* UIHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222F58892EB89D15007E28FE /* UIHelpers.swift */; };
 		222F588C2EBB8B6B007E28FE /* AdsBootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222F588B2EBB8B55007E28FE /* AdsBootstrap.swift */; };
-		222F58972EC8210B007E28FE /* AdRequestFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222F58962EC820F8007E28FE /* AdRequestFactory.swift */; };
 		222F58CB2ECC89D5007E28FE /* Assets_DoubleTapBrowser.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 222F58C92ECC87DB007E28FE /* Assets_DoubleTapBrowser.xcassets */; };
 		2231BF1E2E9778DB005E17CA /* AppTrackingTransparency.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2231BF1D2E9778DB005E17CA /* AppTrackingTransparency.framework */; };
 		2231BF1F2E977932005E17CA /* AppTrackingTransparency.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2231BF1D2E9778DB005E17CA /* AppTrackingTransparency.framework */; };
@@ -43,6 +42,8 @@
 		227CCFE02E844594005BA5E1 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 2269F2F22E7FC6B000E0AEB3 /* index.html */; };
 		227CD0352E857CA6005BA5E1 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 227CD0342E857CA6005BA5E1 /* GoogleMobileAds */; };
 		228063AD2ED21A12009B25ED /* Assets_NearestLunch.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 228063AB2ED1A88B009B25ED /* Assets_NearestLunch.xcassets */; };
+		228063B32ED35442009B25ED /* AdManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222F587A2EADCB68007E28FE /* AdManager.swift */; };
+		228063B62ED3680C009B25ED /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 228063B52ED3680C009B25ED /* AppDelegate.swift */; };
 		22BEE8BD2ED0B9A800A39063 /* Kazulazer--iOS--Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 22641D2D2ECDF6BB009B821C /* Kazulazer--iOS--Info.plist */; };
 		22BEE8C22ED0BC8000A39063 /* number_laser_siege_items_boss_fix2.html in Resources */ = {isa = PBXBuildFile; fileRef = 22C1E6E12EACEC240075B29E /* number_laser_siege_items_boss_fix2.html */; };
 		22BEE8C32ED0C3E900A39063 /* Assets_Kazulazer.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 222F58782EAD201A007E28FE /* Assets_Kazulazer.xcassets */; };
@@ -116,7 +117,6 @@
 		222F58872EB89B0A007E28FE /* AdsFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdsFacade.swift; sourceTree = "<group>"; };
 		222F58892EB89D15007E28FE /* UIHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIHelpers.swift; sourceTree = "<group>"; };
 		222F588B2EBB8B55007E28FE /* AdsBootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdsBootstrap.swift; sourceTree = "<group>"; };
-		222F58962EC820F8007E28FE /* AdRequestFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdRequestFactory.swift; sourceTree = "<group>"; };
 		222F589C2ECC77E7007E28FE /* DoubleTapBrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DoubleTapBrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		222F58AD2ECC77EA007E28FE /* DoubleTapBrowserTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DoubleTapBrowserTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		222F58B72ECC77EA007E28FE /* DoubleTapBrowserUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DoubleTapBrowserUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -156,6 +156,7 @@
 		227CD03B2E8588E5005BA5E1 /* AppMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppMain.swift; sourceTree = "<group>"; };
 		227CD03C2E85890B005BA5E1 /* AdsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdsManager.swift; sourceTree = "<group>"; };
 		228063AB2ED1A88B009B25ED /* Assets_NearestLunch.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets_NearestLunch.xcassets; sourceTree = "<group>"; };
+		228063B52ED3680C009B25ED /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		22BEE8A82ED0AE6D00A39063 /* AdBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdBannerView.swift; sourceTree = "<group>"; };
 		22BEE8A92ED0AE6D00A39063 /* AdRequestFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdRequestFactory.swift; sourceTree = "<group>"; };
 		22BEE8AA2ED0AE6D00A39063 /* AdsBootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdsBootstrap.swift; sourceTree = "<group>"; };
@@ -528,7 +529,7 @@
 		22C1E6E42EACEC240075B29E /* Web_2 */ = {
 			isa = PBXGroup;
 			children = (
-				222F58962EC820F8007E28FE /* AdRequestFactory.swift */,
+				228063B52ED3680C009B25ED /* AppDelegate.swift */,
 				222F588B2EBB8B55007E28FE /* AdsBootstrap.swift */,
 				222F58892EB89D15007E28FE /* UIHelpers.swift */,
 				222F58872EB89B0A007E28FE /* AdsFacade.swift */,
@@ -1137,6 +1138,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				228063B62ED3680C009B25ED /* AppDelegate.swift in Sources */,
 				22C1E6EE2EACFA540075B29E /* AdBannerView.swift in Sources */,
 				22C1E6EB2EACF6120075B29E /* ContentView_Kazulazer.swift in Sources */,
 				22C1E6D32EACE70D0075B29E /* ForceKeepIDFA.m in Sources */,
@@ -1144,8 +1146,8 @@
 				22C1E6EC2EACF6170075B29E /* GameWebView.swift in Sources */,
 				22C1E6EF2EACFB610075B29E /* AppMain.swift in Sources */,
 				222F58882EB89B1D007E28FE /* AdsFacade.swift in Sources */,
-				222F58972EC8210B007E28FE /* AdRequestFactory.swift in Sources */,
 				22C1E6D42EACE70D0075B29E /* NativeBridge.swift in Sources */,
+				228063B32ED35442009B25ED /* AdManager.swift in Sources */,
 				222F588C2EBB8B6B007E28FE /* AdsBootstrap.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2177,7 +2179,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = BM9XZ2729G;
 				ENABLE_PREVIEWS = YES;
@@ -2220,7 +2222,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = BM9XZ2729G;
 				ENABLE_PREVIEWS = YES;

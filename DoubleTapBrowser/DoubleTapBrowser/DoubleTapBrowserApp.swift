@@ -122,7 +122,7 @@ extension InterstitialAdManager: FullScreenContentDelegate {
 
 enum DoubleTapAction: String, CaseIterable, Identifiable {
     case scrollDown   // 画面分スクロール（無料）
-    case jumpBottom   // ページ最下部へジャンプ（有料）
+    case jumpBottom   // ページ大幅下部へジャンプ（有料）
     case jumpTop      // ページ最上部へジャンプ（有料）
 
     var id: String { rawValue }
@@ -130,7 +130,7 @@ enum DoubleTapAction: String, CaseIterable, Identifiable {
     var displayName: String {
         switch self {
         case .scrollDown: return "下にスクロール（無料）"
-        case .jumpBottom: return "ページ最下部へジャンプ"
+        case .jumpBottom: return "ページの下部に大幅にジャンプ"
         case .jumpTop:    return "ページ最上部へジャンプ"
         }
     }
@@ -428,6 +428,8 @@ struct FavoritesView: View {
 
 // MARK: - 設定画面
 
+// MARK: - 設定画面
+
 struct SettingsView: View {
     @EnvironmentObject var settings: AppSettings
     @EnvironmentObject var storeManager: StoreManager
@@ -444,6 +446,7 @@ struct SettingsView: View {
                         Text("ダブルタップを有効にする")
                     }
 
+                    // 動作選択
                     VStack(alignment: .leading, spacing: 8) {
                         Text("ダブルタップの動作")
 
@@ -469,18 +472,23 @@ struct SettingsView: View {
                         }
 
                         if !settings.isProUnlocked {
-                            Text("※ ページ最上部/最下部ジャンプは Pro 解放後に利用できます。")
+                            Text("※ ページ最上部/大幅下部ジャンプは Pro 解放後に利用できます。")
                                 .font(.footnote)
                                 .foregroundColor(.secondary)
                         }
                     }
 
-                    let isBottomMode = settings.isProUnlocked && settings.selectedAction == .jumpBottom
+                    // ジャンプ系モード（jumpBottom / jumpTop）はカンスト表示
+                    let isJumpMaxMode =
+                        settings.isProUnlocked &&
+                        (settings.selectedAction == .jumpBottom ||
+                         settings.selectedAction == .jumpTop)
+
                     VStack(alignment: .leading) {
                         HStack {
                             Text("スクロール量")
                             Spacer()
-                            if isBottomMode {
+                            if isJumpMaxMode {
                                 Text("10000.0 × 画面")
                                     .foregroundColor(.secondary)
                             } else {
@@ -488,17 +496,21 @@ struct SettingsView: View {
                                     .foregroundColor(.secondary)
                             }
                         }
-                        Slider(value: $settings.scrollFactor, in: 0.5...1.5, step: 0.1)
-                            .disabled(isBottomMode)
+                        Slider(
+                            value: $settings.scrollFactor,
+                            in: 0.5...1.5,
+                            step: 0.1
+                        )
+                        .disabled(isJumpMaxMode)   // ジャンプ系のときは操作不可
                     }
-                }
+                } // ← ここで Section をしっかり閉じる
 
                 // --- Pro アップグレード ---
                 Section(header: Text("Pro アップグレード（買い切り）")) {
                     HStack {
                         Text(settings.isProUnlocked
                              ? "Pro 機能は解放済みです 🎉"
-                             : "ページ最上部/最下部ジャンプ & 広告非表示を買い切りで解放できます")
+                             : "ページ最上部/大幅下部ジャンプ & 広告非表示を買い切りで解放できます")
                             .foregroundColor(settings.isProUnlocked ? .green : .primary)
                         Spacer()
                     }
@@ -526,7 +538,7 @@ struct SettingsView: View {
                     }
                 }
 
-                // --- 広告表示について（追加したセクション） ---
+                // --- 広告表示について ---
                 Section(header: Text("広告表示について")) {
                     VStack(alignment: .leading, spacing: 6) {
                         if settings.isProUnlocked {
@@ -600,7 +612,10 @@ struct WebViewRepresentable: UIViewRepresentable {
         let config = WKWebViewConfiguration()
         let controller = WKUserContentController()
 
-        let initialFactor: Double = (action == .jumpBottom ? 10000.0 : scrollFactor)
+        // ★ jumpBottom / jumpTop のときは factor を 10000 に固定
+        let isJumpMax = (action == .jumpBottom || action == .jumpTop)
+        let initialFactor: Double = isJumpMax ? 10000.0 : scrollFactor
+
         let configScriptSource = """
         window._doubleTapConfig = {
           enabled: \(isDoubleTapEnabled ? "true" : "false"),
@@ -744,16 +759,18 @@ struct WebViewRepresentable: UIViewRepresentable {
             webView.load(URLRequest(url: url))
         }
 
-        let effectiveFactor: Double = (action == .jumpBottom ? 10000.0 : scrollFactor)
-        let configJS = """
-        window._doubleTapConfig = {
-          enabled: \(isDoubleTapEnabled ? "true" : "false"),
-          factor: \(effectiveFactor),
-          mode: "\(action.jsModeString)"
-        };
-        """
-        webView.evaluateJavaScript(configJS, completionHandler: nil)
-    }
+        let isJumpMax = (action == .jumpBottom || action == .jumpTop)
+            let effectiveFactor: Double = isJumpMax ? 10000.0 : scrollFactor
+
+            let configJS = """
+            window._doubleTapConfig = {
+              enabled: \(isDoubleTapEnabled ? "true" : "false"),
+              factor: \(effectiveFactor),
+              mode: "\(action.jsModeString)"
+            };
+            """
+            webView.evaluateJavaScript(configJS, completionHandler: nil)
+        }
 
     // MARK: - Coordinator
 
