@@ -6,6 +6,12 @@
 import SwiftUI
 import CoreLocation   // 位置情報用
 import StoreKit       // StoreKit2
+import UIKit          // topViewController で使用
+import AppTrackingTransparency
+import AdSupport
+#if canImport(GoogleMobileAds)
+import GoogleMobileAds
+#endif
 
 // MARK: - モード種別
 
@@ -59,13 +65,11 @@ struct Restaurant: Identifiable {
     let isOpenNow: Bool
     let closingTimeText: String?  // 例: "22:00 まで"
 
-    /// 表示用の料金目安（¥〜¥¥¥¥）
     var priceText: String {
         guard let priceLevel = priceLevel, priceLevel > 0 else { return "-" }
         return String(repeating: "¥", count: priceLevel)
     }
 
-    /// 距離表示
     var distanceText: String {
         if distanceMeters < 1000 {
             return "\(distanceMeters)m"
@@ -75,7 +79,6 @@ struct Restaurant: Identifiable {
         }
     }
 
-    /// 営業状況表示
     var openStatusText: String {
         if isOpenNow {
             if let closing = closingTimeText {
@@ -118,11 +121,9 @@ final class NearestLunchPurchaseManager: ObservableObject {
     private init() {
         self.isPremium = UserDefaults.standard.bool(forKey: premiumKey)
 
-        // 起動時に一応 Entitlement から再チェック
         Task {
             await refreshPurchasedStatus()
         }
-        // トランザクション更新監視
         Task {
             await observeTransactions()
         }
@@ -133,7 +134,6 @@ final class NearestLunchPurchaseManager: ObservableObject {
         UserDefaults.standard.set(value, forKey: premiumKey)
     }
 
-    /// removeAds の購入処理
     func purchaseRemoveAds() async {
         guard !isPremium else { return }
         isProcessing = true
@@ -141,6 +141,8 @@ final class NearestLunchPurchaseManager: ObservableObject {
 
         do {
             let products = try await Product.products(for: [productId])
+            print("[Purchase] products:", products)   // ★デバッグログ
+
             guard let product = products.first else {
                 throw NSError(domain: "NearestLunchPurchase", code: 0, userInfo: [
                     NSLocalizedDescriptionKey: "課金情報が見つかりませんでした。少し時間をおいて再度お試しください。"
@@ -172,7 +174,6 @@ final class NearestLunchPurchaseManager: ObservableObject {
         isProcessing = false
     }
 
-    /// 購入の復元
     func restorePurchases() async {
         isProcessing = true
         purchaseErrorMessage = nil
@@ -185,7 +186,6 @@ final class NearestLunchPurchaseManager: ObservableObject {
         isProcessing = false
     }
 
-    /// Entitlement から isPremium を再判定
     func refreshPurchasedStatus() async {
         var hasPremium = false
 
@@ -205,7 +205,6 @@ final class NearestLunchPurchaseManager: ObservableObject {
         setPremium(hasPremium)
     }
 
-    /// トランザクションのライブ更新監視
     private func observeTransactions() async {
         for await result in Transaction.updates {
             if case .verified(let transaction) = result {
@@ -228,8 +227,8 @@ final class NearestLunchPurchaseManager: ObservableObject {
 @MainActor
 final class LocationService: NSObject, CLLocationManagerDelegate {
     private let manager = CLLocationManager()
+    private var shouldRequestLocationAfterAuth = false      // ★追加
 
-    // ViewModel へ渡すコールバック
     var onGotLocation: ((CLLocation) -> Void)?
     var onPermissionError: (() -> Void)?
     var onLocationError: ((Error?) -> Void)?
@@ -242,11 +241,10 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
         print("[LocationService] init")
     }
 
-    /// 「現在地から探す」ボタン押下で呼ぶ（純粋に位置情報だけ扱う）
+    /// 「現在地から探す」ボタン押下で呼ぶ
     func startSearch() {
         print("[LocationService] startSearch")
 
-        // 端末側の位置情報サービス自体が OFF
         guard CLLocationManager.locationServicesEnabled() else {
             print("[LocationService] location services disabled")
             onLocationError?(nil)
@@ -259,6 +257,7 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
         switch status {
         case .notDetermined:
             print("[LocationService] requestWhenInUseAuthorization")
+            shouldRequestLocationAfterAuth = true          // ★ここでフラグON
             manager.requestWhenInUseAuthorization()
 
         case .authorizedWhenInUse, .authorizedAlways:
@@ -294,8 +293,13 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
 
         switch status {
         case .authorizedWhenInUse, .authorizedAlways:
-            print("[LocationService] authorized -> requestLocation")
-            manager.requestLocation()
+            print("[LocationService] authorized")
+            // ★ボタンタップ後だけ requestLocation する
+            if shouldRequestLocationAfterAuth {
+                shouldRequestLocationAfterAuth = false
+                print("[LocationService] authorized -> requestLocation (after user tap)")
+                manager.requestLocation()
+            }
 
         case .denied, .restricted:
             print("[LocationService] denied in handleAuthorizationChange")
@@ -303,7 +307,6 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
 
         case .notDetermined:
             print("[LocationService] still notDetermined")
-            break
 
         @unknown default:
             print("[LocationService] unknown default in handleAuthorizationChange")
@@ -343,58 +346,39 @@ final class NearestRestaurantViewModel: ObservableObject {
     private let locationService = LocationService()
     private let placesService = GooglePlacesService()
 
-    /// 一番近いお店
     var primaryRestaurant: Restaurant? {
         restaurants.first
     }
 
     init() {
-        // 位置情報取得に成功したとき
         locationService.onGotLocation = { [weak self] location in
             guard let self else { return }
             Task { [weak self] in
                 await self?.searchNearby(from: location.coordinate)
             }
         }
-        // 権限が許可されていないとき
         locationService.onPermissionError = { [weak self] in
             self?.handlePermissionError()
         }
-        // それ以外の位置情報エラー
         locationService.onLocationError = { [weak self] error in
             self?.handleLocationError(error)
         }
     }
 
-    /// 「現在地から探す」ボタン押下時に呼ぶ
     func startSearch() {
-        print("[ViewModel] startSearch")
+        print("[ViewModel] startSearch (use current location)")
 
         errorMessage = nil
         restaurants.removeAll()
         screen = .searching
 
-        // ★ 10秒タイムアウト：コールバックが来なくてもクルクルのままにならないようにする
-        Task { [weak self] in
-            try? await Task.sleep(nanoseconds: 10_000_000_000)  // 10秒
-            guard let self = self else { return }
-
-            if self.screen == .searching {
-                print("[ViewModel] timeout -> handleLocationError")
-                self.handleLocationError(nil)
-            }
-        }
-
         locationService.startSearch()
     }
 
-    /// 結果画面でモードを変えたときに再検索
     func changeModeAndSearch(_ mode: LunchMode) {
         selectedMode = mode
         startSearch()
     }
-
-    // MARK: - 内部処理
 
     fileprivate func handlePermissionError() {
         errorMessage = "位置情報の利用が許可されていません。設定アプリで位置情報をオンにしてから、もう一度お試しください。"
@@ -430,7 +414,7 @@ final class NearestRestaurantViewModel: ObservableObject {
 // MARK: - Google Places API
 
 final class GooglePlacesService {
-    private let apiKey = "YOUR_API_KEY_HERE"
+    private let apiKey = "AIzaSyACadew7GVTARB7nbDw8HoM6WMNAs3e5HU"
 
     struct PlacesResponse: Decodable {
         let results: [PlaceResult]
@@ -536,6 +520,31 @@ final class GooglePlacesService {
     }
 }
 
+// MARK: - ATT + AdMob 初期化ヘルパ
+
+private var hasRequestedTrackingAndStartedAds = false
+
+func requestTrackingAndStartAdsIfNeeded() {
+    guard !hasRequestedTrackingAndStartedAds else { return }
+    hasRequestedTrackingAndStartedAds = true
+
+    if #available(iOS 14, *) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            ATTrackingManager.requestTrackingAuthorization { _ in
+                DispatchQueue.main.async {
+                    #if canImport(GoogleMobileAds)
+                    GADMobileAds.sharedInstance().start(completionHandler: nil)
+                    #endif
+                }
+            }
+        }
+    } else {
+        #if canImport(GoogleMobileAds)
+        GADMobileAds.sharedInstance().start(completionHandler: nil)
+        #endif
+    }
+}
+
 // MARK: - ルートビュー
 
 struct RootView: View {
@@ -555,6 +564,9 @@ struct RootView: View {
         }
         .animation(.easeInOut, value: viewModel.screen)
         .environmentObject(purchaseManager)
+        .onAppear {
+            requestTrackingAndStartAdsIfNeeded()
+        }
     }
 }
 
@@ -564,6 +576,9 @@ struct HomeView: View {
     @ObservedObject var viewModel: NearestRestaurantViewModel
     @EnvironmentObject var purchaseManager: NearestLunchPurchaseManager
 
+    @State private var isPurchasing = false
+    @State private var showPurchaseErrorAlert = false
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 24) {
@@ -571,6 +586,8 @@ struct HomeView: View {
                     Text("いちばん近いご飯屋さんを\nサクッと見つけよう")
                         .font(.title2.bold())
                         .multilineTextAlignment(.center)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.8)
 
                     Text("今いる場所から近いお店を、モードに合わせて提案します。")
                         .font(.subheadline)
@@ -578,6 +595,7 @@ struct HomeView: View {
                         .multilineTextAlignment(.center)
                 }
                 .padding(.top, 40)
+                .padding(.horizontal)
 
                 VStack(alignment: .leading, spacing: 8) {
                     Text("モードを選ぶ")
@@ -610,7 +628,7 @@ struct HomeView: View {
 
                 VStack(spacing: 8) {
                     if purchaseManager.isPremium {
-                        Text("広告非表示プランをご利用中です。")
+                        Text("広告非表示プランをご利用中です 🎉")
                             .font(.footnote)
                             .foregroundColor(.secondary)
                     } else {
@@ -618,28 +636,34 @@ struct HomeView: View {
                             .frame(height: 50)
 
                         Button {
-                            Task {
-                                await purchaseManager.purchaseRemoveAds()
-                            }
+                            Task { await purchase() }
                         } label: {
-                            Text(purchaseManager.isProcessing ? "購入処理中…" : "広告を非表示にする（¥480）")
-                                .font(.footnote.bold())
-                                .frame(maxWidth: .infinity)
-                                .padding(8)
-                                .background(Color.blue.opacity(0.1))
-                                .cornerRadius(8)
+                            HStack {
+                                if isPurchasing {
+                                    ProgressView().scaleEffect(0.8)
+                                }
+                                Text(isPurchasing ? "購入処理中…" : "広告を非表示にする（¥480）")
+                                    .font(.footnote.bold())
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(8)
+                            .background(Color.blue.opacity(0.1))
+                            .cornerRadius(8)
                         }
-                        .disabled(purchaseManager.isProcessing)
+                        .disabled(isPurchasing)
 
                         Button {
                             Task {
                                 await purchaseManager.restorePurchases()
+                                if purchaseManager.purchaseErrorMessage != nil {
+                                    showPurchaseErrorAlert = true
+                                }
                             }
                         } label: {
                             Text("購入を復元する")
                                 .font(.footnote)
                         }
-                        .disabled(purchaseManager.isProcessing)
+                        .disabled(isPurchasing)
                     }
 
                     if let msg = purchaseManager.purchaseErrorMessage {
@@ -652,31 +676,23 @@ struct HomeView: View {
                 .padding(.bottom, 8)
             }
             .navigationTitle("近くのご飯屋")
+            .navigationBarTitleDisplayMode(.inline)   // ★テキスト崩れ対策
+            .alert("購入エラー", isPresented: $showPurchaseErrorAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(purchaseManager.purchaseErrorMessage ?? "不明なエラーが発生しました。")
+            }
         }
     }
-}
 
-// MARK: - 検索中画面
+    private func purchase() async {
+        guard !purchaseManager.isPremium else { return }
+        isPurchasing = true
+        await purchaseManager.purchaseRemoveAds()
+        isPurchasing = false
 
-struct SearchingView: View {
-    let mode: LunchMode
-
-    var body: some View {
-        VStack(spacing: 24) {
-            Spacer()
-
-            ProgressView()
-                .scaleEffect(1.4)
-
-            VStack(spacing: 8) {
-                Text("近くのご飯屋さんを探しています…")
-                    .font(.headline)
-                Text("\(mode.displayName)モード")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-
-            Spacer()
+        if purchaseManager.purchaseErrorMessage != nil {
+            showPurchaseErrorAlert = true
         }
     }
 }
@@ -687,9 +703,13 @@ struct ResultView: View {
     @ObservedObject var viewModel: NearestRestaurantViewModel
     @EnvironmentObject var purchaseManager: NearestLunchPurchaseManager
 
+    @State private var isPurchasing = false
+    @State private var showPurchaseErrorAlert = false
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
+
                 ModePickerView(selected: $viewModel.selectedMode) { newMode in
                     viewModel.changeModeAndSearch(newMode)
                 }
@@ -739,7 +759,7 @@ struct ResultView: View {
 
                         VStack(spacing: 8) {
                             if purchaseManager.isPremium {
-                                Text("広告非表示プランをご利用中です。")
+                                Text("広告非表示プランをご利用中です 🎉")
                                     .font(.footnote)
                                     .foregroundColor(.secondary)
                             } else {
@@ -747,28 +767,34 @@ struct ResultView: View {
                                     .frame(height: 50)
 
                                 Button {
-                                    Task {
-                                        await purchaseManager.purchaseRemoveAds()
-                                    }
+                                    Task { await purchase() }
                                 } label: {
-                                    Text(purchaseManager.isProcessing ? "購入処理中…" : "広告を非表示にする（¥480）")
-                                        .font(.footnote.bold())
-                                        .frame(maxWidth: .infinity)
-                                        .padding(8)
-                                        .background(Color.blue.opacity(0.1))
-                                        .cornerRadius(8)
+                                    HStack {
+                                        if isPurchasing {
+                                            ProgressView().scaleEffect(0.8)
+                                        }
+                                        Text(isPurchasing ? "購入処理中…" : "広告を非表示にする（¥480）")
+                                            .font(.footnote.bold())
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .padding(8)
+                                    .background(Color.blue.opacity(0.1))
+                                    .cornerRadius(8)
                                 }
-                                .disabled(purchaseManager.isProcessing)
+                                .disabled(isPurchasing)
 
                                 Button {
                                     Task {
                                         await purchaseManager.restorePurchases()
+                                        if purchaseManager.purchaseErrorMessage != nil {
+                                            showPurchaseErrorAlert = true
+                                        }
                                     }
                                 } label: {
                                     Text("購入を復元する")
                                         .font(.footnote)
                                 }
-                                .disabled(purchaseManager.isProcessing)
+                                .disabled(isPurchasing)
                             }
 
                             if let msg = purchaseManager.purchaseErrorMessage {
@@ -784,6 +810,48 @@ struct ResultView: View {
                 }
             }
             .navigationTitle("近くのご飯屋")
+            .navigationBarTitleDisplayMode(.inline)   // ★こちらも揃える
+            .alert("購入エラー", isPresented: $showPurchaseErrorAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(purchaseManager.purchaseErrorMessage ?? "不明なエラーが発生しました。")
+            }
+        }
+    }
+
+    private func purchase() async {
+        guard !purchaseManager.isPremium else { return }
+        isPurchasing = true
+        await purchaseManager.purchaseRemoveAds()
+        isPurchasing = false
+
+        if purchaseManager.purchaseErrorMessage != nil {
+            showPurchaseErrorAlert = true
+        }
+    }
+}
+
+// MARK: - 検索中画面
+
+struct SearchingView: View {
+    let mode: LunchMode
+
+    var body: some View {
+        VStack(spacing: 24) {
+            Spacer()
+
+            ProgressView()
+                .scaleEffect(1.4)
+
+            VStack(spacing: 8) {
+                Text("近くのご飯屋さんを探しています…")
+                    .font(.headline)
+                Text("\(mode.displayName)モード")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+
+            Spacer()
         }
     }
 }

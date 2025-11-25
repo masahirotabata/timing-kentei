@@ -174,7 +174,8 @@
         <div class="pill stat"><div class="caption">POWER</div><div id="pow">x1 / 0s</div></div>
         <div class="pill stat"><div class="caption">MODE</div><div id="mode">BEAM</div></div>
       </div>
-      <div class="pill tiny">操作: クリック/タップで狙う・ドラッグで追従</div>
+      <!-- ★ ゲーム中は非表示にできるよう ID を付与 -->
+      <div id="helpHint" class="pill tiny">操作: クリック/タップで狙う・ドラッグで追従</div>
     </div>
     <div class="hpbar"><div id="hpfill"></div></div>
 
@@ -240,6 +241,7 @@
     assist: document.getElementById('assist'),
     pow: document.getElementById('pow'),
     mode: document.getElementById('mode'),
+    helpHint: document.getElementById('helpHint'),
   };
 
   // --- State ---
@@ -255,7 +257,9 @@
     effects:{ power:0, multi:0, bullet:0, cross:0, spin:0 },
     dpsBase:20, fireTimer:0,
     spinAngle:0,
-    itemDropped:false   // ★ ドロップ済みフラグを追加
+    itemDropped:false,   // ★ ドロップ済みフラグを追加
+    playTop:100,
+    playBottom:innerHeight-90,
   };
   const rand=(a,b)=> a+Math.random()*(b-a);
 
@@ -266,10 +270,16 @@
     canvas.height = Math.floor(innerHeight * dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);
 
+    // ★ HUD と HPバー用にプレイエリアを確保（上:約110px, 下:約90px）
+    const hudH = 110;
+    const bottomMargin = 90;
+    state.playTop = hudH;
+    state.playBottom = innerHeight - bottomMargin;
+
     state.base.x = innerWidth/2;
-    state.base.y = innerHeight*0.90;
+    state.base.y = state.playBottom - 30;       // プレイエリア下寄り
     state.laser.x = innerWidth/2;
-    state.laser.y = innerHeight*0.85;
+    state.laser.y = state.base.y - 60;          // ベースより少し上
   }
   addEventListener('resize', fit, {passive:true});
   fit();
@@ -318,6 +328,9 @@
 
   // --- Game control ---
   function resetGame({endless=false,type='ghost',count=50}={}){
+    // ★ 画面サイズに応じてプレイエリア・ベース位置を再計算
+    fit();
+
     state.mode='play'; ensureAudio();
     state.endless=endless; state.wave=1;
     state.score=0; state.combo=1.0;
@@ -338,6 +351,9 @@
     ui.root.style.pointerEvents='none';
     canvas.style.pointerEvents='auto';
 
+    // ★ ゲーム中は右上の操作説明を隠す（UIと敵の重なり防止）
+    if (ui.helpHint) ui.helpHint.style.display = 'none';
+
     setHUD();
   }
 
@@ -353,17 +369,42 @@
     spawnEnemies(count, maxHP, speed, state.config.type, bossWave);
   }
 
+  // ★ プレイエリア内の「枠」から出現するように変更
   function spawnEnemies(count, maxHP, speed, type, boss=false){
     state.enemies.length=0;
     const palette=['#ef4444','#22c55e','#60a5fa','#f97316'];
+
+    const playTop    = state.playTop;
+    const playBottom = state.playBottom;
+    const yMin = playTop + 20;
+    const yMax = playBottom - 40;
+
     for(let i=0;i<count;i++){
       const hp = boss ? maxHP : Math.max(6, Math.floor(rand(maxHP*0.3, maxHP)));
-      const a = Math.random()*Math.PI*2;
-      const r = Math.max(innerWidth, innerHeight)*0.60;
-      const x = innerWidth/2 + Math.cos(a)*r;
-      const y = innerHeight*0.55 + Math.sin(a)*r*0.8;
-      const dir = Math.atan2(state.base.y - y, state.base.x - x) + rand(-0.25,0.25);
-      const sp = rand(speed*0.7, speed*1.0);
+      let x,y;
+
+      if (boss){
+        // ボスは画面中央上寄りから出現（HUDより下）
+        x = innerWidth / 2;
+        y = playTop + (playBottom - playTop) * 0.20;
+      } else {
+        // 左端 / 右端 / 上端（プレイエリア内）からランダム出現
+        const edge = Math.floor(Math.random()*3);
+        if (edge === 0) {          // 左端
+          x = -40;
+          y = rand(yMin, yMax);
+        } else if (edge === 1) {   // 右端
+          x = innerWidth + 40;
+          y = rand(yMin, yMax);
+        } else {                   // 上端（HUD のすぐ下）
+          x = rand(40, innerWidth-40);
+          y = playTop + 10;
+        }
+      }
+
+      const dir = Math.atan2(state.base.y - y, state.base.x - x) + rand(-0.20,0.20);
+      const sp  = rand(speed*0.7, speed*1.0);
+
       state.enemies.push({
         x,y,
         vx:Math.cos(dir)*sp,
@@ -849,11 +890,15 @@
         <button id="menuBtn" class="secondary">□ メニュー</button>
       </div>`;
 
+    // メニュー表示中は操作説明を再表示
+    if (ui.helpHint) ui.helpHint.style.display = 'block';
+
     if(onNext){
       document.getElementById('nextBtn').addEventListener('click', ()=>{
         ui.center.style.display='none';
         ui.root.style.pointerEvents='none';
         canvas.style.pointerEvents='auto';
+        if (ui.helpHint) ui.helpHint.style.display = 'none';
         onNext();
       }, {once:true});
     }

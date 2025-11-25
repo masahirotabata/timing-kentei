@@ -44,6 +44,8 @@
 		228063AD2ED21A12009B25ED /* Assets_NearestLunch.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 228063AB2ED1A88B009B25ED /* Assets_NearestLunch.xcassets */; };
 		228063B32ED35442009B25ED /* AdManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222F587A2EADCB68007E28FE /* AdManager.swift */; };
 		228063B62ED3680C009B25ED /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 228063B52ED3680C009B25ED /* AppDelegate.swift */; };
+		228063BB2ED4AA96009B25ED /* NearestLunch--iOS--Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 228063BA2ED4AA8F009B25ED /* NearestLunch--iOS--Info.plist */; };
+		228063BC2ED5D6E8009B25ED /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 228063B52ED3680C009B25ED /* AppDelegate.swift */; };
 		22BEE8BD2ED0B9A800A39063 /* Kazulazer--iOS--Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 22641D2D2ECDF6BB009B821C /* Kazulazer--iOS--Info.plist */; };
 		22BEE8C22ED0BC8000A39063 /* number_laser_siege_items_boss_fix2.html in Resources */ = {isa = PBXBuildFile; fileRef = 22C1E6E12EACEC240075B29E /* number_laser_siege_items_boss_fix2.html */; };
 		22BEE8C32ED0C3E900A39063 /* Assets_Kazulazer.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 222F58782EAD201A007E28FE /* Assets_Kazulazer.xcassets */; };
@@ -157,6 +159,7 @@
 		227CD03C2E85890B005BA5E1 /* AdsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdsManager.swift; sourceTree = "<group>"; };
 		228063AB2ED1A88B009B25ED /* Assets_NearestLunch.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets_NearestLunch.xcassets; sourceTree = "<group>"; };
 		228063B52ED3680C009B25ED /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		228063BA2ED4AA8F009B25ED /* NearestLunch--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "NearestLunch--iOS--Info.plist"; sourceTree = "<group>"; };
 		22BEE8A82ED0AE6D00A39063 /* AdBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdBannerView.swift; sourceTree = "<group>"; };
 		22BEE8A92ED0AE6D00A39063 /* AdRequestFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdRequestFactory.swift; sourceTree = "<group>"; };
 		22BEE8AA2ED0AE6D00A39063 /* AdsBootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdsBootstrap.swift; sourceTree = "<group>"; };
@@ -191,6 +194,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				ContentView.swift,
+				"NearestLunch--iOS--Info.plist",
 			);
 			target = 22BEE8D92ED18E3F00A39063 /* NearestLunch */;
 		};
@@ -372,6 +376,7 @@
 		2269F2A42E7FBD8A00E0AEB3 = {
 			isa = PBXGroup;
 			children = (
+				228063BA2ED4AA8F009B25ED /* NearestLunch--iOS--Info.plist */,
 				22BEE8CE2ED0E96300A39063 /* DoubleTapBrowser--iOS--Info.plist */,
 				22641D2D2ECDF6BB009B821C /* Kazulazer--iOS--Info.plist */,
 				22C1E6C82EA4C9DB0075B29E /* Web2 */,
@@ -1005,6 +1010,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				228063BB2ED4AA96009B25ED /* NearestLunch--iOS--Info.plist in Resources */,
 				228063AD2ED21A12009B25ED /* Assets_NearestLunch.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1117,6 +1123,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				228063BC2ED5D6E8009B25ED /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1994,7 +2001,8 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "NearestLunch--iOS--Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -2039,7 +2047,8 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "NearestLunch--iOS--Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
